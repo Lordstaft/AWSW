@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto</title>
+</head> 
+<body>
+    <div id="mailTo">
+        <h1>Implementación de mailTo</h1>
+        <fieldset>
+            <legend>Contacto</legend>
+            <form method="post" id="contacto">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre">
+    
+                <label for="email">Correo electrónico</label>
+                <input type="email" name="email" id="email">
+    
+                <div id="contactMotive">
+                    <p>Motivo de contacto: </p>
+                    <input type="radio" id="contactMotive1" name="contact" value="evaluacion">
+                    <label for="contactMotive1">Evaluación</label>
+    
+                    <input type="radio" id="contactMotive" name="contact" value="sugerencia">
+                    <label for="contactMotive2">Sugerencia</label>
+    
+                    <input type="radio" id="contactMotive3" name="contact" value="critica">
+                    <label for="contactMotive3">Crítica</label>
+                </div>
+    
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" name="mensaje" rows="4" cols="50"></textarea>
+
+                <input type="checkbox" name="checkbox" id="checkbox">
+                <label for="checkbox">Marque esta casilla para verificar que ha leído nuestros términos y condiciones del servicio</label>
+    
+                <button type="submit">Enviar</button>
+            </form>
+        </fieldset>
+    </div>  
+</body>
+</html>
