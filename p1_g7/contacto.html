@@ -9,6 +9,7 @@
 
 <body>
     <nav>
+        <h1>Contacto</h1>
         <div>
             <h3>Enlaces</h3>
             <div>
@@ -24,12 +25,12 @@
     <a href="index.html">Volver</a>
 
     <div id="mailTo">
-        <h1>Contacto</h1>
         <fieldset>
             <legend>Formulario de contacto</legend>
             <form action="mailto:pablsa18@ucm.es" method="post" id="contacto">
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" name="nombre">
+
 
                 <label for="email">Correo electrónico</label>
                 <input type="email" name="email" id="email">
@@ -48,11 +49,12 @@
 
                 <label for="mensaje">Mensaje</label>
                 <textarea id="mensaje" name="mensaje" rows="4" cols="50"></textarea>
-
-                <input type="checkbox" name="checkbox" id="checkbox">
-                <label for="checkbox">Marque esta casilla para verificar que ha leído nuestros términos y condiciones
-                    del servicio</label>
-
+                <p>
+                    <input type="checkbox" name="checkbox" id="checkbox">
+                    <label for="checkbox">Marque esta casilla para verificar que ha leído nuestros términos y
+                        condiciones
+                        del servicio</label>
+                </p>
                 <button type="submit">Enviar</button>
             </form>
         </fieldset>
