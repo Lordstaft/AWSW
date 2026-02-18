@@ -1,19 +1,35 @@
 <?php
 $mensaje = '';
 
-if (!empty($_GET['error'])) {
-    $mensaje = '<p><strong>Error:</strong> Revisa los datos del formulario.</p>';
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-if (!empty($_GET['ok'])) {
-    $mensaje = '<p><strong>Registro completado.</strong> Ahora puedes iniciar sesión.</p>';
+    $usuario   = trim($_POST['usuario'] ?? '');
+    $email     = trim($_POST['email'] ?? '');
+    $nombre    = trim($_POST['nombre'] ?? '');
+    $apellidos = trim($_POST['apellidos'] ?? '');
+    $password  = $_POST['password'] ?? '';
+
+    if ($usuario === '' || $email === '' || $nombre === '' || $apellidos === '' || $password === '') {
+        $mensaje = '<p><strong>Error:</strong> Todos los campos son obligatorios.</p>';
+    } else {
+
+        $_SESSION['registered_users'][$usuario] = [
+            'email' => $email,
+            'nombre' => $nombre,
+            'apellidos' => $apellidos,
+            'password' => $password,
+            'rol' => 'cliente'
+        ];
+
+        $mensaje = '<p><strong>Registro completado correctamente.</strong></p>';
+    }
 }
 
 $contenido = <<<EOS
     <h1>Registro</h1>
     $mensaje
 
-    <form method="post" action="includes/registro_post.php">
+    <form method="post" action="index.php?pagina=registro">
         <label for="usuario">Nombre de usuario</label>
         <input type="text" id="usuario" name="usuario" required>
 
