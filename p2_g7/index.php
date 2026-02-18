@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 include __DIR__ . '/includes/views/partials/cabecera.php'; 
 include __DIR__ . '/includes/views/partials/sideBarIzq.php'; 
 
