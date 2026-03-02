@@ -33,100 +33,51 @@ if ( ! $password2 || empty($password2=trim($password2)) || $password != $passwor
 }
 
 if (count($erroresFormulario) === 0) {
-	$conn = conexionBD();
-	
-	$query=sprintf("SELECT * FROM Usuarios U WHERE U.nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
-	$rs = $conn->query($query);
-	if ($rs) {
-		if ( $rs->num_rows > 0 ) {
-			$erroresFormulario[] = 'El usuario ya existe';
-			$rs->free();
-		} else {
-			$query=sprintf("INSERT INTO Usuarios(nombreUsuario, nombre, password) VALUES('%s', '%s', '%s')"
-					, $conn->real_escape_string($nombreUsuario)
-					, $conn->real_escape_string($nombre)
-					, password_hash($password, PASSWORD_DEFAULT)
-			);
-			if ( $conn->query($query) ) {
-				$idUsuario = $conn->insert_id;
-				$query=sprintf("INSERT INTO RolesUsuario(rol, usuario) VALUES(%d, %d)"
-					, USER_ROLE
-					, $idUsuario
-				);
-				if ( $conn->query($query) ) {
-					$_SESSION['login'] = true;
-					$_SESSION['nombre'] = $nombre;
-					$_SESSION['esAdmin'] = false;
-					header('Location: index.php');
-					exit();
-				} else {
-					echo "Error SQL ({$conn->errno}):  {$conn->error}";
-					exit();
-				}
-			} else {
-				echo "Error SQL ({$conn->errno}):  {$conn->error}";
-				exit();
-			}
-		}		
-	} else {
-		echo "Error SQL ({$conn->errno}):  {$conn->error}";
-		exit();
+	$usuario = Usuario::crea($nombreUsuario, $nombre, $password, Usuario::USER_ROLE);
+	if (!$usuario) {
+		$erroresFormulario[] = 'El nombre de usuario ya existe';
+	}
+	else {
+		$_SESSION['login'] = true;
+		$_SESSION['nombre'] = $usuario->getNombre();
+		$_SESSION['esAdmin'] = $usuario->getRol();
+		header('Location: ./../../../index.php');
 	}
 }
 
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>Registro</title>
-	<link rel="stylesheet" type="text/css" href="CSS/estilo.css" />
-</head>
-<body>
-<div id="contenedor">
-<?php
-require('cabecera.php');
-require('sidebarIzq.php');
-?>
-<main>
-	<article>
-		<h1>Registro de usuario</h1>
-		<?= generaErroresGlobalesFormulario($erroresFormulario) ?>
-		<form action="procesarRegistro.php" method="POST">
-		<fieldset>
-            <legend>Datos para el registro</legend>
-            <div>
-                <label for="nombreUsuario">Nombre de usuario:</label>
-				<input id="nombreUsuario" type="text" name="nombreUsuario" value="<?= $nombreUsuario ?>" />
-				<?=  generarError('nombreUsuario', $erroresFormulario) ?>
-            </div>
-            <div>
-                <label for="nombre">Nombre:</label>
-				<input id="nombre" type="text" name="nombre" value="<?= $nombre ?>" />
-				<?=  generarError('nombre', $erroresFormulario) ?>
-            </div>
-            <div>
-                <label for="password">Password:</label>
-				<input id="password" type="password" name="password" value="<?= $password ?>" />
-				<?=  generarError('password', $erroresFormulario) ?>
-            </div>
-            <div>
-                <label for="password2">Reintroduce el password:</label>
-				<input id="password2" type="password" name="password2" value="<?= $password2 ?>" />
-				<?=  generarError('password2', $erroresFormulario) ?>
-            </div>
-            <div>
-				<button type="submit" name="registro">Registrar</button>
-			</div>
-		</fieldset>
-		</form>
-	</article>
-</main>
+$tituloPagina = 'Registro';
+$erroresGlobalesFormulario = generaErroresGlobalesFormulario($erroresFormulario);
+$erroresCampos = generaErroresCampos(['nombreUsuario', 'password'], $erroresFormulario);
 
-<?php
-require('sidebarDer.php');
-require('pie.php');
-?>
-</div>
-</body>
-</html>
+$contenidoPrincipal = <<<EOS
+	<h1>Registro de usuario</h1>
+	$erroresGlobalesFormulario
+	<form action="procesarRegistro.php" method="POST">
+	<fieldset>
+		<legend>Datos para el registro</legend>
+		<div>
+			<label for="nombreUsuario">Nombre de usuario:</label>
+			<input id="nombreUsuario" type="text" name="nombreUsuario" value="$nombreUsuario" />
+			{$erroresCampos['nombreUsuario']}
+		</div>
+		<div>
+			<label for="nombre">Nombre:</label>
+			<input id="nombre" type="text" name="nombre" value="$nombre" />
+			{$erroresCampos['nombre']}
+		</div>
+		<div>
+			<label for="password">Password:</label>
+			<input id="password" type="password" name="password" value="$password" />
+			{$erroresCampos['password']}
+		</div>
+		<div>
+			<label for="password2">Reintroduce el password:</label>
+			<input id="password2" type="password" name="password2" value="$password2" />
+			{$erroresCampos['password2']}
+		</div>
+		<div>
+			<button type="submit" name="registro">Registrar</button>
+		</div>
+	</fieldset>
+	</form>
+EOS;
