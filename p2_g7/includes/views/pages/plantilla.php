@@ -1,5 +1,29 @@
 <?php
-$contenido = <<<EOS
-  <a href="./index.php?pagina=takeAway">Pedido para llevar</a>
-  <a href="./index.php?pagina=eatIn">Para consumir en el local</a>
-EOS;
+//Inicio del procesamiento
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title><?= $tituloPagina ?></title>
+    <link rel="stylesheet" type="text/css" href="<?= RUTA_CSS ?>estilo.css" />
+</head>
+<body>
+<div id="contenedor">
+<?php
+require(dirname(__DIR__).'/partials/cabecera.php');
+require(dirname(__DIR__).'/partials/sidebarIzq.php');
+?>
+	<main>
+		<article>
+			<?= $contenidoPrincipal ?>
+		</article>
+	</main>
+<?php
+require(dirname(__DIR__).'/partials/sidebarDer.php');
+require(dirname(__DIR__).'/partials/pie.php');
+?>
+</div>
+</body>
+</html>
+

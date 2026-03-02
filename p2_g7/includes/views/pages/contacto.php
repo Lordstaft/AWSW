@@ -1,5 +1,6 @@
 <?php
-$contenido = <<<EOS
+include __DIR__ . '/../../config.php';
+$contenidoPrincipal = <<<EOS
     <div id="mailTo">
         <fieldset>
             <legend>Formulario de contacto</legend>
@@ -36,3 +37,5 @@ $contenido = <<<EOS
         </fieldset>
     </div>
 EOS;
+
+require __DIR__ . '/plantilla.php';

@@ -1,6 +1,6 @@
 <?php
 //Inicio del procesamiento
-session_start();
+require __DIR__ . '/../../config.php';
 
 $formEnviado = isset($_POST['registro']);
 if (! $formEnviado ) {

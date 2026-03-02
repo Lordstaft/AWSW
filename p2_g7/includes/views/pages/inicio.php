@@ -1,10 +1,9 @@
 <?php
-$contenido = <<<EOS
-  <h1>Inicio</h1>
-  <p>Página principal (provisional).</p>
-  <ul>
-    <li><a href="index.php?pagina=login">Login</a></li>
-    <li><a href="index.php?pagina=registro">Registro</a></li>
-  </ul>
+include __DIR__ . '/../../config.php';
+
+$contenidoPrincipal = <<<EOS
+  <a href="./pedido.php?pagina=takeAway">Pedido para llevar</a>
+  <a href="./pedido.php?pagina=eatIn">Para consumir en el local</a>
 EOS;
 
+require __DIR__ . '/plantilla.php';
