@@ -1,96 +1,132 @@
 <?php
 
+class Usuario {
 
-class Usuario{
+    private $id;
     private $nombreUsuario;
+    private $email;
     private $nombre;
+    private $apellidos;
     private $password;
     private $rol;
+    private $avatar;
+    private $fechaRegistro;
 
     const ADMIN_ROLE = 1;
-    const USER_ROLE = 2;
-    
-    private function __construct($nombreUsuario, $nombre, $password, $rol = self::USER_ROLE){
+    const USER_ROLE  = 2;
+
+    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = self::USER_ROLE, $avatar = null, $fechaRegistro = null) {
+        $this->id = $id;
         $this->nombreUsuario = $nombreUsuario;
+        $this->email = $email;
         $this->nombre = $nombre;
+        $this->apellidos = $apellidos;
         $this->password = $password;
         $this->rol = $rol;
+        $this->avatar = $avatar;
+        $this->fechaRegistro = $fechaRegistro;
     }
 
-    private function getNombreUsuario(){
+    public function getNombreUsuario() {
         return $this->nombreUsuario;
     }
 
-    private function getNombre(){
+    public function getNombre() {
         return $this->nombre;
     }
 
-    private function getPassword(){
+    public function getPassword() {
         return $this->password;
     }
 
-    private function getRol(){
+    public function getRol() {
         return $this->rol;
     }
-    
-    private function setPassword($password){
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+
+    public function getId() {
+        return $this->id;
     }
 
-    private function setRol($rol){
+    public function setPassword($password) {
+        $this->password = password_hash($password, BCRYPT);
+    }
+
+    public function setRol($rol) {
         if ($rol === self::ADMIN_ROLE || $rol === self::USER_ROLE) {
             $this->rol = $rol;
         }
     }
 
-    private function hashPassword($password){
-        return password_hash($password, PASSWORD_DEFAULT);
+    private function hashPassword($password) {
+        return password_hash($password, BCRYPT);
     }
 
-    public static function buscaUsuario($nombreUsuario){
-        $conn = Aplicacion::getInstance()->getConexionBd();
-        $query=sprintf("SELECT * FROM Usuarios U WHERE U.nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
-        $rs = $conn->query($query);
-        if ($rs) {
-            $fila = $rs->fetch_assoc();
-            $user = new Usuario($fila['nombreUsuario'], $fila['nombre'], $fila['password'], $fila['rol']);
-            $rs->free();
-            Aplicacion::getInstance()->shutdown();
-            return $user;
-        } else {
-            error_log("Error BD ({$conn->errno}): {$conn->error}");
-        }
-        Aplicacion::getInstance()->shutdown();
-        return $result;
-    }
-
-    public function buscaPassword($password){
+    public function buscaPassword($password) {
+        var_dump($this->password); // 🔎 Ver qué contiene realmente
+        var_dump($password);
         return password_verify($password, $this->password);
     }
 
-    public static function login($nombreUsuario, $password){
+    public static function buscaUsuario($nombreUsuario) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $query = sprintf("SELECT * FROM Usuarios WHERE nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $fila = $rs->fetch_assoc();
+
+            $usuario = new Usuario(
+                $fila['id'],
+                $fila['nombreUsuario'],
+                $fila['email'] ?? null,
+                $fila['nombre'] ?? null,
+                $fila['apellidos'] ?? null,
+                $fila['contraseña'],
+                $fila['rol'] ?? self::USER_ROLE,
+                $fila['avatar'] ?? null,
+                $fila['fechaRegistro'] ?? null
+            );
+            $rs->free();
+            return $usuario;
+        }
+
+        return null;
+    }
+
+    public static function login($nombreUsuario, $password) {
         $usuario = self::buscaUsuario($nombreUsuario);
         if ($usuario && $usuario->buscaPassword($password)) {
             return $usuario;
         }
+
         return false;
     }
 
-    public static function crea($nombreUsuario, $nombre, $password, $rol){
+    public static function crea($nombreUsuario, $nombre, $password, $rol) {
         $check = self::buscaUsuario($nombreUsuario);
         if ($check) {
             return $check;
         }
-        $user = new Usuario($nombreUsuario, $nombre, null, $rol);
-        $user->setPassword($password);
+
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $query = sprintf("INSERT INTO Usuarios (nombreUsuario, nombre, password, rol) VALUES ('%s', '%s', '%s', %d)", $conn->real_escape_string($user->getNombreUsuario()), $conn->real_escape_string($user->getNombre()), $conn->real_escape_string($user->getPassword()), $user->getRol());
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $query = sprintf("INSERT INTO Usuarios (nombreUsuario, nombre, password, rol) VALUES ('%s','%s','%s',%d)", $conn->real_escape_string($nombreUsuario), $conn->real_escape_string($nombre), $conn->real_escape_string($passwordHash), (int)$rol);
+
         if ($conn->query($query)) {
-            return $user;
-        } 
-        else {
-            error_log("Error BD ({$conn->errno}): {$conn->error}");
+            $id = $conn->insert_id;
+            return new Usuario(
+                $id,
+                $nombreUsuario,
+                null,
+                $nombre,
+                null,
+                $passwordHash,
+                $rol
+            );
         }
-        Aplicacion::getInstance()->shutdown();
+
+        error_log("Error BD ({$conn->errno}): {$conn->error}");
+        return null;
     }
 }

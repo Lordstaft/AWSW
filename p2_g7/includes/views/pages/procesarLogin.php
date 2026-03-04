@@ -8,7 +8,7 @@ if (! $formEnviado ) {
 	exit();
 }
 
-require_once __DIR__.'/utils.php';
+require_once __DIR__. '/../../utils.php';
 
 $erroresFormulario = [];
 
@@ -28,7 +28,7 @@ if (count($erroresFormulario) === 0) {
 		$_SESSION['login'] = true;
 		$_SESSION['nombre'] = $usuario->getNombre();
 		$_SESSION['esAdmin'] = $usuario->getRol() === Usuario::ADMIN_ROLE;
-		header('Location: ./../../../index.php');
+		header('Location: ./inicio.php');
 		exit();
 	}
 	else {

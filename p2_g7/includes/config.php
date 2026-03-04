@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__.'/class/Aplicacion.php';
+require_once __DIR__.'/class/Usuario.php';
 session_start();
 /**
  * Parámetros de conexión a la BD
@@ -6,13 +8,13 @@ session_start();
 define('BD_HOST', 'localhost');
 define('BD_NAME', 'awp2');
 define('BD_USER', 'awp2');
-define('BD_PASS', 'awpass');
+define('BD_PASS', 'awp2');
 
 /**
  * Parámetros de configuración utilizados para generar las URLs y las rutas a ficheros en la aplicación
  */
 define('RAIZ_APP', __DIR__);
-define('RUTA_APP', '/practica2');
+define('RUTA_APP', '/p2_g7');
 define('RUTA_IMGS', RUTA_APP.'img/');
 define('RUTA_CSS', RUTA_APP.'css/');
 define('RUTA_JS', RUTA_APP.'js/');

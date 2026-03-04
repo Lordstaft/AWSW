@@ -6,7 +6,7 @@ $tituloPagina = 'Login';
 
 $contenidoPrincipal = <<<EOS
 <h1>Acceso al sistema</h1>
-<form action="/includes/views/pages/procesarLogin.php" method="POST">
+<form action="./includes/views/pages/procesarLogin.php" method="POST">
 <fieldset>
 	<legend>Usuario y contraseña</legend>
 	<div>

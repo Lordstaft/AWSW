@@ -81,3 +81,5 @@ $contenidoPrincipal = <<<EOS
 	</fieldset>
 	</form>
 EOS;
+
+require __DIR__ . '/plantilla.php';
