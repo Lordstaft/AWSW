@@ -106,13 +106,22 @@ class Usuario {
     public static function crea($nombreUsuario, $nombre, $password, $rol) {
         $check = self::buscaUsuario($nombreUsuario);
         if ($check) {
-            return $check;
+            return false;
         }
 
         $conn = Aplicacion::getInstance()->getConexionBd();
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $query = sprintf("INSERT INTO Usuarios (nombreUsuario, nombre, password, rol) VALUES ('%s','%s','%s',%d)", $conn->real_escape_string($nombreUsuario), $conn->real_escape_string($nombre), $conn->real_escape_string($passwordHash), (int)$rol);
-
+        
+        $query = sprintf(
+        "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol)
+         VALUES ('%s','%s','%s','%s','%s','%s')",
+        $conn->real_escape_string($nombreUsuario),
+        $conn->real_escape_string($email),
+        $conn->real_escape_string($nombre),
+        $conn->real_escape_string($apellidos),
+        $conn->real_escape_string($passwordHash),
+        $conn->real_escape_string($rol)
+    );
         if ($conn->query($query)) {
             $id = $conn->insert_id;
             return new Usuario(
@@ -127,6 +136,6 @@ class Usuario {
         }
 
         error_log("Error BD ({$conn->errno}): {$conn->error}");
-        return null;
+        return false;
     }
 }
