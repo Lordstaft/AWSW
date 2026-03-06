@@ -33,7 +33,14 @@ if ( ! $password2 || empty($password2=trim($password2)) || $password != $passwor
 }
 
 if (count($erroresFormulario) === 0) {
-	$usuario = Usuario::crea($nombreUsuario, $nombre, $password, Usuario::USER_ROLE);
+	#$usuario = Usuario::crea($nombreUsuario, $nombre, $password, Usuario::USER_ROLE);
+	$usuario = Usuario::crea(
+    $nombreUsuario,
+    $nombre,
+    $password,
+    $email,
+    $apellidos
+);
 	if (!$usuario) {
 		$erroresFormulario[] = 'El nombre de usuario ya existe';
 	}
@@ -84,3 +91,4 @@ EOS;
 
 
 require __DIR__ . '/plantilla.php';
+
