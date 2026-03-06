@@ -21,6 +21,15 @@ $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
 if ( ! $nombre || empty($nombre=trim($nombre)) || mb_strlen($nombre) < 5) {
 	$erroresFormulario['nombre'] = 'El nombre tiene que tener una longitud de al menos 5 caracteres.';
 }
+$apellidos = filter_input(INPUT_POST, 'apellidos', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+if ( ! $apellidos || empty($apellidos = trim($apellidos)) || mb_strlen($apellidos) < 2) {
+	$erroresFormulario['apellidos'] = 'Los apellidos deben tener al menos 2 caracteres.';
+}
+
+$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+if ( ! $email || empty($email = trim($email)) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	$erroresFormulario['email'] = 'Debes introducir un email válido.';
+}
 
 $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 if ( ! $password || empty($password=trim($password)) || mb_strlen($password) < 5 ) {
@@ -34,27 +43,30 @@ if ( ! $password2 || empty($password2=trim($password2)) || $password != $passwor
 
 if (count($erroresFormulario) === 0) {
 	#$usuario = Usuario::crea($nombreUsuario, $nombre, $password, Usuario::USER_ROLE);
+
 	$usuario = Usuario::crea(
-    $nombreUsuario,
-    $nombre,
-    $password,
-    $email,
-    $apellidos
-);
+    		$nombreUsuario,
+    		$nombre,
+    		$password,
+    		'cliente',
+    		$email,
+    		$apellidos
+	);
 	if (!$usuario) {
 		$erroresFormulario[] = 'El nombre de usuario ya existe';
 	}
 	else {
 		$_SESSION['login'] = true;
 		$_SESSION['nombre'] = $usuario->getNombre();
-		$_SESSION['esAdmin'] = $usuario->getRol();
+		$_SESSION['esAdmin'] = false;
 		header('Location: ./../../../index.php');
 	}
 }
 
 $tituloPagina = 'Registro';
 $erroresGlobalesFormulario = generaErroresGlobalesFormulario($erroresFormulario);
-$erroresCampos = generaErroresCampos(['nombreUsuario', 'nombre', 'password', 'password2'], $erroresFormulario);
+
+$erroresCampos = generaErroresCampos(['nombreUsuario', 'nombre', 'apellidos', 'email', 'password', 'password2'], $erroresFormulario);
 
 $contenidoPrincipal = <<<EOS
 	<h1>Registro de usuario</h1>
@@ -71,6 +83,16 @@ $contenidoPrincipal = <<<EOS
 			<label for="nombre">Nombre:</label>
 			<input id="nombre" type="text" name="nombre" value="$nombre" />
 			{$erroresCampos['nombre']}
+		</div>
+		<div>
+			<label for="apellidos">Apellidos:</label>
+			<input id="apellidos" type="text" name="apellidos" value="$apellidos" />
+			{$erroresCampos['apellidos']}
+		</div>
+		<div>
+			<label for="email">Email:</label>
+			<input id="email" type="email" name="email" value="$email" />
+			{$erroresCampos['email']}
 		</div>
 		<div>
 			<label for="password">Password:</label>
