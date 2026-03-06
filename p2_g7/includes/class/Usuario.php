@@ -70,7 +70,7 @@ class Usuario {
     public static function buscaUsuario($nombreUsuario) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $query = sprintf("SELECT * FROM Usuarios WHERE nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
+        $query = sprintf("SELECT * FROM usuarios WHERE nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
         $rs = $conn->query($query);
 
         if ($rs && $rs->num_rows > 0) {
