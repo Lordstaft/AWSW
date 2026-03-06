@@ -17,6 +17,14 @@ $contenidoPrincipal = <<<EOS
 			<input id="nombre" type="text" name="nombre" />
 		</div>
 		<div>
+			<label for="apellidos">Apellidos:</label>
+			<input id="apellidos" type="text" name="apellidos" />
+		</div>
+		<div>
+			<label for="email">Email:</label>
+			<input id="email" type="email" name="email" />
+		</div>
+		<div>
 			<label for="password">Password:</label>
 			<input id="password" type="password" name="password" />
 		</div>
@@ -32,4 +40,3 @@ $contenidoPrincipal = <<<EOS
 	EOS;
 
 require __DIR__ . '/plantilla.php';
-
