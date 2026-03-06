@@ -17,7 +17,7 @@ function mostrarNavegacion() {
             <li><a href='" . RUTA_APP . "/index.php'>Inicio</a></li>
             <li><a href='" . RUTA_APP . "/includes/views/pages/productos.php'>Ver productos</a></li>
             <li><a href='" . RUTA_APP . "/includes/views/pages/categorias.php'>Ver categorías</a></li>
-	    <li><a href="< . RUTA_APP . /includes/views/pages/crearCategoria.php">Crear categoría</a></li>
+	    	<li><a href='" . RUTA_APP . "/includes/views/pages/crearCategoria.php'>Crear categoría</a></li>
         ";
     } else {
         return "
