@@ -54,7 +54,7 @@ if (count($erroresFormulario) === 0) {
 
 $tituloPagina = 'Registro';
 $erroresGlobalesFormulario = generaErroresGlobalesFormulario($erroresFormulario);
-$erroresCampos = generaErroresCampos(['nombreUsuario', 'password'], $erroresFormulario);
+$erroresCampos = generaErroresCampos(['nombreUsuario', 'nombre', 'password', 'password2'], $erroresFormulario);
 
 $contenidoPrincipal = <<<EOS
 	<h1>Registro de usuario</h1>
@@ -91,4 +91,5 @@ EOS;
 
 
 require __DIR__ . '/plantilla.php';
+
 
