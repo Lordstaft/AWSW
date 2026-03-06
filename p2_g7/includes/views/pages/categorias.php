@@ -8,7 +8,8 @@ $filas = '';
 foreach ($categorias as $categoria) {
 
 	if (!empty($categoria['imgCategoriaProd'])) {
-		$rutaImagen = RUTA_IMGS . '/' . $categoria['imgCategoriaProd'];
+		 $nombreImagen = trim($categoria['imgCategoriaProd']);
+		$rutaImagen = RUTA_IMGS . '/' . $nombreImagen;
 		$imagen = "<img src=\"$rutaImagen\" alt=\"{$categoria['nombre']}\" width=\"100\">";
 	} else {
 		$imagen = 'Sin imagen';
