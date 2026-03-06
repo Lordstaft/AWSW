@@ -1,6 +1,41 @@
 <?php
 require __DIR__ . '/../../config.php';
 
-$productoPrincipal = <<<EOS
-    <p></p>Productos de $view</p>
+$productos = Producto::listar();
+
+$filas = '';
+foreach ($productos as $p) {
+    $disponible = $p['disponible'] ? 'Sí' : 'No';
+    $ofertado = $p['ofertado'] ? 'Sí' : 'No';
+
+    $filas .= "<tr>
+        <td>{$p['nombreProd']}</td>
+        <td>{$p['categoria']}</td>
+        <td>{$p['precio']}</td>
+        <td>{$p['iva']}%</td>
+        <td>{$disponible}</td>
+        <td>{$ofertado}</td>
+    </tr>";
+}
+
+$tituloPagina = 'Productos';
+$contenidoPrincipal = <<<EOS
+<h1>Listado de productos</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio base</th>
+            <th>IVA</th>
+            <th>Disponible</th>
+            <th>Ofertado</th>
+        </tr>
+    </thead>
+    <tbody>
+        $filas
+    </tbody>
+</table>
 EOS;
+
+require __DIR__ . '/plantilla.php';
