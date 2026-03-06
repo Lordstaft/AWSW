@@ -1,6 +1,7 @@
 <?php
 //Inicio del procesamiento
 require __DIR__ . '/../../config.php';
+require_once __DIR__.'/../../utils.php';
 
 $formEnviado = isset($_POST['registro']);
 if (! $formEnviado ) {
@@ -8,7 +9,6 @@ if (! $formEnviado ) {
 	exit();
 }
 
-require_once __DIR__.'/utils.php';
 
 $erroresFormulario = [];
 
@@ -81,5 +81,6 @@ $contenidoPrincipal = <<<EOS
 	</fieldset>
 	</form>
 EOS;
+
 
 require __DIR__ . '/plantilla.php';
