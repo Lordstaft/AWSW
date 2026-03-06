@@ -22,4 +22,20 @@ class Categoria
 
         return $categorias;
     }
+    
+    public static function crea($nombre, $descripcion, $imgCategoriaProd = '')
+	{
+		$conn = Aplicacion::getInstance()->getConexionBd();
+
+		$query = sprintf(
+			"INSERT INTO categorias (nombre, descripcion, imgCategoriaProd)
+			VALUES ('%s', '%s', '%s')",
+			$conn->real_escape_string($nombre),
+			$conn->real_escape_string($descripcion),
+			$conn->real_escape_string($imgCategoriaProd)
+		);
+
+		return $conn->query($query);
+	}
+
 }
