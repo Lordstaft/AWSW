@@ -62,8 +62,6 @@ class Usuario {
     }
 
     public function buscaPassword($password) {
-        var_dump($this->password); // 🔎 Ver qué contiene realmente
-        var_dump($password);
         return password_verify($password, $this->password);
     }
 
@@ -103,18 +101,19 @@ class Usuario {
         return false;
     }
 
-    public static function crea($nombreUsuario, $nombre, $password, $rol) {
-        $check = self::buscaUsuario($nombreUsuario);
-        if ($check) {
-            return false;
-        }
+    public static function crea($nombreUsuario, $nombre, $password, $rol = 'cliente', $email = '', $apellidos = '') {
 
-        $conn = Aplicacion::getInstance()->getConexionBd();
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        
-        $query = sprintf(
+    $check = self::buscaUsuario($nombreUsuario);
+    if ($check) {
+        return false;
+    }
+
+    $conn = Aplicacion::getInstance()->getConexionBd();
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+    $query = sprintf(
         "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol)
-         VALUES ('%s','%s','%s','%s','%s','%s')",
+         VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
         $conn->real_escape_string($nombreUsuario),
         $conn->real_escape_string($email),
         $conn->real_escape_string($nombre),
@@ -122,20 +121,21 @@ class Usuario {
         $conn->real_escape_string($passwordHash),
         $conn->real_escape_string($rol)
     );
-        if ($conn->query($query)) {
-            $id = $conn->insert_id;
-            return new Usuario(
-                $id,
-                $nombreUsuario,
-                null,
-                $nombre,
-                null,
-                $passwordHash,
-                $rol
-            );
-        }
 
-        error_log("Error BD ({$conn->errno}): {$conn->error}");
-        return false;
+    if ($conn->query($query)) {
+        $id = $conn->insert_id;
+        return new Usuario(
+            $id,
+            $nombreUsuario,
+            $email,
+            $nombre,
+            $apellidos,
+            $passwordHash,
+            $rol
+        );
+    }
+
+    error_log("Error BD ({$conn->errno}): {$conn->error}");
+    return false;
     }
 }
