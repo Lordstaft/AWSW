@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__.'/class/Aplicacion.php';
 require_once __DIR__.'/class/Usuario.php';
+require_once __DIR__.'/class/Producto.php';
+require_once __DIR__.'/class/Categoria.php';
 session_start();
 /**
  * Parámetros de conexión a la BD
