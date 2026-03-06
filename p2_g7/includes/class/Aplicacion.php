@@ -36,8 +36,13 @@ class Aplicacion{
             echo "Error: La aplicación no ha sido inicializada.";
             return null;
         }
-        $this->conn = new mysqli($this->bdDatosConexion['host'], $this->bdDatosConexion['bd'], $this->bdDatosConexion['user'], $this->bdDatosConexion['pass']);
-
+		
+		$this->conn = new mysqli(
+    						$this->bdDatosConexion['host'],
+    						$this->bdDatosConexion['user'],
+   							$this->bdDatosConexion['pass'],
+    						$this->bdDatosConexion['bd']
+		);
         if ($this->conn->connect_error) {
             die("Error de conexión a la base de datos: " . $this->conn->connect_error);
         }
