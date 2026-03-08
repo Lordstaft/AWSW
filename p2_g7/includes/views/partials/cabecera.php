@@ -1,11 +1,12 @@
 <?php
+
 function mostrarSaludo() {
 	if (isset($_SESSION['login']) && ($_SESSION['login']===true)) {
-		return "Bienvenido, {$_SESSION['nombre']} <a href='/ej2_p12/01-inicio/01-inicio/01-inicio/includes/views/plantillas/logout.php'>(salir)</a>";
+		return "Bienvenido, {$_SESSION['nombre']} <a href='" . RUTA_APP . "/includes/views/pages/logout.php'>(salir)</a>";
 		
 	} 
     else {
-		return "Usuario desconocido.";
+		return "Usuario desconocido. <a href='" . RUTA_APP . "/index.php'>Login</a>";
 	}
 }
 ?>
@@ -14,5 +15,4 @@ function mostrarSaludo() {
 	<div class="saludo"><?= mostrarSaludo(); ?></div>
 </header>
 
-<?php
 
