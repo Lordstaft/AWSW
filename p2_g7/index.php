@@ -4,6 +4,11 @@ require __DIR__ . '/includes/config.php';
 
 $tituloPagina = 'Login';
 
+if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
+	header('Location: ' . RUTA_APP . '/includes/views/pages/inicio.php');
+	exit();
+}
+
 $contenidoPrincipal = <<<EOS
 <h1>Acceso al sistema</h1>
 <form action="./includes/views/pages/procesarLogin.php" method="POST">

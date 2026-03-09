@@ -20,8 +20,8 @@ if ($nombreUsuario === '') {
                 <td>{$p->getRol()}</td>
                 <td>{$p->getFechaRegistro()}</td>
                 <td>
-                    <a href='" . RUTA_APP . "includes/views/pages/editarUsuario.php?id={$p->getNombreUsuario()}'>Editar</a>
-                    <a href='" . RUTA_APP . "includes/views/pages/eliminarUsuario.php?id={$p->getNombreUsuario()}'>Eliminar</a>
+                    <a href='" . RUTA_APP . "/includes/views/pages/editarUsuario.php?id={$p->getNombreUsuario()}'>Editar</a>
+                    <a href='" . RUTA_APP . "/includes/views/pages/eliminarUsuario.php?id={$p->getNombreUsuario()}'>Eliminar</a>
                 </td>
             </tr>";
         }
@@ -32,17 +32,16 @@ if ($nombreUsuario === '') {
 
 else{
     $usuarios = Usuario::buscaNombreUsuariosAdmin($nombreUsuario);
-    
+
     if (!empty($usuarios)) {
-    var_dump($usuarios);
         $filas .= "<tr>
             <td>{$usuarios->getNombreUsuario()}</td>
             <td>{$usuarios->getEmail()}</td>
             <td>{$usuarios->getRol()}</td>
             <td>{$usuarios->getFechaRegistro()}</td>
             <td>
-                <a href='" . RUTA_APP . "includes/views/pages/editarUsuario.php?id={$usuarios->getNombreUsuario()}'>Editar</a>
-                <a href='" . RUTA_APP . "includes/views/pages/eliminarUsuario.php?id={$usuarios->getNombreUsuario()}'>Eliminar</a>
+                <a href='" . RUTA_APP . "/includes/views/pages/editarUsuario.php?id={$usuarios->getNombreUsuario()}'>Editar</a>
+                <a href='" . RUTA_APP . "/includes/views/pages/eliminarUsuario.php?id={$usuarios->getNombreUsuario()}'>Eliminar</a>
             </td>
         </tr>";
     } else {

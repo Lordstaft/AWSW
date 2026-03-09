@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/Roles.php';
+
 class Usuario {
 
     private $id;
@@ -12,12 +14,7 @@ class Usuario {
     private $avatar;
     private $fechaRegistro;
 
-    const ADMIN_ROLE = 'admin';
-    const USER_ROLE  = 'cliente';
-    const GERENTE_ROLE = 'gerente';
-    const CAMARERO_ROLE = 'camarero';
-
-    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = self::USER_ROLE, $avatar = null, $fechaRegistro = null) {
+    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = Roles::USER, $avatar = null, $fechaRegistro = null) {
         $this->id = $id;
         $this->nombreUsuario = $nombreUsuario;
         $this->email = $email;
@@ -70,7 +67,7 @@ class Usuario {
     }
 
     public function setRol($rol) {
-        if ($rol === self::ADMIN_ROLE || $rol === self::USER_ROLE) {
+        if ($rol === Roles::ADMIN || $rol === Roles::USER) {
             $this->rol = $rol;
         }
     }
@@ -95,13 +92,13 @@ class Usuario {
             $usuario = new Usuario(
                     null,
                     $fila['nombreUsuario'],
-                    $fila['email'] ?? null,
-                    $fila['nombre'] ?? null,
-                    $fila['apellidos'] ?? null,
-                    null,
-                    $fila['rol'] ?? self::USER_ROLE,
-                    $fila['avatar'] ?? null,
-                    $fila['fechaRegistro'] ?? null
+                    $fila['email'],
+                    $fila['nombre'],
+                    $fila['apellidos'],
+                    $fila['contraseña'],
+                    $fila['rol'],
+                    $fila['avatar'],
+                    $fila['fechaRegistro']
             );
             $rs->free();
             return $usuario;
@@ -127,13 +124,13 @@ class Usuario {
                 $usuarios[] = new Usuario(
                     null,
                     $fila['nombreUsuario'],
-                    $fila['email'] ?? null,
-                    $fila['nombre'] ?? null,
-                    $fila['apellidos'] ?? null,
+                    $fila['email'],
+                    $fila['nombre'],
+                    $fila['apellidos'],
                     null,
-                    $fila['rol'] ?? self::USER_ROLE,
+                    $fila['rol'],
                     $fila['avatar'] ?? null,
-                    $fila['fechaRegistro'] ?? null
+                    $fila['fechaRegistro']
                 );
             }
             $rs->free();
@@ -152,41 +149,57 @@ class Usuario {
         return false;
     }
 
-    public static function crea($nombreUsuario, $nombre, $password, $rol = 'cliente', $email = '', $apellidos = '') {
+    public static function crea($nombreUsuario, $nombre, $password, $rol, $email, $apellidos, $avatar = null) {
 
-    $check = self::buscaUsuario($nombreUsuario);
-    if ($check) {
+        $check = self::buscaUsuario($nombreUsuario);
+        if ($check) {
+            return false;
+        }
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $query = sprintf(
+            "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol)
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+            $conn->real_escape_string($nombreUsuario),
+            $conn->real_escape_string($email),
+            $conn->real_escape_string($nombre),
+            $conn->real_escape_string($apellidos),
+            $conn->real_escape_string($passwordHash),
+            $conn->real_escape_string($rol)
+        );
+
+        if ($conn->query($query)) {
+            $id = $conn->insert_id;
+            return new Usuario(
+                $id,
+                $nombreUsuario,
+                $email,
+                $nombre,
+                $apellidos,
+                $passwordHash,
+                $rol
+            );
+        }
+
+        error_log("Error BD ({$conn->errno}): {$conn->error}");
         return false;
     }
 
-    $conn = Aplicacion::getInstance()->getConexionBd();
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    public static function editarUusario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
 
-    $query = sprintf(
-        "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol)
-         VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
-        $conn->real_escape_string($nombreUsuario),
-        $conn->real_escape_string($email),
-        $conn->real_escape_string($nombre),
-        $conn->real_escape_string($apellidos),
-        $conn->real_escape_string($passwordHash),
-        $conn->real_escape_string($rol)
-    );
-
-    if ($conn->query($query)) {
-        $id = $conn->insert_id;
-        return new Usuario(
-            $id,
-            $nombreUsuario,
-            $email,
-            $nombre,
-            $apellidos,
-            $passwordHash,
-            $rol
+        $query = sprintf(
+            "UPDATE usuarios SET nombreUsuario = '%s', email = '%s', nombre = '%s', apellidos = '%s', rol = '%s' WHERE id = %d",
+            $conn->real_escape_string($nombreUsuario),
+            $conn->real_escape_string($email),
+            $conn->real_escape_string($nombre),
+            $conn->real_escape_string($apellidos),
+            $conn->real_escape_string($rol),
+            (int)$id
         );
-    }
 
-    error_log("Error BD ({$conn->errno}): {$conn->error}");
-    return false;
+        return $conn->query($query);
     }
 }
