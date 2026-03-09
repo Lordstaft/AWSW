@@ -67,9 +67,7 @@ class Usuario {
     }
 
     public function setRol($rol) {
-        if ($rol === Roles::ADMIN || $rol === Roles::USER) {
             $this->rol = $rol;
-        }
     }
 
     private function hashPassword($password) {

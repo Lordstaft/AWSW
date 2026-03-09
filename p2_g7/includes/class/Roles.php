@@ -4,4 +4,5 @@
         case CLIENTE = 'cliente';
         case GERENTE = 'gerente';
         case CAMARERO = 'camarero';
+        case COCINERO = 'cocinero';
     }
