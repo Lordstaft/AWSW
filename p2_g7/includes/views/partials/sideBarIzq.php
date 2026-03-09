@@ -1,7 +1,7 @@
 <?php
 
 function mostrarAdministrar() {
-    if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) {
+    if (isset($_SESSION['login']) && $_SESSION['esAdmin'] === true) {
         return "
             <li><a href='" . RUTA_APP . "/includes/views/pages/admin.php'>Administrar</a></li>
             <li><a href='" . RUTA_APP . "/includes/views/pages/productos.php'>Productos</a></li>

@@ -12,8 +12,10 @@ class Usuario {
     private $avatar;
     private $fechaRegistro;
 
-    const ADMIN_ROLE = 1;
-    const USER_ROLE  = 2;
+    const ADMIN_ROLE = 'admin';
+    const USER_ROLE  = 'cliente';
+    const GERENTE_ROLE = 'gerente';
+    const CAMARERO_ROLE = 'camarero';
 
     public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = self::USER_ROLE, $avatar = null, $fechaRegistro = null) {
         $this->id = $id;
@@ -41,6 +43,22 @@ class Usuario {
 
     public function getRol() {
         return $this->rol;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function getApellidos() {
+        return $this->apellidos;
+    }
+
+    public function getAvatar() {
+        return $this->avatar;
+    }
+
+    public function getFechaRegistro() {
+        return $this->fechaRegistro;
     }
 
     public function getId() {
@@ -75,18 +93,51 @@ class Usuario {
             $fila = $rs->fetch_assoc();
 
             $usuario = new Usuario(
-                $fila['id'],
-                $fila['nombreUsuario'],
-                $fila['email'] ?? null,
-                $fila['nombre'] ?? null,
-                $fila['apellidos'] ?? null,
-                $fila['contraseña'],
-                $fila['rol'] ?? self::USER_ROLE,
-                $fila['avatar'] ?? null,
-                $fila['fechaRegistro'] ?? null
+                    null,
+                    $fila['nombreUsuario'],
+                    $fila['email'] ?? null,
+                    $fila['nombre'] ?? null,
+                    $fila['apellidos'] ?? null,
+                    null,
+                    $fila['rol'] ?? self::USER_ROLE,
+                    $fila['avatar'] ?? null,
+                    $fila['fechaRegistro'] ?? null
             );
             $rs->free();
             return $usuario;
+        }
+
+        return null;
+    }
+
+    public static function buscaRolUsuariosAdmin($rol) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        var_dump($rol);
+        if($rol === 'Todos' || $rol === '') {
+            $query = sprintf("SELECT * FROM usuarios WHERE rol != 'admin'");
+        }
+        else{
+            $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s'", $conn->real_escape_string($rol));
+        }
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $usuarios = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $usuarios[] = new Usuario(
+                    null,
+                    $fila['nombreUsuario'],
+                    $fila['email'] ?? null,
+                    $fila['nombre'] ?? null,
+                    $fila['apellidos'] ?? null,
+                    null,
+                    $fila['rol'] ?? self::USER_ROLE,
+                    $fila['avatar'] ?? null,
+                    $fila['fechaRegistro'] ?? null
+                );
+            }
+            $rs->free();
+            return $usuarios;
         }
 
         return null;

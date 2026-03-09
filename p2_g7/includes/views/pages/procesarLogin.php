@@ -27,8 +27,13 @@ if (count($erroresFormulario) === 0) {
 	if ( $usuario ) {
 		$_SESSION['login'] = true;
 		$_SESSION['nombre'] = $usuario->getNombre();
-		$_SESSION['esAdmin'] = $usuario->getRol() === Usuario::ADMIN_ROLE;
-		header('Location: ./inicio.php');
+		if($usuario->getRol() === Usuario::ADMIN_ROLE) {
+			$_SESSION['esAdmin'] = $usuario->getRol() === Usuario::ADMIN_ROLE;
+			echo "Se ha registrado el administrador con" . $_SESSION['esAdmin'];
+			header('Location: ' . RUTA_APP . '/includes/views/pages/admin.php');
+			exit();
+		} 
+		header('Location: ' . RUTA_APP . '/includes/views/pages/inicio.php');
 		exit();
 	}
 	else {
