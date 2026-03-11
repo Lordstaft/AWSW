@@ -12,7 +12,7 @@
 <div id="contenedor">
 <?php
 require(dirname(__DIR__).'/partials/cabecera.php');
-require(dirname(__DIR__).'/partials/sidebarIzq.php');
+require(dirname(__DIR__).'/partials/sideBarIzq.php');
 ?>
 	<main>
 		<article>
@@ -20,7 +20,7 @@ require(dirname(__DIR__).'/partials/sidebarIzq.php');
 		</article>
 	</main>
 <?php
-require(dirname(__DIR__).'/partials/sidebarDer.php');
+require(dirname(__DIR__).'/partials/sideBarDer.php');
 require(dirname(__DIR__).'/partials/pie.php');
 ?>
 </div>
