@@ -6,7 +6,7 @@
 <head>
 	<meta charset="UTF-8">
     <title><?= $tituloPagina ?></title>
-    <link rel="stylesheet" type="text/css" href="/AWSW/p2_g7/css/estilo.css" />
+    <link rel="stylesheet" type="text/css" href="<?= RUTA_CSS ?>estilo.css" />
 </head>
 <body>
 <div id="contenedor">
