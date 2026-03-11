@@ -27,4 +27,3 @@ $contenidoPrincipal = <<<EOS
 EOS;
 
 require __DIR__ . '/plantilla.php';
-require __DIR__ . '/productos.php';
