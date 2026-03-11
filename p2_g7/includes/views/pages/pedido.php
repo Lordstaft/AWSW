@@ -3,6 +3,10 @@ include __DIR__ . '/../../config.php';
 
 $_SESSION['pedido'] = $_GET['pagina'];
 
+$productoPrincipal = '';
+
+$tituloPagina = "Pedido";
+
 $contenidoPrincipal = <<<EOS
     <nav>
         <h2>Productos</h2>
