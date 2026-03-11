@@ -23,4 +23,24 @@ class Producto {
 
         return $productos;
     }
+    
+    public static function crea($nombreProd, $descripcion, $categoria_id, $precio, $iva, $disponible = 1, $ofertado = 1)
+    {
+    $conn = Aplicacion::getInstance()->getConexionBd();
+
+    $query = sprintf(
+        "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, disponible, ofertado)
+         VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d)",
+        $conn->real_escape_string($nombreProd),
+        $conn->real_escape_string($descripcion),
+        (int)$categoria_id,
+        (float)$precio,
+        $conn->real_escape_string($iva),
+        (int)$disponible,
+        (int)$ofertado
+    );
+
+    return $conn->query($query);
+    }
+
 }
