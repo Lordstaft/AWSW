@@ -8,7 +8,6 @@ $productoPrincipal = '';
 $tituloPagina = "Pedido";
 
 $contenidoPrincipal = <<<EOS
-    <nav>
         <h2>Productos</h2>
         <p>{$_SESSION['pedido']}</p>
         <ul>
@@ -19,10 +18,7 @@ $contenidoPrincipal = <<<EOS
             <li><a href="index.php?producto=postres">Postres</a></li>
             <li><a href="index.php?producto=snacks">Snacks</a></li>
         </ul>
-
-        <?= $productoPrincipal ?>
-
-    </nav>
+     $productoPrincipal
 
 EOS;
 
