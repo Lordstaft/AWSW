@@ -15,6 +15,11 @@ foreach ($productos as $p) {
         <td>{$p['iva']}%</td>
         <td>{$disponible}</td>
         <td>{$ofertado}</td>
+		<td>
+            <a href='index.php?pagina=editarProducto&id={$id}'>Editar</a>
+			<a href='retirarProducto.php?id={$p['id']}' onclick=\"return confirm('¿Seguro que quieres retirar este producto?');\">Retirar</a>
+    </td>
+        </td>
     </tr>";
 }
 
@@ -30,6 +35,7 @@ $contenidoPrincipal = <<<EOS
             <th>IVA</th>
             <th>Disponible</th>
             <th>Ofertado</th>
+			<th>Acciones</th>
         </tr>
     </thead>
     <tbody>
