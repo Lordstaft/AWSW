@@ -37,33 +37,43 @@ class Categoria
 
 		return $conn->query($query);
 	}
-	public static function buscaCategoriaPorId($id)
-	{
-	    $app = Aplicacion::getInstance();
-	    $conn = $app->getConexionBd();
-	
-	    $query = "SELECT * FROM categorias WHERE id = ?";
-	    $stmt = $conn->prepare($query);
-	    $stmt->bind_param("i", $id);
-	    $stmt->execute();
-	
-	    $result = $stmt->get_result();
-	    return $result->fetch_assoc();
-	}
-	
-	public static function actualizaCategoria($id, $nombre, $descripcion, $imgCategoriaProd)
-	{
-	    $app = Aplicacion::getInstance();
-	    $conn = $app->getConexionBd();
-	
-	    $query = "UPDATE categorias 
-	              SET nombre = ?, descripcion = ?, imgCategoriaProd = ?
-	              WHERE id = ?";
-	    $stmt = $conn->prepare($query);
-	    $stmt->bind_param("sssi", $nombre, $descripcion, $imgCategoriaProd, $id);
-	
-	    return $stmt->execute();
-	}
+	public static function buscaPorId($id)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "SELECT * FROM categorias WHERE id = %d",
+            (int)$id
+        );
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $categoria = $rs->fetch_assoc();
+            $rs->free();
+            return $categoria;
+        }
+
+        return null;
+    }
+
+    public static function actualiza($id, $nombre, $descripcion, $imgCategoriaProd)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE categorias
+             SET nombre = '%s',
+                 descripcion = '%s',
+                 imgCategoriaProd = '%s'
+             WHERE id = %d",
+            $conn->real_escape_string($nombre),
+            $conn->real_escape_string($descripcion),
+            $conn->real_escape_string($imgCategoriaProd),
+            (int)$id
+        );
+
+        return $conn->query($query);
+    }
 
 }
-
