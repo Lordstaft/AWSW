@@ -42,45 +42,63 @@ class Producto {
 
     return $conn->query($query);
     }
-    public static function buscaProductoPorId($id)
-{
-    $app = Aplicacion::getInstance();
-    $conn = $app->getConexionBd();
-
-    $query = "SELECT * FROM productos WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
-}
-
-    public static function actualizaProducto($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado)
+    public static function buscaPorId($id)
     {
-        $app = Aplicacion::getInstance();
-        $conn = $app->getConexionBd();
-    
-        $query = "UPDATE productos
-                  SET nombreProd = ?, descripcion = ?, categoria_id = ?, precio = ?, iva = ?, stock = ?, disponible = ?, ofertado = ?
-                  WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssidiiiii", $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $id);
-    
-        return $stmt->execute();
-    }
-    
-    public static function retirarProducto($id)
-    {
-        $app = Aplicacion::getInstance();
-        $conn = $app->getConexionBd();
-    
-        $query = "UPDATE productos SET disponible = 0 WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id);
-    
-        return $stmt->execute();
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "SELECT * FROM productos WHERE id = %d",
+            (int)$id
+        );
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $producto = $rs->fetch_assoc();
+            $rs->free();
+            return $producto;
+        }
+
+        return null;
     }
 
-}
+    public static function actualiza($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $disponible, $ofertado)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
 
+        $query = sprintf(
+            "UPDATE productos
+             SET nombreProd = '%s',
+                 descripcion = '%s',
+                 categoria_id = %d,
+                 precio = %.2f,
+                 iva = '%s',
+                 disponible = %d,
+                 ofertado = %d
+             WHERE id = %d",
+            $conn->real_escape_string($nombreProd),
+            $conn->real_escape_string($descripcion),
+            (int)$categoria_id,
+            (float)$precio,
+            $conn->real_escape_string($iva),
+            (int)$disponible,
+            (int)$ofertado,
+            (int)$id
+        );
+
+        return $conn->query($query);
+    }
+
+    public static function retirar($id)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE productos SET disponible = 0 WHERE id = %d",
+            (int)$id
+        );
+
+        return $conn->query($query);
+    }
+
+}
