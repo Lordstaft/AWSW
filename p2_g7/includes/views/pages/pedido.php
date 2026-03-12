@@ -3,8 +3,11 @@ include __DIR__ . '/../../config.php';
 
 $_SESSION['pedido'] = $_GET['pagina'];
 
+$productoPrincipal = '';
+
+$tituloPagina = "Pedido";
+
 $contenidoPrincipal = <<<EOS
-    <nav>
         <h2>Productos</h2>
         <p>{$_SESSION['pedido']}</p>
         <ul>
@@ -15,12 +18,8 @@ $contenidoPrincipal = <<<EOS
             <li><a href="index.php?producto=postres">Postres</a></li>
             <li><a href="index.php?producto=snacks">Snacks</a></li>
         </ul>
-
-        <?= $productoPrincipal ?>
-
-    </nav>
+     $productoPrincipal
 
 EOS;
 
 require __DIR__ . '/plantilla.php';
-require __DIR__ . '/productos.php';
