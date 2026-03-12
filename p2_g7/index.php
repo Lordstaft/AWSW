@@ -1,8 +1,11 @@
 <?php
 //Inicio del procesamiento
 require __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/class/forms/FormularioLogin.php';
 
 $tituloPagina = 'Login';
+$formulario = new FormularioLogin();
+$formularioHTML = $formulario->gestiona();
 
 if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
 	header('Location: ' . RUTA_APP . '/includes/views/pages/inicio.php');
@@ -10,23 +13,8 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
 }
 
 $contenidoPrincipal = <<<EOS
-<h1>Acceso al sistema</h1>
-<form action="./includes/views/pages/procesarLogin.php" method="POST">
-<fieldset>
-	<legend>Usuario y contraseña</legend>
-	<div>
-		<label for="nombreUsuario">Nombre de usuario:</label>
-		<input id="nombreUsuario" type="text" name="nombreUsuario" />
-	</div>
-	<div>
-		<label for="password">Password:</label>
-		<input id="password" type="password" name="password" />
-	</div>
-	<div>
-		<button type="submit" name="login">Entrar</button>
-	</div>
-</fieldset>
-</form>
+	<h1>Acceso al sistema</h1>
+	$formularioHTML
 EOS;
 
 require __DIR__ . '/includes/views/pages/plantilla.php';

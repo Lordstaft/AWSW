@@ -14,7 +14,7 @@ class Usuario {
     private $avatar;
     private $fechaRegistro;
 
-    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = Roles::USER, $avatar = null, $fechaRegistro = null) {
+    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = Roles::USER, $avatar, $fechaRegistro = null) {
         $this->id = $id;
         $this->nombreUsuario = $nombreUsuario;
         $this->email = $email;
@@ -83,12 +83,37 @@ class Usuario {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf("SELECT * FROM usuarios WHERE nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
         $rs = $conn->query($query);
-
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
 
             $usuario = new Usuario(
-                    null,
+                    $fila['id'],
+                    $fila['nombreUsuario'],
+                    $fila['email'],
+                    $fila['nombre'],
+                    $fila['apellidos'],
+                    $fila['contraseña'],
+                    $fila['rol'],
+                    $fila['avatar'],
+                    $fila['fechaRegistro']
+            );
+            $rs->free();
+            return $usuario;
+        }
+
+        return null;
+    }
+
+    public static function buscaUsuarioId($id){
+        
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $query = sprintf("SELECT * FROM usuarios WHERE id = '%d'", (int)$id);
+        $rs = $conn->query($query);
+        if ($rs && $rs->num_rows > 0) {
+            $fila = $rs->fetch_assoc();
+
+            $usuario = new Usuario(
+                    $fila['id'],
                     $fila['nombreUsuario'],
                     $fila['email'],
                     $fila['nombre'],
@@ -107,7 +132,6 @@ class Usuario {
 
     public static function buscaRolUsuariosAdmin($rol) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-        var_dump($rol);
         if($rol === 'Todos' || $rol === '') {
             $query = sprintf("SELECT * FROM usuarios WHERE rol != 'admin'");
         }
@@ -134,7 +158,6 @@ class Usuario {
             $rs->free();
             return $usuarios;
         }
-
         return null;
     }
 
@@ -185,11 +208,11 @@ class Usuario {
         return false;
     }
 
-    public static function editarUusario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {
+    public static function editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "UPDATE usuarios SET nombreUsuario = '%s', email = '%s', nombre = '%s', apellidos = '%s', rol = '%s' WHERE id = %d",
+            "UPDATE usuarios SET nombreUsuario = '%s', email = '%s', nombre = '%s', apellidos = '%s', rol = '%s' WHERE id = '%d'",
             $conn->real_escape_string($nombreUsuario),
             $conn->real_escape_string($email),
             $conn->real_escape_string($nombre),
