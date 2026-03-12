@@ -42,5 +42,45 @@ class Producto {
 
     return $conn->query($query);
     }
+    public static function buscaProductoPorId($id)
+{
+    $app = Aplicacion::getInstance();
+    $conn = $app->getConexionBd();
+
+    $query = "SELECT * FROM productos WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+
+    public static function actualizaProducto($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado)
+    {
+        $app = Aplicacion::getInstance();
+        $conn = $app->getConexionBd();
+    
+        $query = "UPDATE productos
+                  SET nombreProd = ?, descripcion = ?, categoria_id = ?, precio = ?, iva = ?, stock = ?, disponible = ?, ofertado = ?
+                  WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssidiiiii", $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $id);
+    
+        return $stmt->execute();
+    }
+    
+    public static function retirarProducto($id)
+    {
+        $app = Aplicacion::getInstance();
+        $conn = $app->getConexionBd();
+    
+        $query = "UPDATE productos SET disponible = 0 WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $id);
+    
+        return $stmt->execute();
+    }
 
 }
+
