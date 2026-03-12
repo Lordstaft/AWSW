@@ -21,6 +21,9 @@ foreach ($categorias as $categoria) {
         <td>{$categoria['nombre']}</td>
         <td>{$descripcion}</td>
         <td>{$imagen}</td>
+		<td>
+            <a href='index.php?pagina=editarCategoria&id={$id}'>Editar</a>
+        </td>
     </tr>";
 }
 
@@ -36,6 +39,7 @@ $contenidoPrincipal = <<<EOS
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Imagen</th>
+			<th>Acciones</th>
         </tr>
     </thead>
     <tbody>
