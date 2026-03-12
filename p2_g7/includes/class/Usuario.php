@@ -14,7 +14,7 @@ class Usuario {
     private $avatar;
     private $fechaRegistro;
 
-    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol = Roles::USER, $avatar, $fechaRegistro = null) {
+    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol, $avatar = "default.jpg", $fechaRegistro = null) {
         $this->id = $id;
         $this->nombreUsuario = $nombreUsuario;
         $this->email = $email;
@@ -170,7 +170,7 @@ class Usuario {
         return false;
     }
 
-    public static function crea($nombreUsuario, $nombre, $password, $rol, $email, $apellidos, $avatar = null) {
+    public static function creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos) {
 
         $check = self::buscaUsuario($nombreUsuario);
         if ($check) {
@@ -206,6 +206,14 @@ class Usuario {
 
         error_log("Error BD ({$conn->errno}): {$conn->error}");
         return false;
+    }
+
+    public static function eliminarUsuario($id){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("DELETE FROM usuarios WHERE id = '%d'", (int)$id);
+
+        return $conn->query($query);
     }
 
     public static function editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {

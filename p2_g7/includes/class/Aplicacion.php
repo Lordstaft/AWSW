@@ -25,10 +25,9 @@ class Aplicacion{
         $this->inicializada = true;
     }
 
-    public function shutdown() {
-        if ($this->conn instanceof mysqli) {
-            @$this->conn->close();
-            $this->conn = null;
+    public function shutdown(){
+        if ($this->inicializada === true && $this->conn !== null) {
+            $this->conn->close();
         }
     }
 

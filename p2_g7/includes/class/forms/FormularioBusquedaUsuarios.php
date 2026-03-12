@@ -68,8 +68,7 @@ class FormularioBusquedaUsuarios extends Formulario
                         <td>{$p->getRol()}</td>
                         <td>{$p->getFechaRegistro()}</td>
                         <td>
-                            <a href='" . RUTA_APP . "/includes/views/pages/editarUsuario.php?id={$p->getNombreUsuario()}'>Editar</a>
-                            <a href='" . RUTA_APP . "/includes/views/pages/eliminarUsuario.php?id={$p->getNombreUsuario()}'>Eliminar</a>
+                            <a href='" . RUTA_APP . "/includes/views/pages/modificarUsuario.php?id={$p->getNombreUsuario()}'>Modificar</a>
                         </td>
                     </tr>";
                 }
@@ -88,8 +87,7 @@ class FormularioBusquedaUsuarios extends Formulario
                     <td>{$usuarios->getRol()}</td>
                     <td>{$usuarios->getFechaRegistro()}</td>
                     <td>
-                        <a href='" . RUTA_APP . "/includes/views/pages/editarUsuario.php?id={$usuarios->getNombreUsuario()}'>Editar</a>
-                        <a href='" . RUTA_APP . "/includes/views/pages/eliminarUsuario.php?id={$usuarios->getNombreUsuario()}'>Eliminar</a>
+                        <a href='" . RUTA_APP . "/includes/views/pages/modificarUsuario.php?id={$usuarios->getNombreUsuario()}'>Modificar</a>>
                     </td>
                 </tr>";
             } 

@@ -1,42 +1,14 @@
 <?php
-//Inicio del procesamiento
 require __DIR__ . '/../../config.php';
-$tituloPagina = 'Registro';
+require __DIR__ . '/../../class/forms/FormularioCrearUsuario.php';
+
+$tituloPagina = 'Buscar usuario';
+$formulario = new FormularioCrearUsuario();
+$formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-	<h1>Registro de usuario</h1>
-	<form action="procesarRegistro.php" method="POST">
-	<fieldset>
-		<legend>Datos para el registro</legend>
-		<div>
-			<label for="nombreUsuario">Nombre de usuario:</label>
-			<input id="nombreUsuario" type="text" name="nombreUsuario" />
-		</div>
-		<div>
-			<label for="nombre">Nombre:</label>
-			<input id="nombre" type="text" name="nombre" />
-		</div>
-		<div>
-			<label for="apellidos">Apellidos:</label>
-			<input id="apellidos" type="text" name="apellidos" />
-		</div>
-		<div>
-			<label for="email">Email:</label>
-			<input id="email" type="email" name="email" />
-		</div>
-		<div>
-			<label for="password">Password:</label>
-			<input id="password" type="password" name="password" />
-		</div>
-		<div>
-			<label for="password2">Reintroduce el password:</label>
-			<input id="password2" type="password" name="password2" />
-		</div>
-		<div>
-			<button type="submit" name="registro">Registrar</button>
-		</div>
-	</fieldset>
-	</form>
-	EOS;
+    <h1>Crear Usuario</h1>
+    $formularioHTML
+EOS;
 
 require __DIR__ . '/plantilla.php';

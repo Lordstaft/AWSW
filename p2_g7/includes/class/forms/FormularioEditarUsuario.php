@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Roles.php';
 class FormularioEditarUsuario extends Formulario
 {
     public function __construct() {
-        parent::__construct('formEditarUsuario', ['urlRedireccion' => 'usuario.php']);
+        parent::__construct('formEditarUsuario', ['urlRedireccion' => 'admin.php']);
     }
     
     protected function generaCamposFormulario(&$datos){
@@ -65,47 +65,61 @@ class FormularioEditarUsuario extends Formulario
 
                 <div>
                     <button type="submit" name="editarUsuario">Modificar</button>
+                    <button type="submit" name="eliminarUsuario">Eliminar</button>
                 </div>
             </fieldset>
         EOF;
         return $html;
     }
 
-    protected function procesaFormulario(&$datos)
-    {
-        $this->errores = [];
-        $id = $datos['id'];
+    protected function procesaFormulario(&$datos){
 
-        $nombreUsuario = trim($datos['nombreUsuario'] ?? '');
-        $nombreUsuario = filter_var($nombreUsuario, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $nombreUsuario || empty($nombreUsuario) ) {
-            $this->errores['nombreUsuario'] = 'El nombre de usuario no puede estar vacío';
+        if(isset($datos['editarUsuario'])){
+            $this->errores = [];
+            $id = $datos['id'];
+
+            $nombreUsuario = trim($datos['nombreUsuario'] ?? '');
+            $nombreUsuario = filter_var($nombreUsuario, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if ( ! $nombreUsuario || empty($nombreUsuario) ) {
+                $this->errores['nombreUsuario'] = 'El nombre de usuario no puede estar vacío';
+            }
+            
+            $nombre = trim($datos['nombre'] ?? '');
+            $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if ( ! $nombre || empty($nombre) ) {
+                $this->errores['nombre'] = 'El nombre no puede estar vacío.';
+            }
+
+            $apellidos = trim($datos['apellidos'] ?? '');
+            $apellidos = filter_var($apellidos, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if ( ! $apellidos || empty($apellidos) ) {
+                $this->errores['apellidos'] = 'El apellido no puede estar vacío.';
+            }
+
+            $rol = trim($datos['rol'] ?? '');
+            $rol = filter_var($rol, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $email = trim($datos['email'] ?? '');
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->errores['email'] = 'El email no es válido.';
+            }
+
+            $password = trim($datos['password'] ?? '');
+            $password = filter_var($password, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if ( ! $password || empty($password) ) {
+                $this->errores['password'] = 'El password no puede estar vacío.';
+            }
+
+            if (count($this->errores) === 0) {
+                $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol);
+                $_SESSION['usuarioModificado'] = $id;
+            }
         }
-        
-        $nombre = trim($datos['nombre'] ?? '');
-        $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $nombre || empty($nombre) ) {
-            $this->errores['nombre'] = 'El nombre no puede estar vacío.';
-        }
 
-        $apellidos = trim($datos['apellidos'] ?? '');
-        $apellidos = filter_var($apellidos, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $apellidos || empty($apellidos) ) {
-            $this->errores['apellidos'] = 'El apellido no puede estar vacío.';
-        }
-
-        $rol = trim($datos['rol'] ?? '');
-        $rol = filter_var($rol, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-        $email = trim($datos['email'] ?? '');
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->errores['email'] = 'El email no es válido.';
-        }
-
-        if (count($this->errores) === 0) {
-            $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol);
-            $_SESSION['usuarioModificado'] = $id;
+        else{
+            $id = $datos['id'];
+            Usuario::eliminarUsuario($id);
         }
     }
 }
