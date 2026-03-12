@@ -104,20 +104,14 @@ class FormularioEditarUsuario extends Formulario
             if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->errores['email'] = 'El email no es válido.';
             }
-
-            $password = trim($datos['password'] ?? '');
-            $password = filter_var($password, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ( ! $password || empty($password) ) {
-                $this->errores['password'] = 'El password no puede estar vacío.';
-            }
-
+            
             if (count($this->errores) === 0) {
                 $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol);
                 $_SESSION['usuarioModificado'] = $id;
             }
         }
 
-        else{
+        elseif(isset($datos['eliminarUsuario'])){
             $id = $datos['id'];
             Usuario::eliminarUsuario($id);
         }
