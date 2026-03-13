@@ -118,7 +118,7 @@ class Usuario {
                     $fila['email'],
                     $fila['nombre'],
                     $fila['apellidos'],
-                    $fila['contraseña'],
+                    null,
                     $fila['rol'],
                     $fila['avatar'],
                     $fila['fechaRegistro']

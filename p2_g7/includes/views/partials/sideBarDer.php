@@ -1,12 +1,18 @@
 <?php
 
 function mostrarCrearUsuario() {
+    $mostrar = '';
     if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) {
-        return "
+        $mostrar .= "
             <li><a href='" . RUTA_APP . "/includes/views/pages/registro.php'>Crear Usuario</a></li>
         ";
     }
-    return "";
+
+    $mostrar .= "
+        <li><a href='" . RUTA_APP . "/includes/views/pages/usuario.php'>Perfil</a></li>
+    ";
+    
+    return $mostrar;
 }
 ?>
 
