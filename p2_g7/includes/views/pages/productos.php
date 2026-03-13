@@ -17,7 +17,7 @@ foreach ($productos as $p) {
         <td>{$disponible}</td>
         <td>{$ofertado}</td>
 		<td>
-            <a href='index.php?pagina=editarProducto&id={$p['id']}'>Editar</a>
+            <a href='editarProducto.php?id={$p['id']}'>Editar</a>
 			<a href='retirarProducto.php?id={$p['id']}' onclick=\"return confirm('¿Seguro que quieres retirar este producto?');\">Retirar</a>
     </td>
         </td>

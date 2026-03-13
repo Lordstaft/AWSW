@@ -23,7 +23,7 @@ foreach ($categorias as $categoria) {
         <td>{$descripcion}</td>
         <td>{$imagen}</td>
 		<td>
-            <a href='index.php?pagina=editarCategoria&id={$categoria['id']}'>Editar</a>
+            <a href='editarCategoria.php?id={$categoria['id']}'>Editar</a>
         </td>
     </tr>";
 }
