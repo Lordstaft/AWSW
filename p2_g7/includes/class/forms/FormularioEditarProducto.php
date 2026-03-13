@@ -15,8 +15,8 @@ class FormularioEditarProducto extends Formulario
 
     protected function generaCamposFormulario(&$datos)
     {
-        $producto = Producto::buscaProductoPorId($this->idProducto);
-        $categorias = Categoria::getCategorias(); 
+        $producto = Producto::buscaPorId($this->idProducto);
+        $categorias = Categoria::listar(); 
 
         $nombreProd = $producto['nombreProd'] ?? '';
         $descripcion = $producto['descripcion'] ?? '';
@@ -113,7 +113,7 @@ class FormularioEditarProducto extends Formulario
         }
 
         if (count($errores) === 0) {
-            $ok = Producto::actualizaProducto(
+            $ok = Producto::actualiza(
                 $this->idProducto,
                 $nombreProd,
                 $descripcion,

@@ -14,7 +14,7 @@ class FormularioEditarCategoria extends Formulario
 
     protected function generaCamposFormulario(&$datos)
     {
-        $categoria = Categoria::buscaCategoriaPorId($this->idCategoria);
+        $categoria = Categoria::buscaPorId($this->idCategoria);
 
         $nombre = $categoria['nombre'] ?? '';
         $descripcion = $categoria['descripcion'] ?? '';
@@ -53,7 +53,7 @@ class FormularioEditarCategoria extends Formulario
         }
 
         if (count($errores) === 0) {
-            $ok = Categoria::actualizaCategoria($this->idCategoria, $nombre, $descripcion, $imgCategoriaProd);
+            $ok = Categoria::actualiza($this->idCategoria, $nombre, $descripcion, $imgCategoriaProd);
 
             if ($ok) {
                 header('Location: index.php?pagina=listadoCategorias');
