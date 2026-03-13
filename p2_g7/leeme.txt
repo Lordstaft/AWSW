@@ -1,1 +1,7 @@
 Funcionalidades implementadas (grado de completitud indicado):
+
+ - Funcionalidad 1: 80%, algunos problemas con la referenciación al crear o editar los productos y las categorías, aunque se guardan y modifican correctamente en la base de datos.
+ - Funcionalidad 2: 90%.
+ 
+ Funciones generales que faltan:
+  - La plantilla no se consigue aplicar a las páginas.
