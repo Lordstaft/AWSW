@@ -10,7 +10,7 @@ class FormularioCrearUsuario extends Formulario
             parent::__construct('formEditarUsuario', ['urlRedireccion' => 'usuario.php']);
         }
         else{
-            parent::__construct('formEditarUsuario', ['urlRedireccion' => 'index.php']);
+            parent::__construct('formEditarUsuario', ['urlRedireccion' => RUTA_APP . '/index.php']);
         }
     }
     

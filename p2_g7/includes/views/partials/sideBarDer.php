@@ -8,10 +8,11 @@ function mostrarCrearUsuario() {
         ";
     }
 
+    if(isset($_SESSION['login']))
     $mostrar .= "
         <li><a href='" . RUTA_APP . "/includes/views/pages/usuario.php'>Perfil</a></li>
     ";
-    
+
     return $mostrar;
 }
 ?>
