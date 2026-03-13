@@ -3,15 +3,9 @@ require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../class/Usuario.php';
 
 $tituloPagina = 'Perfil';
-$busqueda = $_SESSION['usuarioModificado'] ?? $_SESSION['nombreUsuario'];
+$busqueda = $_SESSION['nombreUsuario'];
 
-if(is_numeric($busqueda)){
-    $usuario = Usuario::buscaUsuarioId($busqueda);
-}
-
-else{
-    $usuario = Usuario::buscaUsuario($busqueda);
-}
+$usuario = Usuario::buscaUsuario($busqueda);
 
 $contenidoPrincipal = <<<EOS
     <h1>Perfil</h1>

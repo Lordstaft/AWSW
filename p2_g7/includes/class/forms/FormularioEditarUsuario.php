@@ -107,7 +107,6 @@ class FormularioEditarUsuario extends Formulario
             
             if (count($this->errores) === 0) {
                 $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol);
-                $_SESSION['usuarioModificado'] = $id;
             }
         }
 
