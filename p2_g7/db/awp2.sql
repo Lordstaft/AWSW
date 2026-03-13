@@ -58,8 +58,9 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imgCategoriaProd`) VAL
 DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE `pedidos` (
   `idPedido` int(11) NOT NULL,
+  `numPedido` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `estadoPedido` enum('pendiente','preparando','enviado','entregado','cancelado') DEFAULT 'pendiente',
+  `estadoPedido` enum('nuevo','recibido','en_preparacion','cocinando','listo_cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `tipo` enum('domicilio','recogida') NOT NULL,
   `total` decimal(10,2) NOT NULL

@@ -12,6 +12,7 @@ function mostrarNavegacion() {
     if(isset($_SESSION['login']) && $_SESSION['esGerente'] === true){
         $mostrar .= "
         <li><a href='" . RUTA_APP . "/includes/views/pages/crearCategoria.php'>Crear categoría</a></li>
+        <li><a href='" . RUTA_APP . "/includes/views/pages/pedidosGerente.php'>Ver pedidos</a></li>
         ";
     }
 

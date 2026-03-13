@@ -21,4 +21,44 @@ $contenidoPrincipal = <<<EOS
     </div>
 EOS;
 
+use es\ucm\fdi\aw\Aplicacion;
+
+$conn = Aplicacion::getInstance()->getConexionBd();
+
+$idUsuario = $usuario->getId();
+
+$query = "
+SELECT numPedido, estadoPedido, total, fechaPedido
+FROM pedidos
+WHERE usuario_id = $idUsuario
+ORDER BY fechaPedido DESC
+";
+
+$res = $conn->query($query);
+
+$contenidoPrincipal .= "<h2>Mis pedidos</h2>";
+
+if ($res->num_rows == 0) {
+
+    $contenidoPrincipal .= "<p>No tienes pedidos realizados.</p>";
+
+} else {
+
+    $contenidoPrincipal .= "<ul>";
+
+    while ($fila = $res->fetch_assoc()) {
+
+        $contenidoPrincipal .= "
+        <li>
+        Pedido {$fila['numPedido']} -
+        Estado: {$fila['estadoPedido']} -
+        Total: {$fila['total']} € -
+        {$fila['fechaPedido']}
+        </li>
+        ";
+    }
+
+    $contenidoPrincipal .= "</ul>";
+}
+
 require __DIR__ . '/plantilla.php';
