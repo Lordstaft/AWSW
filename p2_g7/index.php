@@ -1,7 +1,7 @@
 <?php
 //Inicio del procesamiento
 require __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/class/forms/FormularioLogin.php';
+use es\ucm\fdi\aw\forms\FormularioLogin;
 
 $tituloPagina = 'Login';
 $formulario = new FormularioLogin();
