@@ -1,6 +1,6 @@
 <?php
-
-require __DIR__ . '/Roles.php';
+namespace es\ucm\fdi\aw;
+use es\ucm\fdi\aw\Roles;
 
 class Usuario {
 

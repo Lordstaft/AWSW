@@ -1,6 +1,5 @@
 <?php
-namespace es\ucm\fdi\aw\formularios;
-
+namespace es\ucm\fdi\aw\forms;
 use es\ucm\fdi\aw\Producto;
 use es\ucm\fdi\aw\Categoria;
 

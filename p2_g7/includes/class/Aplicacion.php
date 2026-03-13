@@ -1,4 +1,6 @@
 <?php
+namespace es\ucm\fdi\aw;
+use mysqli;
 
 class Aplicacion{
     private static $instancia = null;

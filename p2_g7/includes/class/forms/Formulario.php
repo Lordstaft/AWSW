@@ -1,5 +1,5 @@
 <?php
-
+namespace es\ucm\fdi\aw\forms;
 /**
  * Clase base para la gestión de formularios.
  */

@@ -1,7 +1,11 @@
 <?php
-require_once __DIR__ . '/Formulario.php';
-require_once __DIR__ . '/../Usuario.php';
-require_once __DIR__ . '/../Roles.php';
+namespace es\ucm\fdi\aw\forms;
+//require_once __DIR__ . '/Formulario.php';
+//require_once __DIR__ . '/../Usuario.php';
+//require_once __DIR__ . '/../Roles.php';
+use es\ucm\fdi\aw\forms\Formulario;
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Roles;
 
 class FormularioBusquedaUsuarios extends Formulario
 {
