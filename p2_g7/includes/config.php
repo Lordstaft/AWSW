@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__.'/class/Aplicacion.php';
-require_once __DIR__.'/class/Usuario.php';
-require_once __DIR__.'/class/Producto.php';
-require_once __DIR__.'/class/Categoria.php';
+use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Producto;
+use es\ucm\fdi\aw\Categoria;
+
 session_start();
 /**
  * Parámetros de conexión a la BD
@@ -20,6 +21,36 @@ define('RUTA_APP', '/p2_g7');
 define('RUTA_IMGS', RUTA_APP.'img/');
 define('RUTA_CSS', RUTA_APP.'css/');
 define('RUTA_JS', RUTA_APP.'js/');
+
+// Autoloader
+spl_autoload_register(function ($class) {
+
+    // project-specific namespace prefix
+    $prefix = 'es\\ucm\\fdi\\aw\\';
+
+    // base directory for the namespace prefix
+    $base_dir = __DIR__ . '/class/';
+
+    // does the class use the namespace prefix?
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        // no, move to the next registered autoloader
+        return;
+    }
+
+    // get the relative class name
+    $relative_class = substr($class, $len);
+
+    // replace the namespace prefix with the base directory, replace namespace
+    // separators with directory separators in the relative class name, append
+    // with .php
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+    // if the file exists, require it
+    if (file_exists($file)) {
+        require $file;
+    }
+});
 
 /**
  * Configuración del soporte de UTF-8, localización (idioma y país) y zona horaria
