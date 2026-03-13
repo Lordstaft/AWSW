@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__.'/includes/config.php';
-
-use es\ucm\fdi\aw\formularios\FormularioEditarCategoria;
+require_once __DIR__ . '/../../config.php';
+use es\ucm\fdi\aw\forms\FormularioEditarCategoria;
 
 $id = $_GET['id'] ?? null;
 
@@ -18,4 +17,4 @@ $contenidoPrincipal = <<<EOS
 $htmlFormulario
 EOS;
 
-require __DIR__.'/includes/vistas/plantillas/plantilla.php';
+require __DIR__.'/plantilla.php';

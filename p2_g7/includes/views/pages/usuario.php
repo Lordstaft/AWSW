@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../class/Usuario.php';
+use es\ucm\fdi\aw\Usuario;
 
 $tituloPagina = 'Perfil';
 $busqueda = $_SESSION['nombreUsuario'];

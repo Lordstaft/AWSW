@@ -1,7 +1,7 @@
 <?php
 //Inicio del procesamiento
 require __DIR__ . '/../../config.php';
-require __DIR__ . '/../../class/forms/FormularioEditarUsuario.php';
+use es\ucm\fdi\aw\forms\FormularioEditarUsuario;
 
 $tituloPagina = 'Editar usuario';
 

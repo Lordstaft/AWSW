@@ -1,5 +1,5 @@
 <?php
-include __DIR__ . '/../../config.php';  
+include __DIR__ . '/../../config.php';
 
 $_SESSION['pedido'] = $_GET['pagina'];
 

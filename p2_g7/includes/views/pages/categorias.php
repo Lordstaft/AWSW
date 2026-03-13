@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../../config.php';
+use es\ucm\fdi\aw\Categoria;
 
 $categorias = Categoria::listar();
 
@@ -22,7 +23,7 @@ foreach ($categorias as $categoria) {
         <td>{$descripcion}</td>
         <td>{$imagen}</td>
 		<td>
-            <a href='index.php?pagina=editarCategoria&id={$id}'>Editar</a>
+            <a href='index.php?pagina=editarCategoria&id={$categoria['id']}'>Editar</a>
         </td>
     </tr>";
 }

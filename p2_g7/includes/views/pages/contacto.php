@@ -1,5 +1,5 @@
 <?php
-include __DIR__ . '/../../config.php';
+require __DIR__ . '/../../config.php';
 
 $contenidoPrincipal = <<<EOS
     <div id="mailTo">
