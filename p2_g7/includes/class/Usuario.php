@@ -14,7 +14,7 @@ class Usuario {
     private $avatar;
     private $fechaRegistro;
 
-    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol, $avatar = "default.jpg", $fechaRegistro = null) {
+    public function __construct($id, $nombreUsuario, $email, $nombre, $apellidos, $password, $rol, $avatar, $fechaRegistro) {
         $this->id = $id;
         $this->nombreUsuario = $nombreUsuario;
         $this->email = $email;
@@ -22,8 +22,8 @@ class Usuario {
         $this->apellidos = $apellidos;
         $this->password = $password;
         $this->rol = $rol;
-        $this->avatar = $avatar;
-        $this->fechaRegistro = $fechaRegistro;
+        $this->avatar = $avatar ?? "default.jpg";
+        $this->fechaRegistro = $fechaRegistro ?? '';
     }
 
     public function getNombreUsuario() {
@@ -193,15 +193,8 @@ class Usuario {
 
         if ($conn->query($query)) {
             $id = $conn->insert_id;
-            return new Usuario(
-                $id,
-                $nombreUsuario,
-                $email,
-                $nombre,
-                $apellidos,
-                $passwordHash,
-                $rol
-            );
+            $usuario = self::buscaUsuario($nombreUsuario);
+            return $usuario;
         }
 
         error_log("Error BD ({$conn->errno}): {$conn->error}");

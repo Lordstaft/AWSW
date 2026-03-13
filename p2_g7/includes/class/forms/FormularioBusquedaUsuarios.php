@@ -30,7 +30,7 @@ class FormularioBusquedaUsuarios extends Formulario
 
                 <div>
                     <label for="nombre">Buscar</label>
-                    <input id="nombre" type="text" name="nombre" placeholder="Buscar por nombre o email"/>
+                    <input id="nombre" type="text" name="nombre" placeholder="Buscar por nombre"/>
                 </div>
 
                 <div>

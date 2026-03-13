@@ -65,6 +65,14 @@ class FormularioLogin extends Formulario
                 $_SESSION['nombreUsuario'] = $usuario->getNombreUsuario();
                 if($usuario->getRol() === Roles::ADMIN->value) {
                     $_SESSION['esAdmin'] = true;
+                    $_SESSION['esGerente'] = true;
+                }
+                elseif($usuario->getRol() === Roles::GERENTE->value){
+                    $_SESSION['esGerente'] = true;
+                }
+                else{
+                    $_SESSION['esAdmin'] = false;
+                    $_SESSION['esGerente'] = false;
                 }
             }
         }
