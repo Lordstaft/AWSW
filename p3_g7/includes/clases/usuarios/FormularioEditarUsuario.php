@@ -1,8 +1,8 @@
 <?php
-namespace es\ucm\fdi\aw\forms;
-use es\ucm\fdi\aw\forms\Formulario;
-use es\ucm\fdi\aw\Usuario;
-use es\ucm\fdi\aw\Roles;
+namespace es\ucm\fdi\aw\usuarios;
+use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\usuarios\Roles;
 
 class FormularioEditarUsuario extends Formulario
 {
