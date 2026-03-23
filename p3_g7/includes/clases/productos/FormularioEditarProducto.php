@@ -1,7 +1,7 @@
 <?php
-namespace es\ucm\fdi\aw\forms;
-use es\ucm\fdi\aw\Producto;
-use es\ucm\fdi\aw\Categoria;
+namespace es\ucm\fdi\aw\productos;
+use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioEditarProducto extends Formulario
 {
