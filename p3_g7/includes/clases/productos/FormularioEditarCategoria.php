@@ -1,6 +1,6 @@
 <?php
-namespace es\ucm\fdi\aw\forms;
-use es\ucm\fdi\aw\Categoria;
+namespace es\ucm\fdi\aw\productos;
+use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioEditarCategoria extends Formulario
 {
