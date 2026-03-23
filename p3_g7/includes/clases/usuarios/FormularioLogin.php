@@ -1,25 +1,23 @@
 <?php
-namespace es\ucm\fdi\aw\usuarios;
-
-use es\ucm\fdi\aw\Aplicacion;
-use es\ucm\fdi\aw\Formulario;
+namespace es\ucm\fdi\aw\forms;
+use es\ucm\fdi\aw\forms\Formulario;
+use es\ucm\fdi\aw\Usuario;
+use es\ucm\fdi\aw\Roles;
 
 class FormularioLogin extends Formulario
 {
     public function __construct() {
-        parent::__construct('formLogin', ['urlRedireccion' => Aplicacion::getInstance()->resuelve('/index.php')]);
+        parent::__construct('formLogin', ['urlRedireccion' => 'index.php']);
     }
     
     protected function generaCamposFormulario(&$datos)
     {
-        // Se reutiliza el nombre de usuario introducido previamente o se deja en blanco
         $nombreUsuario = $datos['nombreUsuario'] ?? '';
+        $password = $datos['password'] ?? '';
 
-        // Se generan los mensajes de error si existen.
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
         $erroresCampos = self::generaErroresCampos(['nombreUsuario', 'password'], $this->errores, 'span', array('class' => 'error'));
 
-        // Se genera el HTML asociado a los campos del formulario y los mensajes de error.
         $html = <<<EOF
         $htmlErroresGlobales
         <fieldset>
@@ -31,7 +29,7 @@ class FormularioLogin extends Formulario
             </div>
             <div>
                 <label for="password">Password:</label>
-                <input id="password" type="password" name="password" />
+                <input id="password" type="password" name="password" value="$password" />
                 {$erroresCampos['password']}
             </div>
             <div>
@@ -63,8 +61,20 @@ class FormularioLogin extends Formulario
             if (!$usuario) {
                 $this->errores[] = "El usuario o el password no coinciden";
             } else {
-                $app = Aplicacion::getInstance();
-                $app->login($usuario);
+                $_SESSION['login'] = true;
+                $_SESSION['nombre'] = $usuario->getNombre();
+                $_SESSION['nombreUsuario'] = $usuario->getNombreUsuario();
+                if($usuario->getRol() === Roles::ADMIN->value) {
+                    $_SESSION['esAdmin'] = true;
+                    $_SESSION['esGerente'] = true;
+                }
+                elseif($usuario->getRol() === Roles::GERENTE->value){
+                    $_SESSION['esGerente'] = true;
+                }
+                else{
+                    $_SESSION['esAdmin'] = false;
+                    $_SESSION['esGerente'] = false;
+                }
             }
         }
     }
