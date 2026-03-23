@@ -1,6 +1,6 @@
 <?php
-namespace es\ucm\fdi\aw;
-use es\ucm\fdi\aw\Roles;
+namespace es\ucm\fdi\aw\usuarios;
+use es\ucm\fdi\aw\usuarios\Roles;
 
 class Usuario {
 
