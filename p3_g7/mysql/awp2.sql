@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2026 a las 17:06:41
+-- Tiempo de generación: 25-03-2026 a las 20:17:24
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `awp2`
 --
-CREATE DATABASE IF NOT EXISTS `awp2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `awp2`;
 
 -- --------------------------------------------------------
 
@@ -29,7 +27,6 @@ USE `awp2`;
 -- Estructura de tabla para la tabla `categorias`
 --
 
-DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -55,16 +52,22 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imgCategoriaProd`) VAL
 -- Estructura de tabla para la tabla `pedidos`
 --
 
-DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE `pedidos` (
-  `idPedido` int(11) NOT NULL,
-  `numPedido` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `estadoPedido` enum('nuevo','recibido','en_preparacion','cocinando','listo_cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
+  `estado` enum('nuevo','recibido','en_preparacion','cocinando','listo_cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `tipo` enum('domicilio','recogida') NOT NULL,
-  `total` decimal(10,2) NOT NULL
+  `total` decimal(10,2) NOT NULL,
+  `cocinero_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `usuario_id`, `estado`, `fechaPedido`, `tipo`, `total`, `cocinero_id`) VALUES
+(2, 25, 'listo_cocina', '2026-03-25 17:04:35', 'recogida', 10.50, 27);
 
 -- --------------------------------------------------------
 
@@ -72,15 +75,22 @@ CREATE TABLE `pedidos` (
 -- Estructura de tabla para la tabla `pedido_productos`
 --
 
-DROP TABLE IF EXISTS `pedido_productos`;
 CREATE TABLE `pedido_productos` (
   `id` int(11) NOT NULL,
   `pedido_id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precioUnitario` decimal(10,2) NOT NULL,
-  `ivaAplicado` enum('4','10','21') NOT NULL
+  `ivaAplicado` enum('4','10','21') NOT NULL,
+  `preparado` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedido_productos`
+--
+
+INSERT INTO `pedido_productos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `precioUnitario`, `ivaAplicado`, `preparado`) VALUES
+(2, 2, 1, 2, 3.50, '21', 0);
 
 -- --------------------------------------------------------
 
@@ -88,7 +98,6 @@ CREATE TABLE `pedido_productos` (
 -- Estructura de tabla para la tabla `productos`
 --
 
-DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `nombreProd` varchar(150) NOT NULL,
@@ -129,7 +138,6 @@ INSERT INTO `productos` (`id`, `nombreProd`, `descripcion`, `categoria_id`, `pre
 -- Estructura de tabla para la tabla `producto_imagenes`
 --
 
-DROP TABLE IF EXISTS `producto_imagenes`;
 CREATE TABLE `producto_imagenes` (
   `id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
@@ -166,7 +174,6 @@ INSERT INTO `producto_imagenes` (`id`, `producto_id`, `rutaImagen`) VALUES
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombreUsuario` varchar(50) NOT NULL,
@@ -191,7 +198,9 @@ INSERT INTO `usuarios` (`id`, `nombreUsuario`, `email`, `nombre`, `apellidos`, `
 (29, 'camarero1', 'camarero1@bistro.com', 'David', 'Moreno Torres', '$2y$10$xpMOFhCSl4L/BHu2q.cbnuBu5xa0tZZqCn2FUw.S0NC9YVVg12nMy', 'camarero', 'camarero1.jpg', '2026-03-04 17:02:42'),
 (30, 'camarero2', 'camarero2@bistro.com', 'Lucía', 'Navarro Gil', '$2y$10$hGXm174gvCHdYgzO.WdOr.2KWLabMB2P9ymXu7ltw5tSZDS5kTcje', 'camarero', 'camarero2.jpg', '2026-03-04 17:02:42'),
 (31, 'gerente1', 'gerente@bistro.com', 'Alberto', 'Ramírez Castillo', '$2y$10$CxOAkawkO61HSP6OTgw/fuaUU9VsdIwD3gUtEDoYcDTT9KP/NgG9m', 'gerente', 'gerente.jpg', '2026-03-04 17:02:42'),
-(32, 'admin', 'admin@bistro.com', 'Administrador', 'Sistema', '$2y$10$M6dlz8/4fq37pq9ATYhp3exQceC4c9riGhEu25N/m981wH1N9t0Gq', 'admin', 'admin.jpg', '2026-03-04 17:02:42');
+(32, 'admin', 'admin@bistro.com', 'Administrador', 'Sistema', '$2y$10$M6dlz8/4fq37pq9ATYhp3exQceC4c9riGhEu25N/m981wH1N9t0Gq', 'admin', 'admin.jpg', '2026-03-04 17:02:42'),
+(41, 'Prince02', 'prince@gmail.com', 'Prince', 'William', '$2y$10$yiGXMxNEDBS7So3XIYwtZ.hbcbpTg1tYQ8ICaQZyBBK1NH56eBUM2', 'cliente', NULL, '2026-03-11 20:58:02'),
+(43, 'Aleksandra02', 'alisicka@ucm.es', 'ALEKSANDRA', 'LISICKA', '$2y$10$mpWDx2sJxWs43M1DU8ofnuoaaw5vYEfoRTKM3zHVjJAY8IlEfbqm2', 'cliente', NULL, '2026-03-12 09:44:50');
 
 --
 -- Índices para tablas volcadas
@@ -208,7 +217,7 @@ ALTER TABLE `categorias`
 -- Indices de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`idPedido`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
@@ -255,13 +264,13 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `idPedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido_productos`
 --
 ALTER TABLE `pedido_productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -279,7 +288,7 @@ ALTER TABLE `producto_imagenes`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Restricciones para tablas volcadas
@@ -295,7 +304,7 @@ ALTER TABLE `pedidos`
 -- Filtros para la tabla `pedido_productos`
 --
 ALTER TABLE `pedido_productos`
-  ADD CONSTRAINT `pedido_productos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`idPedido`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_productos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `pedido_productos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 --
