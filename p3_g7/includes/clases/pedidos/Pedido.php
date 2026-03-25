@@ -1,5 +1,9 @@
 <?php
+
 namespace es\ucm\fdi\aw\pedidos;
+
+use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\productos\Producto;
 
 class Pedido {
 
@@ -167,12 +171,37 @@ class Pedido {
 
         $query = sprintf(
             "UPDATE pedidos
-             SET estado = 'preparado'
-             WHERE id = %d",
-            $pedidoId
-        );
+            SET estado = 'listo_cocina'
+            WHERE id = %d",
+        $pedidoId
+    );
 
-        return $conn->query($query);
+    return $conn->query($query);
     }
+
+    public static function getLineasPedido($pedidoId) {
+
+    $conn = Aplicacion::getInstance()->getConexionBd();
+
+    $query = sprintf(
+        "SELECT pp.id, pp.pedido_id, pp.producto_id, pp.cantidad, pp.precioUnitario, pp.ivaAplicado, pp.preparado, p.nombre
+         FROM pedido_productos pp
+         JOIN productos p ON pp.producto_id = p.id
+         WHERE pp.pedido_id = %d",
+        $pedidoId
+    );
+
+    $res = $conn->query($query);
+
+    $lineas = [];
+
+    if ($res) {
+        while ($fila = $res->fetch_assoc()) {
+            $lineas[] = $fila;
+        }
+    }
+
+    return $lineas;
+}
 
 }
