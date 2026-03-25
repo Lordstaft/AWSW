@@ -66,4 +66,113 @@ class Pedido {
     return $pedidoId;
 }
 
+// Las siguientes funciones corresponden a la funcionalidad 3
+ /* Pedidos que ve el gerente */
+
+    public static function getPedidosPendientes() {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = "
+            SELECT 
+                p.id,
+                u.nombre AS usuario,
+                p.estado,
+                c.nombre AS cocinero
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            LEFT JOIN usuarios c ON p.cocinero_id = c.id
+            WHERE p.estado != 'entregado'
+            ORDER BY p.id DESC
+        ";
+
+        $res = $conn->query($query);
+
+        $pedidos = [];
+
+        if ($res) {
+            while ($fila = $res->fetch_assoc()) {
+                $pedidos[] = $fila;
+            }
+        }
+
+        return $pedidos;
+    }
+
+    /* Pedidos que ve la cocina */
+
+    public static function getPedidosCocina() {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = "
+            SELECT id, estado, usuario_id
+            FROM pedidos
+            WHERE estado IN ('recibido', 'en_preparacion', 'cocinando')
+            ORDER BY id ASC
+        ";
+
+        $res = $conn->query($query);
+
+        $pedidos = [];
+
+        if ($res) {
+            while ($fila = $res->fetch_assoc()) {
+                $pedidos[] = $fila;
+            }
+        }
+
+        return $pedidos;
+    }
+
+    /* Un cocinero se queda el pedido */
+
+    public static function asignarCocinero($pedidoId, $cocineroId) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedidos
+             SET cocinero_id = %d,
+                 estado = 'cocinando'
+             WHERE id = %d",
+            $cocineroId,
+            $pedidoId
+        );
+
+        return $conn->query($query);
+    }
+
+    /* Marcar producto preparado */
+
+    public static function marcarProductoPreparado($pedidoProductoId) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedido_productos
+             SET preparado = 1
+             WHERE id = %d",
+            $pedidoProductoId
+        );
+
+        return $conn->query($query);
+    }
+
+    /* Finalizar preparación */
+
+    public static function finalizarPedido($pedidoId) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedidos
+             SET estado = 'preparado'
+             WHERE id = %d",
+            $pedidoId
+        );
+
+        return $conn->query($query);
+    }
+
 }
