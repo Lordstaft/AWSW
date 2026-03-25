@@ -1,16 +1,14 @@
 <?php
+require __DIR__ . '/../../config.php';
+use es\ucm\fdi\aw\forms\FormularioCrearUsuario;
 
-require_once __DIR__.'/includes/config.php';
+$tituloPagina = 'Buscar usuario';
+$formulario = new FormularioCrearUsuario();
+$formularioHTML = $formulario->gestiona();
 
-$formRegistro = new \es\ucm\fdi\aw\usuarios\FormularioRegistro();
-$formRegistro = $formRegistro->gestiona();
+$contenidoPrincipal = <<<EOS
+    <h1>Crear Usuario</h1>
+    $formularioHTML
+EOS;
 
-
-$tituloPagina = 'Registro';
-$contenidoPrincipal=<<<EOF
-  	<h1>Registro de usuario</h1>
-    $formRegistro
-EOF;
-
-$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal];
-$app->generaVista('/plantillas/plantilla.php', $params);
+require __DIR__ . '/plantilla.php';
