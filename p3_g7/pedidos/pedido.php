@@ -49,7 +49,7 @@ if (isset($_GET['categoria'])) {
         </p>
 
         <form action='".$app->resuelve('/productos/anadirCarrito.php')."' method='GET'>
-            <input type='hidden' name='id' value='{$fila['id']}'>
+            <input type='hidden' name='id' value='".$fila['id']."'>
             Cantidad:
             <input type='number' name='cantidad' value='1' min='1'>
             <button type='submit'>Añadir al carrito</button>
