@@ -30,6 +30,22 @@ header a:hover {
 } 
 
 
+.cabecera-contenido {
+    display: flex;
+    align-items: center;   
+    gap: 15px;             /* espacio entre logo y texto */
+}
+
+.logo {
+    height: 60px;
+    width: auto;
+}
+
+header h1 {
+    margin: 0;   /* evita que el título empuje hacia abajo */
+}
+
+
 nav {
 	padding: 10px;
 	float: left;
