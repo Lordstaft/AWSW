@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2026 a las 17:05:03
+-- Tiempo de generación: 03-04-2026 a las 22:23:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -30,11 +30,13 @@ USE `awp2`;
 --
 
 DROP TABLE IF EXISTS `categorias`;
-CREATE TABLE `categorias` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `categorias` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `descripcion` text NOT NULL,
-  `imgCategoriaProd` varchar(255) DEFAULT NULL
+  `imgCategoriaProd` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -44,13 +46,17 @@ CREATE TABLE `categorias` (
 --
 
 DROP TABLE IF EXISTS `pedidos`;
-CREATE TABLE `pedidos` (
-  `idPedido` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `idPedido` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) NOT NULL,
-  `estadoPedido` enum('pendiente','preparando','enviado','entregado','cancelado') DEFAULT 'pendiente',
+  `estadoPedido` enum('pendiente','preparando','cocinando','enviado','entregado','cancelado') DEFAULT 'pendiente',
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `tipo` enum('domicilio','recogida') NOT NULL,
-  `total` decimal(10,2) NOT NULL
+  `total` decimal(10,2) NOT NULL,
+  `cocinero_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idPedido`),
+  KEY `usuario_id` (`usuario_id`),
+  KEY `fk_pedidos_cocinero` (`cocinero_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -60,13 +66,16 @@ CREATE TABLE `pedidos` (
 --
 
 DROP TABLE IF EXISTS `pedido_productos`;
-CREATE TABLE `pedido_productos` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `pedido_productos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `pedido_id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precioUnitario` decimal(10,2) NOT NULL,
-  `ivaAplicado` enum('4','10','21') NOT NULL
+  `ivaAplicado` enum('4','10','21') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pedido_id` (`pedido_id`),
+  KEY `producto_id` (`producto_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -76,8 +85,8 @@ CREATE TABLE `pedido_productos` (
 --
 
 DROP TABLE IF EXISTS `productos`;
-CREATE TABLE `productos` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `productos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombreProd` varchar(150) NOT NULL,
   `descripcion` text NOT NULL,
   `categoria_id` int(11) NOT NULL,
@@ -86,7 +95,9 @@ CREATE TABLE `productos` (
   `stock` int(11) DEFAULT 0,
   `disponible` tinyint(1) DEFAULT 1,
   `ofertado` tinyint(1) DEFAULT 0,
-  `fechaCreacion` datetime DEFAULT current_timestamp()
+  `fechaCreacion` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `categoria_id` (`categoria_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -96,10 +107,12 @@ CREATE TABLE `productos` (
 --
 
 DROP TABLE IF EXISTS `producto_imagenes`;
-CREATE TABLE `producto_imagenes` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `producto_imagenes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `producto_id` int(11) NOT NULL,
-  `rutaImagen` varchar(255) NOT NULL
+  `rutaImagen` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `producto_id` (`producto_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -109,8 +122,8 @@ CREATE TABLE `producto_imagenes` (
 --
 
 DROP TABLE IF EXISTS `usuarios`;
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombreUsuario` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -118,96 +131,11 @@ CREATE TABLE `usuarios` (
   `contraseña` varchar(255) NOT NULL,
   `rol` enum('cliente','gerente','camarero','cocinero','admin') NOT NULL DEFAULT 'cliente',
   `avatar` varchar(255) DEFAULT NULL,
-  `fechaRegistro` datetime DEFAULT current_timestamp()
+  `fechaRegistro` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombreUsuario` (`nombreUsuario`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
-
---
--- Indices de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`idPedido`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
--- Indices de la tabla `pedido_productos`
---
-ALTER TABLE `pedido_productos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pedido_id` (`pedido_id`),
-  ADD KEY `producto_id` (`producto_id`);
-
---
--- Indices de la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_id` (`categoria_id`);
-
---
--- Indices de la tabla `producto_imagenes`
---
-ALTER TABLE `producto_imagenes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `producto_id` (`producto_id`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nombreUsuario` (`nombreUsuario`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  MODIFY `idPedido` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `pedido_productos`
---
-ALTER TABLE `pedido_productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `productos`
---
-ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `producto_imagenes`
---
-ALTER TABLE `producto_imagenes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -217,6 +145,7 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_pedidos_cocinero` FOREIGN KEY (`cocinero_id`) REFERENCES `usuarios` (`id`),
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --

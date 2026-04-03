@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-04-2026 a las 22:13:46
+-- Tiempo de generación: 03-04-2026 a las 22:24:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -37,13 +37,13 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imgCategoriaProd`) VAL
 -- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO `pedidos` (`idPedido`, `usuario_id`, `estadoPedido`, `fechaPedido`, `tipo`, `total`) VALUES
-(1, 25, 'pendiente', '2026-03-05 13:00:00', 'recogida', 6.30),
-(2, 26, 'preparando', '2026-03-05 13:05:00', 'domicilio', 10.00),
-(3, 25, 'enviado', '2026-03-05 13:10:00', 'domicilio', 12.50),
-(4, 26, 'entregado', '2026-03-05 13:20:00', 'recogida', 8.50),
-(5, 25, 'pendiente', '2026-03-05 13:25:00', 'domicilio', 9.00),
-(6, 26, 'cancelado', '2026-03-05 13:30:00', 'recogida', 5.50);
+INSERT INTO `pedidos` (`idPedido`, `usuario_id`, `estadoPedido`, `fechaPedido`, `tipo`, `total`, `cocinero_id`) VALUES
+(1, 25, 'cocinando', '2026-03-05 13:00:00', 'recogida', 6.30, 27),
+(2, 26, 'preparando', '2026-03-05 13:05:00', 'domicilio', 10.00, 28),
+(3, 25, 'enviado', '2026-03-05 13:10:00', 'domicilio', 12.50, 27),
+(4, 26, 'entregado', '2026-03-05 13:20:00', 'recogida', 8.50, 28),
+(5, 25, 'pendiente', '2026-03-05 13:25:00', 'domicilio', 9.00, NULL),
+(6, 26, 'cancelado', '2026-03-05 13:30:00', 'recogida', 5.50, NULL);
 
 --
 -- Volcado de datos para la tabla `pedido_productos`
