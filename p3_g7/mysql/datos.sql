@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2026 a las 17:05:40
+-- Tiempo de generación: 03-04-2026 a las 22:13:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `awp2`
 --
-CREATE DATABASE IF NOT EXISTS `awp2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `awp2`;
 
 --
 -- Volcado de datos para la tabla `categorias`
@@ -34,6 +32,33 @@ INSERT INTO `categorias` (`id`, `nombre`, `descripcion`, `imgCategoriaProd`) VAL
 (4, 'Platos Calientes', 'Platos principales servidos calientes, recién preparados en cocina.', 'platos_calientes.jpg'),
 (5, 'Postres', 'Postres caseros y dulces para finalizar la comida.', 'postres.jpg'),
 (6, 'Snacks', 'Aperitivos y pequeños tentempiés para cualquier momento.', 'snacks.jpg');
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`idPedido`, `usuario_id`, `estadoPedido`, `fechaPedido`, `tipo`, `total`) VALUES
+(1, 25, 'pendiente', '2026-03-05 13:00:00', 'recogida', 6.30),
+(2, 26, 'preparando', '2026-03-05 13:05:00', 'domicilio', 10.00),
+(3, 25, 'enviado', '2026-03-05 13:10:00', 'domicilio', 12.50),
+(4, 26, 'entregado', '2026-03-05 13:20:00', 'recogida', 8.50),
+(5, 25, 'pendiente', '2026-03-05 13:25:00', 'domicilio', 9.00),
+(6, 26, 'cancelado', '2026-03-05 13:30:00', 'recogida', 5.50);
+
+--
+-- Volcado de datos para la tabla `pedido_productos`
+--
+
+INSERT INTO `pedido_productos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `precioUnitario`, `ivaAplicado`) VALUES
+(1, 1, 3, 1, 1.80, '10'),
+(2, 1, 4, 1, 4.50, '10'),
+(3, 2, 9, 1, 8.50, '10'),
+(4, 2, 2, 1, 1.50, '10'),
+(5, 3, 7, 1, 6.50, '10'),
+(6, 3, 14, 2, 3.00, '10'),
+(7, 4, 9, 1, 8.50, '10'),
+(8, 5, 10, 1, 9.00, '10'),
+(9, 6, 8, 1, 5.50, '10');
 
 --
 -- Volcado de datos para la tabla `productos`
