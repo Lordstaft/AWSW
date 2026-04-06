@@ -12,7 +12,7 @@ class FormularioEditarCategoria extends Formulario
         parent::__construct('formEditarCategoria');
             parent::__construct('formEditarCategoria', [
                 'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarCategorias.php'),
-                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/busquedaCategoria.php')
          ]);
         }
 

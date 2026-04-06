@@ -21,6 +21,7 @@ class FormularioEditarProducto extends Formulario
         $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
         $producto = Producto::buscaPorId($busqueda);
         $categorias = Categoria::listar();
+        $buttonEliminar = '';
 
         $opcionesCategorias = '';
         foreach ($categorias as $categoria) {
@@ -31,6 +32,10 @@ class FormularioEditarProducto extends Formulario
             else {
                 $opcionesCategorias .= "<option value='{$categoria->getId()}'>{$categoria->getNombre()}</option>";
             }
+        }
+
+        if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] == true){
+            $buttonEliminar = '<button type="submit" name="eliminarProducto">Eliminar producto</button>';
         }
 
 
@@ -85,7 +90,8 @@ class FormularioEditarProducto extends Formulario
             </label>
 
             <button type="submit" name="editarProducto">Guardar cambios</button>
-            <button type="submit" name="eliminarProducto">Eliminar producto</button>
+            $buttonEliminar
+            <button type="submit" name="retirarProducto">Retirar</button>
         </fieldset>
         EOF;
 
@@ -172,9 +178,23 @@ class FormularioEditarProducto extends Formulario
             }
         }
 
-        elseif(isset($datos['eliminarProducto'])){
+        elseif(isset($datos['retirarProducto'])){
             $id = filter_var($datos['id'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resul = Producto::retirar($id);
+
+            if(!$resul){
+                $this->errores[] = "No se ha podido retirar el producto, por favor inténtelo de nuevo.";
+            }
+            else{
+                $mensajes = ['Se ha retirado el producto correctamente.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+                unset($_SESSION['resultadosBusqueda']);
+            }
+        }
+
+        elseif(isset($datos['eliminarProducto'])){
+            $id = filter_var($datos['id'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $resul = Producto::borra($id);
 
             if(!$resul){
                 $this->errores[] = "No se ha podido eliminar el producto, por favor inténtelo de nuevo.";

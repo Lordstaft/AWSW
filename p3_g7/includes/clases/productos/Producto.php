@@ -144,19 +144,18 @@ class Producto {
         return null;
     }
 
-
-    public static function crea($nombreProd, $descripcion, $categoria_id, $precio, $iva, $disponible = 1, $ofertado = 1)
-    {
+    public static function creaProducto($nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, disponible, ofertado)
-             VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d)",
+            "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado)
+             VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d, %d)",
             $conn->real_escape_string($nombreProd),
             $conn->real_escape_string($descripcion),
             (int)$categoria_id,
             (float)$precio,
             $conn->real_escape_string($iva),
+            (int)$stock,
             (int)$disponible,
             (int)$ofertado
         );
@@ -219,6 +218,18 @@ class Producto {
             $conn->real_escape_string($iva),
             (int)$disponible,
             (int)$ofertado,
+            (int)$id
+        );
+
+        return $conn->query($query);
+    }
+
+    public static function borra($id)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "DELETE FROM productos WHERE id = %d",
             (int)$id
         );
 

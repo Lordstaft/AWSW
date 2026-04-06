@@ -25,7 +25,7 @@ class FormularioCrearCategoria extends Formulario
         $html = <<<EOF
         $htmlErroresGlobales
             <fieldset>
-                <legend>Usuario</legend>
+                <legend>Crear categoría</legend>
                 
                 <div>
                     <label for="nombreCategoria">Nombre:</label>

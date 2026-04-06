@@ -18,5 +18,5 @@ EOS;
 
 unset($_SESSION['resultadosBusqueda']);
 
-$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Panel Administrador'];
+$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];
 $app->generaVista('/plantillas/plantilla.php', $params);
