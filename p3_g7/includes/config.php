@@ -31,8 +31,6 @@ date_default_timezone_set('Europe/Madrid');
  * @see http://www.php-fig.org/psr/psr-4/
  */
 
-require_once __DIR__ . '/clases/Aplicacion.php';
-
 spl_autoload_register(function ($class) {
 
     // project-specific namespace prefix

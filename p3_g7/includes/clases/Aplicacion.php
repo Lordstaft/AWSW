@@ -2,8 +2,6 @@
 
 namespace es\ucm\fdi\aw;
 
-echo "ESTA ES MI APLICACION";
-
 use Exception;
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\usuarios\Roles;

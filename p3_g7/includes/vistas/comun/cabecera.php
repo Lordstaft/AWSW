@@ -7,7 +7,7 @@ function mostrarSaludo()
 {
     $html = '';
     $app = Aplicacion::getInstance();
-    if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login']===true)) {
+    if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login'] === true)) {
         $nombreUsuario = $_SESSION['nombreUsuario'];
 
         $formLogout = new FormularioLogout();

@@ -1,39 +1,47 @@
 <?php
 namespace es\ucm\fdi\aw\productos;
+
+use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioEditarCategoria extends Formulario
 {
-    private $idCategoria;
-
-    public function __construct($idCategoria)
+    public function __construct()
     {
         parent::__construct('formEditarCategoria');
-        $this->idCategoria = $idCategoria;
-    }
+            parent::__construct('formEditarCategoria', [
+                'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarCategorias.php'),
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+         ]);
+        }
 
     protected function generaCamposFormulario(&$datos)
     {
-        $categoria = Categoria::buscaPorId($this->idCategoria);
+        $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
 
-        $nombre = $categoria['nombre'] ?? '';
-        $descripcion = $categoria['descripcion'] ?? '';
-        $imgCategoriaProd = $categoria['imgCategoriaProd'] ?? '';
+        $categoria = Categoria::buscaPorId($busqueda);
+
+        $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
 
         $html = <<<EOF
+        $htmlErroresGlobales
         <fieldset>
             <legend>Editar categoría</legend>
 
             <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" value="$nombre" required>
+            <input type="text" name="nombre" value="{$categoria->getNombre()}" required>
 
             <label for="descripcion">Descripción:</label>
-            <textarea name="descripcion" required>$descripcion</textarea>
+            <textarea name="descripcion" required>{$categoria->getDescripcion()}</textarea>
 
             <label for="imgCategoriaProd">Imagen:</label>
-            <input type="text" name="imgCategoriaProd" value="$imgCategoriaProd">
+            <input type="text" name="imgCategoriaProd" value="{$categoria->getImgCategoriaProd()}">
 
-            <button type="submit">Guardar cambios</button>
+            <input type="hidden" name="id" value="{$categoria->getId()}">
+
+            <button type="submit" name="editarCategoria">Guardar cambios</button>
+            <button type="submit" name="eliminarCategoria">Eliminar categoría</button>
         </fieldset>
         EOF;
 
@@ -42,27 +50,52 @@ class FormularioEditarCategoria extends Formulario
 
     protected function procesaFormulario(&$datos)
     {
+        $app = Aplicacion::getInstance();
+        $this->errores = [];
+
         $nombre = trim($datos['nombre'] ?? '');
-        $descripcion = trim($datos['descripcion'] ?? '');
-        $imgCategoriaProd = trim($datos['imgCategoriaProd'] ?? '');
-
-        $errores = [];
-
-        if ($nombre === '') {
-            $errores[] = 'El nombre de la categoría no puede estar vacío';
+        $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (!$nombre || empty($nombre) ) {
+            $this->errores['nombre'] = 'El nombre de la categoría no puede estar vacío';
         }
 
-        if (count($errores) === 0) {
-            $ok = Categoria::actualiza($this->idCategoria, $nombre, $descripcion, $imgCategoriaProd);
+        $descripcion = trim($datos['descripcion'] ?? '');
+        $descripcion = filter_var($descripcion, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (!$descripcion || empty($descripcion) ) {
+            $this->errores['descripcion'] = 'La descripción de la categoría no puede estar vacía';
+        }
 
-            if ($ok) {
-                header('Location: index.php?pagina=listadoCategorias');
-                exit();
-            } else {
-                $errores[] = 'No se ha podido actualizar la categoría';
+        $imgCategoriaProd = trim($datos['imgCategoriaProd'] ?? '');
+        $imgCategoriaProd = filter_var($imgCategoriaProd, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (!$imgCategoriaProd || empty($imgCategoriaProd) ) {
+            $this->errores['imgCategoriaProd'] = 'La imagen de la categoría no puede estar vacía';
+        }
+
+        $id = trim($datos['id']);
+        $id = filter_var($id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+
+        if (count($this->errores) === 0) {
+            if(isset($datos['editarCategoria'])){
+                $ok = Categoria::actualiza($id, $nombre, $descripcion, $imgCategoriaProd);
+
+                if ($ok) {
+                    $mensajes = ['Se ha actualizado la categoría correctamente.'];
+                    $app->putAtributoPeticion('mensajes', $mensajes);
+                } else {
+                    $this->errores[] = 'No se ha podido actualizar la categoría';
+                }
+            }
+            elseif(isset($datos['eliminarCategoria'])){
+                $ok = Categoria::borra($id);
+
+                if ($ok) {
+                    $mensajes = ['Se ha eliminado la categoría correctamente.'];
+                    $app->putAtributoPeticion('mensajes', $mensajes);
+                } else {
+                    $this->errores[] = 'No se ha podido eliminar la categoría';
+                }
             }
         }
-
-        return $errores;
     }
 }

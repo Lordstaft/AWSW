@@ -9,10 +9,16 @@ class FormularioCrearUsuario extends Formulario
 {
     public function __construct() {
         if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
-            parent::__construct('formEditarUsuario', ['urlRedireccion' => 'usuario.php']);
+            parent::__construct('formEditarUsuario', [
+            'action' => Aplicacion::getInstance()->resuelve('/registro.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+            ]);
         }
         else{
-            parent::__construct('formEditarUsuario', ['urlRedireccion' => RUTA_APP . '/index.php']);
+            parent::__construct('formEditarUsuario', [
+                'action' => Aplicacion::getInstance()->resuelve('/registro.php'),
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/index.php')
+            ]);
         }
     }
     
@@ -112,16 +118,21 @@ class FormularioCrearUsuario extends Formulario
         if ( ! $nombreUsuario || empty($nombreUsuario) ) {
             $this->errores['nombreUsuario'] = 'El nombre de usuario no puede estar vacío';
         }
+
+        $resultado = Usuario::buscaUsuario($nombreUsuario);
+        if ($resultado) {
+            $this->errores['nombreUsuario'] = 'El nombre de usuario ya existe';
+        }
         
         $nombre = trim($datos['nombre'] ?? '');
         $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $nombre || empty($nombre) ) {
+        if (!$nombre || empty($nombre) ) {
             $this->errores['nombre'] = 'El nombre no puede estar vacío.';
         }
 
         $apellidos = trim($datos['apellidos'] ?? '');
         $apellidos = filter_var($apellidos, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $apellidos || empty($apellidos) ) {
+        if (!$apellidos || empty($apellidos) ) {
             $this->errores['apellidos'] = 'El apellido no puede estar vacío.';
         }
 
@@ -137,7 +148,7 @@ class FormularioCrearUsuario extends Formulario
 
         $password = trim($datos['password'] ?? '');
         $password = filter_var($password, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if ( ! $password || empty($password) ) {
+        if (!$password || empty($password) ) {
             $this->errores['password'] = 'El password no puede estar vacío.';
         }
     
@@ -148,13 +159,17 @@ class FormularioCrearUsuario extends Formulario
         }
 
         if (count($this->errores) === 0) {
-            $modificacion = Usuario::creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos);
+            $app = Aplicacion::getInstance();
+            $resul = Usuario::creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos);
 
-            unset($_SESSION['usuarioModificado']);
+            if(!$resul){
+                $mensajes = ['Error al intentar crear el usuario.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+            }
 
-            if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
-                $usuario = Usuario::buscaUsuarioId($modificacion->getId());
-                $_SESSION['usuarioModificado'] = $usuario->getId;
+            else{
+                $mensajes = ['Se ha creado el usuario correctamente.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
             }
         }
     }

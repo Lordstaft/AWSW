@@ -1,9 +1,9 @@
 <?php
-
 namespace es\ucm\fdi\aw\pedidos;
 
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\usuarios\EstadosPedido;
 
 use es\ucm\fdi\aw\MagicProperties;
 
@@ -22,208 +22,154 @@ class Pedido {
     public function __construct($idPedido, $usuario_id, $estadoPedido, $fechaPedido, $tipo, $total, $cocinero_id) {
         $this->idPedido = $idPedido;
         $this->usuario_id = $usuario_id;
-        $this->estadoPedido = $estadoPedido ?? EstadosPedido::PENDIENTE;
+        $this->estadoPedido = $estadoPedido ?? EstadoPedido::PENDIENTE->value;
         $this->fechaPedido = $fechaPedido;
         $this->tipo = $tipo;
         $this->total = $total;
         $this->cocinero_id = $cocinero_id ?? null;
     }
 
+    public function getFechaPedido() {
+        return $this->fechaPedido;
+    }
+
+    public function getPedidoId() {
+        return $this->idPedido;
+    }
+
+    public function getTipo() {
+        return $this->tipo;
+    }
+
+    public function getEstadoPedido() {
+        return $this->estadoPedido;
+    }
+    
+
     public static function crearPedido($usuarioId, $tipo, $carrito) {
 
-    $conn = Aplicacion::getInstance()->getConexionBd();
-
-    $total = 0;
-
-    foreach ($carrito as $id => $cantidad) {
-
-        $producto = Producto::buscaPorId($id);
-
-        if ($producto) {
-            $total += $producto['precio'] * $cantidad;
-        }
-    }
-
-    /* numero de pedido del día */
-
-    $query = "SELECT COUNT(*) as total 
-              FROM pedidos 
-              WHERE DATE(fechaPedido) = CURDATE()";
-
-    $res = $conn->query($query);
-    $fila = $res->fetch_assoc();
-
-    $numPedido = $fila['total'] + 1;
-
-    $query = sprintf(
-        "INSERT INTO pedidos(usuario_id, tipo, total, numPedido)
-         VALUES (%d, '%s', %.2f, %d)",
-        $usuarioId,
-        $conn->real_escape_string($tipo),
-        $total,
-        $numPedido
-    );
-
-    $conn->query($query);
-
-    $pedidoId = $conn->insert_id;
-
-    foreach ($carrito as $id => $cantidad) {
-
-        $producto = Producto::buscaPorId($id);
-
-        if ($producto) {
-
-            $query = sprintf(
-                "INSERT INTO pedido_productos
-                (pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado)
-                VALUES (%d,%d,%d,%.2f,'%s')",
-                $pedidoId,
-                $id,
-                $cantidad,
-                $producto['precio'],
-                $producto['iva']
-            );
-
-            $conn->query($query);
-        }
-    }
-
-    return $pedidoId;
-}
-
-// Las siguientes funciones corresponden a la funcionalidad 3
- /* Pedidos que ve el gerente */
-
-    public static function getPedidosPendientes() {
-
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "
-            SELECT 
-                p.id,
-                u.nombre AS usuario,
-                p.estado,
-                c.nombre AS cocinero
-            FROM pedidos p
-            JOIN usuarios u ON p.usuario_id = u.id
-            LEFT JOIN usuarios c ON p.cocinero_id = c.id
-            WHERE p.estado != 'entregado'
-            ORDER BY p.id DESC
-        ";
+        $total = 0;
 
-        $res = $conn->query($query);
+        foreach ($carrito as $id => $cantidad) {
 
-        $pedidos = [];
+            $producto = Producto::buscaPorId($id);
 
-        if ($res) {
-            while ($fila = $res->fetch_assoc()) {
-                $pedidos[] = $fila;
+            if ($producto) {
+                $total += $producto['precio'] * $cantidad;
             }
         }
-
-        return $pedidos;
     }
 
-    /* Pedidos que ve la cocina */
-
-    public static function getPedidosCocina() {
+    public static function pedidosPendientes() {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "
-            SELECT id, estado, usuario_id
-            FROM pedidos
-            WHERE estado IN ('recibido', 'en_preparacion', 'cocinando')
-            ORDER BY id ASC
-        ";
+        $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s'", $conn->real_escape_string(EstadoPedido::PENDIENTE->value));
 
-        $res = $conn->query($query);
+        $rs = $conn->query($query);
 
-        $pedidos = [];
-
-        if ($res) {
-            while ($fila = $res->fetch_assoc()) {
-                $pedidos[] = $fila;
+        if ($rs && $rs->num_rows > 0) {
+            $pedidos = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $pedidos[] = new Pedido(
+                    $fila['idPedido'],
+                    $fila['usuario_id'],
+                    $fila['estadoPedido'],
+                    $fila['fechaPedido'],
+                    $fila['tipo'],
+                    $fila['total'],
+                    $fila['cocinero_id']
+                );
             }
+            $rs->free();
+            return $pedidos;
         }
 
-        return $pedidos;
+        return null;
     }
 
-    /* Un cocinero se queda el pedido */
-
-    public static function asignarCocinero($pedidoId, $cocineroId) {
+    public static function asignarPedido($idPedido, $cocineroId) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf(
-            "UPDATE pedidos
-             SET cocinero_id = %d,
-                 estado = 'cocinando'
-             WHERE id = %d",
-            $cocineroId,
-            $pedidoId
+        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s', cocinero_id = %d WHERE id = %d", 
+            $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value),
+            (int)$cocineroId,
+            (int)$idPedido
         );
 
         return $conn->query($query);
     }
 
-    /* Marcar producto preparado */
-
-    public static function marcarProductoPreparado($pedidoProductoId) {
+    public static function pedidosPendientesCocinero($cocineroId) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "UPDATE pedido_productos
-             SET preparado = 1
-             WHERE id = %d",
-            $pedidoProductoId
+            "SELECT * FROM pedidos WHERE estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND cocinero_id = %d",
+            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
+            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
+            $conn->real_escape_string(EstadoPedido::RECIBIDO->value),
+            (int)$cocineroId
         );
 
-        return $conn->query($query);
+        $rs = $conn->query($query);
+
+        $pedidos = [];
+
+        if ($rs) {
+            while ($fila = $rs->fetch_assoc()) {
+                $pedidos[] = new Pedido(
+                    $fila['idPedido'],
+                    null,
+                    $fila['estadoPedido'],
+                    $fila['fechaPedido'],
+                    $fila['tipo'],
+                    null,
+                    $fila['cocinero_id']
+                );
+            }
+            $rs->free();
+        }
+
+        return $pedidos;
     }
 
-    /* Finalizar preparación */
-
-    public static function finalizarPedido($pedidoId) {
+    public static function buscaProductos($idPedido) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf(
-            "UPDATE pedidos
-            SET estado = 'listo_cocina'
-            WHERE id = %d",
-        $pedidoId
-    );
+        $query = sprintf("SELECT p.* FROM productos p JOIN pedido_productos pp ON p.id = pp.producto_id  WHERE pp.pedido_id = %d",
+            (int)$idPedido
+        );
 
-    return $conn->query($query);
-    }
+        $rs = $conn->query($query);
 
-    public static function getLineasPedido($pedidoId) {
+        $productos = [];
 
-    $conn = Aplicacion::getInstance()->getConexionBd();
+        if ($rs) {
+            while ($fila = $rs->fetch_assoc()) {
 
-    $query = sprintf(
-        "SELECT pp.id, pp.pedido_id, pp.producto_id, pp.cantidad, pp.precioUnitario, pp.ivaAplicado, pp.preparado, p.nombre
-         FROM pedido_productos pp
-         JOIN productos p ON pp.producto_id = p.id
-         WHERE pp.pedido_id = %d",
-        $pedidoId
-    );
+                $productos[] = new Producto(
+                    $fila['id'],
+                    $fila['nombreProd'],
+                    $fila['descripcion'],
+                    $fila['categoria_id'],
+                    $fila['precio'],
+                    $fila['iva'],
+                    $fila['stock'],
+                    $fila['disponible'],
+                    $fila['ofertado'],
+                    $fila['fechaCreacion']
+                );
+            }
 
-    $res = $conn->query($query);
-
-    $lineas = [];
-
-    if ($res) {
-        while ($fila = $res->fetch_assoc()) {
-            $lineas[] = $fila;
+            $rs->free();
         }
-    }
 
-    return $lineas;
-}
+        return $productos;
+    }
 
 }

@@ -1,29 +1,29 @@
 <?php
-namespace es\ucm\fdi\aw\usuarios;
+namespace es\ucm\fdi\aw\productos;
 
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Formulario;
-use es\ucm\fdi\aw\usuarios\Usuario;
-use es\ucm\fdi\aw\usuarios\Roles;
+use es\ucm\fdi\aw\productos\Producto;
+use es\ucm\fdi\aw\productos\Categoria;
 
-class FormularioBusquedaUsuarios extends Formulario
+class FormularioBusquedaProductos extends Formulario
 {
 
     public function __construct() {
-        parent::__construct('formBusquedaUsuarios', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/busquedaUsuarios.php')
+        parent::__construct('formBusquedaProductos', [
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/busquedaProductos.php'),
         ]);
     }
     
     protected function generaCamposFormulario(&$datos){
 
-        $roles = '';
-        $roles .= "<option value='' selected>Todos</option>";
+        $categoria = '';
+        $categoria .= "<option value='' selected>Todos</option>";
 
-        foreach (Roles::cases() as $rol) {
-            if ($rol->value !== Roles::ADMIN->value) {
-                $roles .= "<option value='{$rol->value}'>{$rol->value}</option>";
-            } 
+        $listaCategorias = Categoria::buscaCategorias();
+
+        foreach ($listaCategorias as $p) {
+            $categoria .= "<option value='{$p->getNombre()}'{$p->getNombre()}</option>";
         }
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
@@ -31,7 +31,7 @@ class FormularioBusquedaUsuarios extends Formulario
         $html = <<<EOF
             $htmlErroresGlobales
             <fieldset>
-                <legend>Buscar usuario</legend>
+                <legend>Buscar producto</legend>
 
                 <div>
                     <label for="nombre">Buscar</label>
@@ -39,14 +39,14 @@ class FormularioBusquedaUsuarios extends Formulario
                 </div>
 
                 <div>
-                    <label for="rol">Rol</label>
-                    <select id="rol" name="rol">
-                        $roles
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria" name="categoria">
+                        $categoria
                     </select>
                 </div>
 
                 <div>
-                    <button type="submit" name="buscarUsuario">Buscar usuario</button>
+                    <button type="submit" name="buscarProducto">Buscar producto</button>
                 </div>
             </fieldset>
         EOF;
@@ -61,21 +61,21 @@ class FormularioBusquedaUsuarios extends Formulario
 
         $app = Aplicacion::getInstance();
 
-        $nombreUsuario = filter_var($datos['nombre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $urlModificar = $app->resuelve('/usuarios/admin/modificarUsuario.php');
+        $nombreProducto = filter_var($datos['nombre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $urlModificar = $app->resuelve('/usuarios/admin/modificarProductos.php');
 
-        if ($nombreUsuario === '') {        
-            $rol = filter_var($datos['rol'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($nombreProducto === '') {        
+            $categoria = filter_var($datos['categoria'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $usuarios = Usuario::buscaRolUsuariosAdmin($rol);
+            $productos = Producto::listar($categoria);
 
-            if (!empty($usuarios) && is_array($usuarios)) {
-                foreach ($usuarios as $p) {
+            if (!empty($productos) && is_array($productos)) {
+                foreach ($productos as $p) {
                     $filas .= "<tr>
-                        <td>{$p->getNombreUsuario()}</td>
-                        <td>{$p->getEmail()}</td>
-                        <td>{$p->getRol()}</td>
-                        <td>{$p->getFechaRegistro()}</td>
+                        <td>{$p->getNombreProd()}</td>
+                        <td>{$p->getDescripcion()}</td>
+                        <td>{$p->getPrecio()}</td>
+                        <td>{$p->getStock()}</td>
                         <td>
                             <form action='{$urlModificar}' method='POST'>
                                 <input type='hidden' name='id' value='{$p->getId()}'>
@@ -91,16 +91,16 @@ class FormularioBusquedaUsuarios extends Formulario
         }
 
         else{
-            $usuarios = Usuario::buscaUsuario($nombreUsuario);
-            if ($usuarios !== null) {
+            $nombreProducto = Producto::buscaPorNombre($nombreProducto);
+            if ($nombreProducto !== null) {
                 $filas .= "<tr>
-                    <td>{$usuarios->getNombreUsuario()}</td>
-                    <td>{$usuarios->getEmail()}</td>
-                    <td>{$usuarios->getRol()}</td>
-                    <td>{$usuarios->getFechaRegistro()}</td>
+                    <td>{$nombreProducto->getNombreProd()}</td>
+                    <td>{$nombreProducto->getDescripcion()}</td>
+                    <td>{$nombreProducto->getPrecio()}</td>
+                    <td>{$nombreProducto->getStock()}</td>
                     <td>
                         <form action='{$urlModificar}' method='POST'>
-                            <input type='hidden' name='id' value='{$usuarios->getId()}'>
+                            <input type='hidden' name='id' value='{$nombreProducto->getId()}'>
                             <button type='submit'>Modificar</button>
                         </form>
                     </td>
@@ -113,14 +113,13 @@ class FormularioBusquedaUsuarios extends Formulario
 
         if ($filas !== null) {
             $_SESSION['resultadosBusqueda'] = <<<EOS
-            <h1>Busqueda de usuarios</h1>
             <table border="1">
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th>Fecha de registro</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>

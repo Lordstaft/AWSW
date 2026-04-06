@@ -8,81 +8,97 @@ $app = Aplicacion::getInstance();
     <h3>Navegación</h3>
     <ul>
 
-        <!-- Siempre visible -->
-        <li>
-            <a href="<?= $app->resuelve('/index.php') ?>">Inicio</a>
-        </li>
+        <?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
 
-<?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
 
         <!-- CLIENTE -->
-<?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
+        <?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
+                
+                <li>
+                    <a href="<?= $app->resuelve('/inicio.php') ?>">Inicio</a>
+                </li>
+                
+                <li>
+                    <a href="<?= $app->resuelve('/pedidos/pedido.php') ?>">
+                        Hacer pedido
+                    </a>
+                </li>
 
-        <li>
-            <a href="<?= $app->resuelve('/pedidos/pedido.php') ?>">
-                Hacer pedido
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/pedidos/carrito.php') ?>">
+                        Ver carrito
+                    </a>
+                </li>
 
-        <li>
-            <a href="<?= $app->resuelve('/pedidos/carrito.php') ?>">
-                Ver carrito
-            </a>
-        </li>
-
-<?php endif; ?>
+        <?php endif; ?>
 
 
         <!-- COCINERO -->
-<?php if (isset($_SESSION['esCocinero']) && $_SESSION['esCocinero'] === true): ?>
+        <?php if (isset($_SESSION['esCocinero']) && $_SESSION['esCocinero'] === true): ?>
 
-        <li>
-            <a href="<?= $app->resuelve('/pedidos/cocina.php') ?>">
-                Cocina
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/cocinero/pedidosPendientes.php') ?>">
+                        Pedidos sin asignar
+                    </a>
+                </li>
 
-<?php endif; ?>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/cocinero/pedidos.php') ?>">
+                        Pedidos sin preparar
+                    </a>
+                </li>
+
+        <?php endif; ?>
 
 
         <!-- GERENTE -->
-<?php if (isset($_SESSION['esGerente']) && $_SESSION['esGerente'] === true) : ?>
+        <?php if (isset($_SESSION['esGerente']) && $_SESSION['esGerente'] === true) : ?>
 
-        <li>
-            <a href="<?= $app->resuelve('/pedidos/gerente.php') ?>">
-                Gestión de pedidos
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/pedidos/gerente.php') ?>">
+                        Gestión de pedidos
+                    </a>
+                </li>
 
-<?php endif; ?>
+        <?php endif; ?>
 
 
         <!-- ADMIN -->
-<?php if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) : ?>
+        <?php if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) : ?>
 
-        <li>
-            <a href="<?= $app->resuelve('/productos/productos.php') ?>">
-                Gestionar productos
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/admin/productos.php') ?>">
+                        Gestionar productos
+                    </a>
+                </li>
 
-        <li>
-            <a href="<?= $app->resuelve('/admin.php') ?>">
-                Administración
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/admin/categorias.php') ?>">
+                        Gestionar categorías
+                    </a>
+                </li>
 
-<?php endif; ?>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/admin/registroCategoria.php') ?>">
+                        Registrar categoría
+                    </a>
+                </li>
 
+                <li>
+                    <a href="<?= $app->resuelve('/registro.php') ?>">
+                        Añadir usuario
+                    </a>
+                </li>
 
-        <!-- Cerrar sesión -->
-        <li>
-            <a href="<?= $app->resuelve('/logout.php') ?>">
-                Cerrar sesión
-            </a>
-        </li>
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/admin.php') ?>">
+                        Administración
+                    </a>
+                </li>
 
-<?php else : ?>
+        <?php endif; ?>
+
+        <?php else : ?>
 
         <!-- Usuario no logueado -->
 
@@ -98,7 +114,7 @@ $app = Aplicacion::getInstance();
             </a>
         </li>
 
-<?php endif; ?>
+        <?php endif; ?>
 
     </ul>
 </nav>

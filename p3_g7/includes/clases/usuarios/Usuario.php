@@ -149,7 +149,7 @@ class Usuario {
             $usuarios = [];
             while ($fila = $rs->fetch_assoc()) {
                 $usuarios[] = new Usuario(
-                    null,
+                    $fila['id'],
                     $fila['nombreUsuario'],
                     $fila['email'],
                     $fila['nombre'],

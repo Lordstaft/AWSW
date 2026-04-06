@@ -1,18 +1,24 @@
 <?php
 namespace es\ucm\fdi\aw\usuarios;
+
 use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\usuarios\Roles;
 
 class FormularioEditarUsuario extends Formulario
 {
+
     public function __construct() {
-        parent::__construct('formEditarUsuario', ['urlRedireccion' => 'admin.php']);
+        parent::__construct('formEditarUsuario', [
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarUsuario.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+        ]);
     }
     
     protected function generaCamposFormulario(&$datos){
-        $busqueda = $_GET['id'];
-        $usuario = Usuario::buscaUsuario($busqueda);
+        $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
+        $usuario = Usuario::buscaUsuarioId($busqueda);
         $roles = '';
         foreach (Roles::cases() as $rol) {
             if ($usuario->getRol() === $rol->value) {
@@ -74,6 +80,7 @@ class FormularioEditarUsuario extends Formulario
     }
 
     protected function procesaFormulario(&$datos){
+        $app = Aplicacion::getInstance();
 
         if(isset($datos['editarUsuario'])){
             $this->errores = [];
@@ -108,12 +115,27 @@ class FormularioEditarUsuario extends Formulario
             
             if (count($this->errores) === 0) {
                 $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol);
+                if (!$modificacion) {
+                    $this->errores[] = "No se ha podido modificar el usuario, por favor inténtelo de nuevo.";
+                }
+                else{
+                    $mensajes = ['Se ha modificado el usuario correctamente.'];
+                    $app->putAtributoPeticion('mensajes', $mensajes);
+                }
             }
         }
 
         elseif(isset($datos['eliminarUsuario'])){
             $id = $datos['id'];
-            Usuario::eliminarUsuario($id);
+            $resul = Usuario::eliminarUsuario($id);
+            if(!$resul){
+                $this->errores[] = "No se ha podido eliminar el usuario, por favor inténtelo de nuevo.";
+            }
+            else{
+                $mensajes = ['Se ha eliminado el usuario correctamente.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+                unset($_SESSION['resultadosBusqueda']);
+            }
         }
     }
 }

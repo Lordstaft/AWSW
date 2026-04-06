@@ -31,6 +31,8 @@ class FormularioLogout extends Formulario
         $_SESSION = [];
 
         session_destroy();
+        session_start();
+        
         $mensajes = ['Hasta pronto !'];
         $app->putAtributoPeticion('mensajes', $mensajes);
     }
