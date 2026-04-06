@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../config.php';
+require_once __DIR__.'/includes/config.php';
 
 $tituloPagina = 'Inicio';
 
@@ -8,4 +8,5 @@ $contenidoPrincipal = <<<EOS
   <a href="./pedido.php?pagina=eatIn">Para consumir en el local</a>
 EOS;
 
-require __DIR__ . '/plantilla.php';
+$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Inicio'];
+$app->generaVista('/plantillas/plantilla.php', $params);

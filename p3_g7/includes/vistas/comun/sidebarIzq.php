@@ -1,6 +1,5 @@
 <?php
 use es\ucm\fdi\aw\Aplicacion;
-use es\ucm\fdi\aw\usuarios\Roles;
 
 $app = Aplicacion::getInstance();
 ?>
@@ -14,10 +13,10 @@ $app = Aplicacion::getInstance();
             <a href="<?= $app->resuelve('/index.php') ?>">Inicio</a>
         </li>
 
-<?php if ($app->usuarioLogueado()) : ?>
+<?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
 
         <!-- CLIENTE -->
-<?php if ($app->tieneRol(Roles::CLIENTE)) : ?>
+<?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
 
         <li>
             <a href="<?= $app->resuelve('/pedidos/pedido.php') ?>">
@@ -35,7 +34,7 @@ $app = Aplicacion::getInstance();
 
 
         <!-- COCINERO -->
-<?php if ($app->tieneRol(Roles::COCINERO)) : ?>
+<?php if (isset($_SESSION['esCocinero']) && $_SESSION['esCocinero'] === true): ?>
 
         <li>
             <a href="<?= $app->resuelve('/pedidos/cocina.php') ?>">
@@ -47,7 +46,7 @@ $app = Aplicacion::getInstance();
 
 
         <!-- GERENTE -->
-<?php if ($app->tieneRol(Roles::GERENTE)) : ?>
+<?php if (isset($_SESSION['esGerente']) && $_SESSION['esGerente'] === true) : ?>
 
         <li>
             <a href="<?= $app->resuelve('/pedidos/gerente.php') ?>">
@@ -59,7 +58,7 @@ $app = Aplicacion::getInstance();
 
 
         <!-- ADMIN -->
-<?php if ($app->tieneRol(Roles::ADMIN)) : ?>
+<?php if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) : ?>
 
         <li>
             <a href="<?= $app->resuelve('/productos/productos.php') ?>">

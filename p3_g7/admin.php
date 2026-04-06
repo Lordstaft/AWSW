@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../../config.php';
-use es\ucm\fdi\aw\forms\FormularioBusquedaUsuarios;
+use es\ucm\fdi\aw\usuarios\FormularioBusquedaUsuarios;
 
 $tituloPagina = 'Buscar usuario';
 $formulario = new FormularioBusquedaUsuarios();

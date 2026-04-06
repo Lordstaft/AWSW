@@ -1,8 +1,9 @@
 <?php
 namespace es\ucm\fdi\aw\usuarios;
+
 use es\ucm\fdi\aw\Formulario;
+use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\usuarios\Usuario;
-use es\ucm\fdi\aw\usuarios\Roles;
 
 class FormularioCrearUsuario extends Formulario
 {
@@ -152,7 +153,7 @@ class FormularioCrearUsuario extends Formulario
             unset($_SESSION['usuarioModificado']);
 
             if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
-                $usuario = Usuario::buscaUsuarioId($id);
+                $usuario = Usuario::buscaUsuarioId($modificacion->getId());
                 $_SESSION['usuarioModificado'] = $usuario->getId;
             }
         }

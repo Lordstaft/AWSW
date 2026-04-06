@@ -1,8 +1,13 @@
 <?php
 namespace es\ucm\fdi\aw\usuarios;
+
 use es\ucm\fdi\aw\usuarios\Roles;
 use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\MagicProperties;
+
 class Usuario {
+
+    use MagicProperties;
 
     private $id;
     private $nombreUsuario;
@@ -63,7 +68,7 @@ class Usuario {
     }
 
     public function setPassword($password) {
-        $this->password = password_hash($password, BCRYPT);
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
     }
 
     public function setRol($rol) {
@@ -71,7 +76,7 @@ class Usuario {
     }
 
     private function hashPassword($password) {
-        return password_hash($password, BCRYPT);
+        return password_hash($password, PASSWORD_BCRYPT);
     }
 
     public function buscaPassword($password) {

@@ -28,7 +28,9 @@ class FormularioLogout extends Formulario
     {
         $app = Aplicacion::getInstance();
 
-        $app->logout();
+        $_SESSION = [];
+
+        session_destroy();
         $mensajes = ['Hasta pronto !'];
         $app->putAtributoPeticion('mensajes', $mensajes);
     }

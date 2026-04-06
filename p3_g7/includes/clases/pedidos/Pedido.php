@@ -5,7 +5,29 @@ namespace es\ucm\fdi\aw\pedidos;
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\productos\Producto;
 
+use es\ucm\fdi\aw\MagicProperties;
+
 class Pedido {
+
+    use MagicProperties;
+
+    private $idPedido;
+    private $usuario_id;
+    private $estadoPedido;
+    private $fechaPedido;
+    private $tipo;
+    private $total;
+    private $cocinero_id;
+
+    public function __construct($idPedido, $usuario_id, $estadoPedido, $fechaPedido, $tipo, $total, $cocinero_id) {
+        $this->idPedido = $idPedido;
+        $this->usuario_id = $usuario_id;
+        $this->estadoPedido = $estadoPedido ?? EstadosPedido::PENDIENTE;
+        $this->fechaPedido = $fechaPedido;
+        $this->tipo = $tipo;
+        $this->total = $total;
+        $this->cocinero_id = $cocinero_id ?? null;
+    }
 
     public static function crearPedido($usuarioId, $tipo, $carrito) {
 

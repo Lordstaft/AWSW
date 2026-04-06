@@ -14,9 +14,9 @@ define('BD_PASS', 'awp2');
  */
 define('RAIZ_APP', __DIR__);
 define('RUTA_APP', '/p3_g7');
-define('RUTA_IMGS', RUTA_APP.'img/');
-define('RUTA_CSS', RUTA_APP.'css/');
-define('RUTA_JS', RUTA_APP.'js/');
+define('RUTA_IMGS', RUTA_APP.'/img/');
+define('RUTA_CSS', RUTA_APP.'/css/');
+define('RUTA_JS', RUTA_APP.'/js/');
 
 /**
  * Configuración del soporte de UTF-8, localización (idioma y país) y zona horaria
@@ -30,6 +30,9 @@ date_default_timezone_set('Europe/Madrid');
  *
  * @see http://www.php-fig.org/psr/psr-4/
  */
+
+require_once __DIR__ . '/clases/Aplicacion.php';
+
 spl_autoload_register(function ($class) {
 
     // project-specific namespace prefix

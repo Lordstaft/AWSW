@@ -1,11 +1,11 @@
 <?php
 namespace es\ucm\fdi\aw\usuarios;
 
-class Roles
-{
-    const ADMIN = 'admin';
-    const CLIENTE = 'cliente';
-    const GERENTE = 'gerente';
-    const CAMARERO = 'camarero';
-    const COCINERO = 'cocinero';
+enum Roles: string {
+    case ADMIN = 'admin';
+    case CLIENTE = 'cliente';
+    case GERENTE = 'gerente';
+    case CAMARERO = 'camarero';
+    case COCINERO = 'cocinero';
 }
+    

@@ -1,22 +1,34 @@
 <?php
+
 use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\usuarios\FormularioLogout;
 
-$app = Aplicacion::getInstance();
+function mostrarSaludo()
+{
+    $html = '';
+    $app = Aplicacion::getInstance();
+    if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login']===true)) {
+        $nombreUsuario = $_SESSION['nombreUsuario'];
 
-function mostrarSaludo() {
-	if (isset($_SESSION['login']) && ($_SESSION['login']===true)) {
-		return "Bienvenido, {$_SESSION['nombre']} <a href='" . RUTA_APP . "/includes/views/pages/logout.php'>(salir)</a>";
-		
-	} 
+        $formLogout = new FormularioLogout();
+        $htmlLogout = $formLogout->gestiona();
+        $html = "Bienvenido, {$nombreUsuario}. $htmlLogout";
+    } 
     else {
-		return "Usuario desconocido. <a href='" . RUTA_APP . "/index.php'>Login</a>";
-	}
+        $loginUrl = $app->resuelve('/index.php');
+        $registroUrl = $app->resuelve('/registro.php');
+        $html = <<<EOS
+        Usuario desconocido. <a href="{$loginUrl}">Login</a> <a href="{$registroUrl}">Registro</a>
+      EOS;
+    }
+
+    return $html;
 }
 ?>
 
 <header>
-    <div class="cabecera-contenido">
-        <img src="<?= $app->resuelve('/img/logo.png') ?>" alt="Logo BistroFDI" class="logo">
-        <h1>BistroFDI</h1>
+    <h1><?= $params['cabecera'] ?? 'BistroFDI' ?></h1>
+    <div class="saludo">
+        <?= mostrarSaludo(); ?>
     </div>
 </header>

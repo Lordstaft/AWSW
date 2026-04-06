@@ -2,9 +2,11 @@
 
 namespace es\ucm\fdi\aw;
 
+echo "ESTA ES MI APLICACION";
+
 use Exception;
 use es\ucm\fdi\aw\usuarios\Usuario;
-
+use es\ucm\fdi\aw\usuarios\Roles;
 /**
  * Clase que mantiene el estado global de la aplicación.
  */
@@ -24,6 +26,7 @@ class Aplicacion
         if (!self::$instancia instanceof self) {
             self::$instancia = new static();
         }
+        
         return self::$instancia;
     }
 
@@ -244,59 +247,6 @@ class Aplicacion
         $this->doIncludeInterna($rutaVista, $params);
     }
 
-    public function login(Usuario $user)
-    {
-        $this->compruebaInstanciaInicializada();
-        $_SESSION['login'] = true;
-        $_SESSION['nombre'] = $user->getNombre();
-        $_SESSION['idUsuario'] = $user->getId();
-        $_SESSION['roles'] = $user->getRoles();
-    }
-
-    public function logout()
-    {
-        $this->compruebaInstanciaInicializada();
-        //Doble seguridad: unset + destroy
-        unset($_SESSION['login']);
-        unset($_SESSION['nombre']);
-        unset($_SESSION['idUsuario']);
-        unset($_SESSION['roles']);
-
-
-        session_destroy();
-        session_start();
-    }
-
-    public function usuarioLogueado()
-    {
-        $this->compruebaInstanciaInicializada();
-        return ($_SESSION['login'] ?? false) === true;
-    }
-
-    public function nombreUsuario()
-    {
-        $this->compruebaInstanciaInicializada();
-        return $_SESSION['nombre'] ?? '';
-    }
-
-    public function idUsuario()
-    {
-        $this->compruebaInstanciaInicializada();
-        return $_SESSION['idUsuario'] ?? '';
-    }
-
-    public function esAdmin()
-    {
-        $this->compruebaInstanciaInicializada();
-        return $this->usuarioLogueado() && (array_search(Usuario::ADMIN_ROLE, $_SESSION['roles']) !== false);
-    }
-
-    public function tieneRol($rol)
-    {
-        $this->compruebaInstanciaInicializada();
-        return $this->usuarioLogueado() && (array_search($rol, $_SESSION['roles']) !== false);
-    }
-
     public function paginaError($codigoRespuesta, $tituloPagina, $mensajeError, $explicacion = '')
     {
         $this->generandoError = true;
@@ -305,14 +255,6 @@ class Aplicacion
         $params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => "<h1>{$mensajeError}</h1><p>{$explicacion}</p>"];
         $this->generaVista('/plantillas/plantilla.php', $params);
         exit();
-    }
-
-    public function verificaLogado($urlNoLogado)
-    {
-        $this->compruebaInstanciaInicializada();
-        if (!$this->usuarioLogueado()) {
-            self::redirige($urlNoLogado);
-        }
     }
 
     /**

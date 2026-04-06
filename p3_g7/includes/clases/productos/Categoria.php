@@ -4,25 +4,41 @@ use es\ucm\fdi\aw\Aplicacion;
 
 class Categoria
 {
+    private $id;
+    private $nombre;
+    private $descripcion;
+    private $imgCategoriaProd;
+
+    public function __construct($id, $nombre, $descripcion, $imgCategoriaProd)
+    {
+        $this->id = $id;
+        $this->nombre = $nombre;
+        $this->descripcion = $descripcion;
+        $this->imgCategoriaProd = $imgCategoriaProd;
+    }
+
     public static function listar()
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $sql = "SELECT id, nombre, descripcion, imgCategoriaProd
-                FROM categorias
-                ORDER BY nombre";
+        $sql = "SELECT id, nombre, descripcion, imgCategoriaProd FROM categorias ORDER BY nombre";
 
         $rs = $conn->query($sql);
 
-        $categorias = [];
-        if ($rs) {
+        if ($rs && $rs->num_rows > 0) {
+            $categorias = [];
             while ($fila = $rs->fetch_assoc()) {
-                $categorias[] = $fila;
+                $categorias[] = new Categoria(
+                    $fila['id'],
+                    $fila['nombre'],
+                    $fila['descripcion'],
+                    $fila['imgCategoriaProd']
+                );
             }
             $rs->free();
+            return $categorias;
         }
-
-        return $categorias;
+        return [];     
     }
     
     public static function crea($nombre, $descripcion, $imgCategoriaProd = '')
