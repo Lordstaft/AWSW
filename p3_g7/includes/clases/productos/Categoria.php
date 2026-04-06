@@ -18,7 +18,7 @@ class Categoria
         $this->id = $id;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
-        $this->imgCategoriaProd = $imgCategoriaProd ?? '';
+        $this->imgCategoriaProd = $imgCategoriaProd ?? "categoria_default.jpg";
     }
 
     public function getId()
@@ -185,8 +185,8 @@ class Categoria
         $query = sprintf(
             "UPDATE categorias
              SET nombre = '%s',
-                 descripcion = '%s',
-                 imgCategoriaProd = '%s'
+                descripcion = '%s',
+                imgCategoriaProd = '%s'
              WHERE id = %d",
             $conn->real_escape_string($nombre),
             $conn->real_escape_string($descripcion),
