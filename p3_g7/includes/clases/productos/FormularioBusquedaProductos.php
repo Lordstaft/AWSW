@@ -11,7 +11,7 @@ class FormularioBusquedaProductos extends Formulario
 
     public function __construct() {
         parent::__construct('formBusquedaProductos', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/busquedaProductos.php'),
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/busquedaProductos.php'),
         ]);
     }
     
@@ -62,7 +62,7 @@ class FormularioBusquedaProductos extends Formulario
         $app = Aplicacion::getInstance();
 
         $nombreProducto = filter_var($datos['nombre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $urlModificar = $app->resuelve('/usuarios/admin/modificarProductos.php');
+        $urlModificar = $app->resuelve('/usuarios/gerente/modificarProductos.php');
 
         if ($nombreProducto === '') {        
             $categoria = filter_var($datos['categoria'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);

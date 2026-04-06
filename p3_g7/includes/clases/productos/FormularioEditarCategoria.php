@@ -23,6 +23,7 @@ class FormularioEditarCategoria extends Formulario
         $categoria = Categoria::buscaPorId($busqueda);
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
+        $erroresCampos = self::generaErroresCampos(['nombre', 'descripcion', 'imgCategoria'], $this->errores, 'span', array('class' => 'error'));
 
         $html = <<<EOF
         $htmlErroresGlobales
@@ -31,12 +32,15 @@ class FormularioEditarCategoria extends Formulario
 
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" value="{$categoria->getNombre()}" required>
+            {$erroresCampos['nombre']}
 
             <label for="descripcion">Descripción:</label>
             <textarea name="descripcion" required>{$categoria->getDescripcion()}</textarea>
+            {$erroresCampos['descripcion']}
 
             <label for="imgCategoriaProd">Imagen:</label>
             <input type="text" name="imgCategoriaProd" value="{$categoria->getImgCategoriaProd()}">
+            {$erroresCampos['imgCategoria']}
 
             <input type="hidden" name="id" value="{$categoria->getId()}">
 

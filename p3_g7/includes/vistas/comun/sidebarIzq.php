@@ -60,17 +60,23 @@ $app = Aplicacion::getInstance();
                     </a>
                 </li>
 
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/gerente/productos.php') ?>">
+                        Gestionar productos
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/gerente/registroProducto.php') ?>">
+                        Registrar producto
+                    </a>
+                </li>
+
         <?php endif; ?>
 
 
         <!-- ADMIN -->
         <?php if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) : ?>
-
-                <li>
-                    <a href="<?= $app->resuelve('/usuarios/admin/productos.php') ?>">
-                        Gestionar productos
-                    </a>
-                </li>
 
                 <li>
                     <a href="<?= $app->resuelve('/usuarios/admin/categorias.php') ?>">

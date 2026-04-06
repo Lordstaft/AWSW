@@ -11,8 +11,8 @@ class FormularioEditarProducto extends Formulario
 
     public function __construct() {
         parent::__construct('formEditarProducto', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarProductos.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/modificarProductos.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/productos.php')
         ]);
     }
 
@@ -20,7 +20,7 @@ class FormularioEditarProducto extends Formulario
     {
         $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
         $producto = Producto::buscaPorId($busqueda);
-        $categorias = Categoria::listar(); 
+        $categorias = Categoria::listar();
 
         $opcionesCategorias = '';
         foreach ($categorias as $categoria) {
@@ -35,7 +35,7 @@ class FormularioEditarProducto extends Formulario
 
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombreProd', 'descripcion', 'categoria_id', 'precio', 'stock'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombreProd', 'descripcion', 'precio', 'iva', 'disponible', 'ofertado'], $this->errores, 'span', array('class' => 'error'));
 
 
         $html = <<<EOF
@@ -53,7 +53,6 @@ class FormularioEditarProducto extends Formulario
             <label>Categoría:</label>
             <select name="categoria_id" required>
                 $opcionesCategorias
-            {$erroresCampos['categoria_id']}
             </select>
 
             <label>Precio:</label>
@@ -70,7 +69,6 @@ class FormularioEditarProducto extends Formulario
 
             <label>Stock:</label>
             <input type="number" name="stock" value="{$producto->getStock()}" min="0" required>
-            {$erroresCampos['stock']}
 
             <label>
                 <input type="checkbox" name="disponible" value="1" {$this->checked($producto->getDisponible())}>
@@ -109,7 +107,7 @@ class FormularioEditarProducto extends Formulario
         $app = Aplicacion::getInstance();
 
         $this->errores = [];
-        
+
         if(isset($datos['editarProducto'])){
 
             $nombreProd = trim($datos['nombreProd'] ?? '');
@@ -144,9 +142,6 @@ class FormularioEditarProducto extends Formulario
 
             $stock = filter_var($datos['stock'] ?? '');
             $stock = filter_var($stock, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ($stock < 0) {
-                $this->errores['stock'] = 'El stock no puede ser negativo';
-            }
             
             $id = filter_var($datos['id'] ?? '');
             $id = filter_var($id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
