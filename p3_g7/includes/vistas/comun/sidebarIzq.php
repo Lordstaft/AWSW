@@ -55,7 +55,7 @@ $app = Aplicacion::getInstance();
         <?php if (isset($_SESSION['esGerente']) && $_SESSION['esGerente'] === true) : ?>
 
                 <li>
-                    <a href="<?= $app->resuelve('/pedidos/gerente.php') ?>">
+                    <a href="<?= $app->resuelve('/usuarios/gerente/pedidosAsignados.php') ?>">
                         Gestión de pedidos
                     </a>
                 </li>
@@ -69,6 +69,16 @@ $app = Aplicacion::getInstance();
                 <li>
                     <a href="<?= $app->resuelve('/usuarios/gerente/registroProducto.php') ?>">
                         Registrar producto
+                    </a>
+                </li>
+
+        <?php endif; ?>
+
+                <?php if (isset($_SESSION['esCamarero']) && $_SESSION['esCamarero'] === true) : ?>
+
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/gerente/pedidosAsignados.php') ?>">
+                        Gestión de entregas
                     </a>
                 </li>
 

@@ -7,37 +7,43 @@ use es\ucm\fdi\aw\pedidos\Pedido;
 use es\ucm\fdi\aw\usuarios\Usuario;
 
 
-class FormularioPedidosPendientes extends Formulario
+class FormularioPedidosAsignados extends Formulario
 {
 
     public function __construct() {
-        parent::__construct('formPedidosPendientes', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidos.php')
+        parent::__construct('formPedidosAsignados', [
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/pedidosAsignados.php')
         ]);
     }
     
     protected function generaCamposFormulario(&$datos){
+        
+        $pedidos = '';
 
-        $pedidosPendientes = Pedido::pedidosPendientes();
+        if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
+            $pedidos = Pedido::pedidosPendientes_Asignados(true);
+        }
+
+        else{
+            $pedidos = Pedido::pedidosPendientes_Asignados(false);
+        }
 
         $filas = '';
 
-        if (!empty($pedidosPendientes) && is_array($pedidosPendientes)) {
-            foreach ($pedidosPendientes as $p) {
+        if (!empty($pedidos) && is_array($pedidos)) {
+            foreach ($pedidos as $p) {
                 $filas .= "<tr>
                     <td>{$p->getTipo()}</td>
                     <td>{$p->getFechaPedido()}</td>
                     <td>{$p->getEstadoPedido()}</td>
                     <td>
                         <div>
-                            <button type='submit'>Asignar</button>
-                            <input type='hidden' name='idPedido' value='{$p->getPedidoId()}'>
+                            <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Modificar</button>
                         </div>
                     </td>
                 </tr>";
             }
-        } 
+        }
 
         if($filas === ''){
             $html = <<<EOF
@@ -64,6 +70,7 @@ class FormularioPedidosPendientes extends Formulario
         }
 
         return $html;
+
     }
 
     protected function procesaFormulario(&$datos)
@@ -75,17 +82,10 @@ class FormularioPedidosPendientes extends Formulario
         if(!$idPedido || empty($idPedido)){
             $mensajes = ['Error al localizar el pedido.'];
             $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige('/usuarios/cocinero/pedidosPendientes.php');
+            $app->redirige('/usuarios/gerente/pedidosAsignados.php');
         }
 
-        else{
-            $cocinero = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
-            $asignacion = Pedido::asignarPedido($idPedido, $cocinero->getId());
-            if (!$asignacion) {
-                $mensajes = ['Error al intentar asignar el pedido.'];
-                $app->putAtributoPeticion('mensajes', $mensajes);
-            }
-        }
+        $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/gerente/modificarAsignacionPedido.php?idPedido='.$idPedido));
     }
 
 }

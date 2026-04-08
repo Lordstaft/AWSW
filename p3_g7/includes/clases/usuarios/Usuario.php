@@ -135,6 +135,34 @@ class Usuario {
         return null;
     }
 
+    public static function buscaUsuariosRol($rol){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s'", $conn->real_escape_string($rol));
+        
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $usuarios = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $usuarios[] = new Usuario(
+                    $fila['id'],
+                    $fila['nombreUsuario'],
+                    $fila['email'],
+                    $fila['nombre'],
+                    $fila['apellidos'],
+                    null,
+                    $fila['rol'],
+                    $fila['avatar'] ?? null,
+                    $fila['fechaRegistro']
+                );
+            }
+            $rs->free();
+            return $usuarios;
+        }
+        return null;
+    }
+
     public static function buscaRolUsuariosAdmin($rol) {
         $conn = Aplicacion::getInstance()->getConexionBd();
         if($rol === 'Todos' || $rol === '') {
@@ -213,6 +241,7 @@ class Usuario {
 
         return $conn->query($query);
     }
+    
 
     public static function editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {
         $conn = Aplicacion::getInstance()->getConexionBd();

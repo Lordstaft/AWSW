@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-04-2026 a las 22:23:50
+-- Tiempo de generación: 06-04-2026 a las 05:40:56
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `awp2`
 --
-CREATE DATABASE IF NOT EXISTS `awp2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `awp2`;
 
 -- --------------------------------------------------------
 

@@ -1,15 +1,16 @@
 <?php
 require __DIR__ . '/../../includes/config.php';
 
-use es\ucm\fdi\aw\pedidos\FormularioPedidosAsignados;
+use es\ucm\fdi\aw\pedidos\FormularioEditarAsignacion;
 
-$tituloPagina = 'Gestion de pedidos';
-$formulario = new FormularioPedidosAsignados();
+$tituloPagina = 'Modificar asignación de pedido';
 
+$formulario = new FormularioEditarAsignacion();
 $formularioHTML = $formulario->gestiona();
 
+
 $contenidoPrincipal = <<<EOS
-    <h1>Gestion de Pedidos</h1>
+    <h1>Modificar asignación de pedido</h1>
     $formularioHTML
 EOS;
 

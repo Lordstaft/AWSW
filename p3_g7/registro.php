@@ -1,8 +1,16 @@
 <?php
-require __DIR__ . '/../../config.php';
+require __DIR__ . '/includes/config.php';
 use es\ucm\fdi\aw\usuarios\FormularioCrearUsuario;
 
-$tituloPagina = 'Buscar usuario';
+if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
+    $cabecera = 'Panel Administrador';
+}
+
+else{
+    $cabecera = 'Bistro FDI';
+}
+
+$tituloPagina = 'Registro';
 $formulario = new FormularioCrearUsuario();
 $formularioHTML = $formulario->gestiona();
 
@@ -11,4 +19,5 @@ $contenidoPrincipal = <<<EOS
     $formularioHTML
 EOS;
 
-require __DIR__ . '/plantilla.php';
+$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => $cabecera];
+$app->generaVista('/plantillas/plantilla.php', $params);

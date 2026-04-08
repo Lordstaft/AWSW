@@ -33,6 +33,10 @@ class Pedido {
         return $this->fechaPedido;
     }
 
+    public function getCocineroId() {
+        return $this->cocinero_id;
+    }
+
     public function getPedidoId() {
         return $this->idPedido;
     }
@@ -135,6 +139,86 @@ class Pedido {
         }
 
         return $pedidos;
+    }
+
+    public static function buscaPedido($idPedido) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("SELECT * FROM pedidos WHERE idPedido = %d", (int)$idPedido);
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $fila = $rs->fetch_assoc();
+
+            $pedido = new Pedido(
+                $fila['idPedido'],
+                null,
+                $fila['estadoPedido'],
+                $fila['fechaPedido'],
+                $fila['tipo'],
+                null,
+                $fila['cocinero_id']
+            );
+
+            $rs->free();
+            return $pedido;
+        }
+
+        return null;
+    }
+
+    public static function pedidosPendientes_Asignados($esAdmin) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        if ($esAdmin) {
+            $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido != '%s'", 
+                $conn->real_escape_string(EstadoPedido::ENTREGADO->value)
+            );
+        }
+
+        else {
+            $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s' AND estadoPedido = '%s'", 
+                $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
+                $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value)
+            );
+        }
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $pedidos = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $pedidos[] = new Pedido(
+                    $fila['idPedido'],
+                    null,
+                    $fila['estadoPedido'],
+                    $fila['fechaPedido'],
+                    $fila['tipo'],
+                    null,
+                    $fila['cocinero_id']
+                );
+            }
+            $rs->free();
+            return $pedidos;
+        }
+
+        return null;
+    }
+
+    public static function modificarAsignacion($idPedido, $idCocinero, $estadoPedido) {
+
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("UPDATE pedidos SET cocinero_id = %d, estadoPedido = '%s' WHERE idPedido = %d",
+            (int)$idCocinero,
+            $conn->real_escape_string($estadoPedido),
+            (int)$idPedido
+        );
+
+        return $conn->query($query);
     }
 
     public static function buscaProductos($idPedido) {
