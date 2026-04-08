@@ -21,8 +21,8 @@ $contenidoPrincipal .= "<ul>";
 foreach ($categorias as $categoria) {
     $contenidoPrincipal .= "
     <li>
-        <a href='".$app->resuelve('/pedidos/pedido.php')."?categoria={$categoria['id']}'>
-            {$categoria['nombre']}
+        <a href='".$app->resuelve('/pedidos/pedido.php')."?categoria={$categoria->getId()}'>
+            {$categoria->getNombre()}
         </a>
     </li>
     ";

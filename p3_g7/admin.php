@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../config.php';
+require __DIR__ . '/includes/config.php';
 use es\ucm\fdi\aw\usuarios\FormularioBusquedaUsuarios;
 
 $tituloPagina = 'Buscar usuario';
