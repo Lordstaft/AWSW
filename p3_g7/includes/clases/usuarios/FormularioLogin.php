@@ -21,23 +21,28 @@ class FormularioLogin extends Formulario
         $nombreUsuario = $datos['nombreUsuario'] ?? '';
         $password = $datos['password'] ?? '';
 
-        $html = <<<EOS
+        $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
+        $erroresCampos = self::generaErroresCampos(['nombreUsuario', 'password'], $this->errores, 'span', array('class' => 'error'));
+
+        $html = <<<EOF
+        $htmlErroresGlobales
         <fieldset>
-            <legend>Login</legend>
+            <legend>Usuario y contraseña</legend>
             <div>
                 <label for="nombreUsuario">Nombre de usuario:</label>
                 <input id="nombreUsuario" type="text" name="nombreUsuario" value="$nombreUsuario" />
+                {$erroresCampos['nombreUsuario']}
             </div>
             <div>
-                <label for="password">Contraseña:</label>
+                <label for="password">Password:</label>
                 <input id="password" type="password" name="password" value="$password" />
+                {$erroresCampos['password']}
             </div>
             <div>
                 <button type="submit" name="login">Entrar</button>
             </div>
         </fieldset>
-        EOS;
-
+        EOF;
         return $html;
     }
 

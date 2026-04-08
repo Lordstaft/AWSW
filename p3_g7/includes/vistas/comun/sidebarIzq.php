@@ -74,41 +74,12 @@ $app = Aplicacion::getInstance();
 
         <?php endif; ?>
 
-                <?php if (isset($_SESSION['esCamarero']) && $_SESSION['esCamarero'] === true) : ?>
+        <!-- CAMARERO -->
+        <?php if (isset($_SESSION['esCamarero']) && $_SESSION['esCamarero'] === true) : ?>
 
                 <li>
-                    <a href="<?= $app->resuelve('/usuarios/gerente/pedidosAsignados.php') ?>">
-                        Gestión de entregas
-                    </a>
-                </li>
-
-        <?php endif; ?>
-
-
-        <!-- ADMIN -->
-        <?php if (isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true) : ?>
-
-                <li>
-                    <a href="<?= $app->resuelve('/usuarios/admin/categorias.php') ?>">
-                        Gestionar categorías
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= $app->resuelve('/usuarios/admin/registroCategoria.php') ?>">
-                        Registrar categoría
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= $app->resuelve('/registro.php') ?>">
-                        Añadir usuario
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= $app->resuelve('/usuarios/admin.php') ?>">
-                        Administración
+                    <a href="<?= $app->resuelve('/usuarios/camarero/gestionarEntregas.php') ?>">
+                        Gestionar entregas
                     </a>
                 </li>
 
