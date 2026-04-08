@@ -119,7 +119,7 @@ $app = Aplicacion::getInstance();
         <!-- Usuario no logueado -->
 
         <li>
-            <a href="<?= $app->resuelve('/index.php') ?>">
+            <a href="<?= $app->resuelve('/login.php') ?>">
                 Login
             </a>
         </li>

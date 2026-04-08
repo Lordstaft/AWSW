@@ -8,11 +8,11 @@ function mostrarSaludo()
     $html = '';
     $app = Aplicacion::getInstance();
     if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login'] === true)) {
-        $nombre = $_SESSION['nombre'];
+        $nombreUsuario = $_SESSION['nombreUsuario'];
 
         $formLogout = new FormularioLogout();
         $htmlLogout = $formLogout->gestiona();
-        $html = "Bienvenido, {$nombre}. $htmlLogout";
+        $html = "Bienvenido, {$nombreUsuario}. $htmlLogout";
     } 
     else {
         $loginUrl = $app->resuelve('/index.php');
