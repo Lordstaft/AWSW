@@ -22,6 +22,8 @@ class FormularioPedidosEnCocina extends Formulario{
         $cocinero = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
         $pedidosPendientes = Pedido::pedidosPendientesCocinero($cocinero->getId());
 
+        $erroresCampos = self::generaErroresCampos(['estado'], $this->errores, 'span', array('class' => 'error'));
+
         if (!empty($pedidosPendientes) && is_array($pedidosPendientes)) {
 
             foreach ($pedidosPendientes as $p) {
@@ -56,6 +58,7 @@ class FormularioPedidosEnCocina extends Formulario{
                         <select name='estado'>
                             $estados
                         </select>
+                        {$erroresCampos['estado']}
                     </td>
                     <td>
                         <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>
@@ -91,6 +94,36 @@ class FormularioPedidosEnCocina extends Formulario{
     }
         protected function procesaFormulario(&$datos)
     {
+        $app = Aplicacion::getInstance();
+        $idPedido = trim($datos['idPedido'] ?? '');
+        $idPedido = filter_var($idPedido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+        if(!$idPedido || empty($idPedido)){
+            $mensajes = ['Error al localizar el pedido.'];
+            $app->putAtributoPeticion('mensajes', $mensajes);
+            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'));
+        }
+
+        $estadoPedido = trim($datos['estado'] ?? '');
+        $estadoPedido = filter_var($estadoPedido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if(!$estadoPedido || empty($estadoPedido)){
+            $this->errores['estado'] = 'El estado del pedido no puede estar vacío';
+        }
+
+        if(count($this->errores) === 0){
+            $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
+            $modificacion = Pedido::modificarAsignacion($idPedido, $usuario->getId(), $estadoPedido);
+
+            if(!$modificacion){
+                $this->errores[] = "Error al modificar el estado del pedido.";
+            }
+
+            else{
+                $mensajes = ['Se ha actualizado el estado del pedido.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+                $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'));
+            }
+        }
     }
 }

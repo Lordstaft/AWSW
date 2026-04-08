@@ -33,6 +33,7 @@ class FormularioPedidosAsignados extends Formulario
         if (!empty($pedidos) && is_array($pedidos)) {
             foreach ($pedidos as $p) {
                 $filas .= "<tr>
+                    <td>{$p->getPedidoId()}</td>
                     <td>{$p->getTipo()}</td>
                     <td>{$p->getFechaPedido()}</td>
                     <td>{$p->getEstadoPedido()}</td>
@@ -56,6 +57,7 @@ class FormularioPedidosAsignados extends Formulario
                 <table border="1">
                     <thead>
                         <tr>
+                            <th>Id pedido</th>
                             <th>Tipo de pedido</th>
                             <th>Fecha de pedido</th>
                             <th>Estado</th>

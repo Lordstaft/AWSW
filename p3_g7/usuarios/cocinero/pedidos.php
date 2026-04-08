@@ -11,8 +11,8 @@ $formularioHTML = $formulario->gestiona();
 
 
 $contenidoPrincipal = <<<EOS
-<h1>Resultados de la búsqueda</h1>
-$formularioHTML
+    <h1>Resultados de la búsqueda</h1>
+    $formularioHTML
 EOS;
 
 $params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];

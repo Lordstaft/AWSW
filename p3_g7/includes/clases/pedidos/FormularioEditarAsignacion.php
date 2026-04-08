@@ -23,7 +23,6 @@ class FormularioEditarAsignacion extends Formulario
         $cocineros =  Usuario::buscaRolUsuariosAdmin(Roles::COCINERO->value);
         $pedido = Pedido::buscaPedido($idPedido);
         
-        var_dump($pedido);
         $opciones = '';
         $opcionesEstados = '';
 
@@ -91,11 +90,12 @@ class FormularioEditarAsignacion extends Formulario
         $this->errores = [];
         $idPedido = trim($datos['idPedido'] ?? '');
         $idPedido = filter_var($idPedido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $modificacion = null;
 
         if(!$idPedido || empty($idPedido)){
             $mensajes = ['Error al localizar el pedido.'];
             $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige('/usuarios/gerente/pedidosAsignados.php');
+            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/gerente/pedidosAsignados.php'));
         }
 
         $estadoPedido = trim($datos['estado'] ?? '');
@@ -106,7 +106,13 @@ class FormularioEditarAsignacion extends Formulario
 
         $cocineroId = Usuario::buscaUsuarioId($cocinero);
 
-        $modificacion = Pedido::modificarAsignacion($idPedido, $cocineroId->getId(), $estadoPedido);
+        if($estadoPedido === EstadoPedido::PENDIENTE->value){
+           $modificacion = Pedido::modificarAsignacion($idPedido, null, $estadoPedido); 
+        }
+
+        else{
+            $modificacion = Pedido::modificarAsignacion($idPedido, $cocineroId->getId(), $estadoPedido);
+        }
 
         if(!$modificacion){
             $this->errores[] = 'Error al modificar la asignación del pedido.';

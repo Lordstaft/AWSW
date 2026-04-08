@@ -75,7 +75,7 @@ class FormularioPedidosPendientes extends Formulario
         if(!$idPedido || empty($idPedido)){
             $mensajes = ['Error al localizar el pedido.'];
             $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige('/usuarios/cocinero/pedidosPendientes.php');
+            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'));
         }
 
         else{

@@ -98,7 +98,7 @@ class Pedido {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s', cocinero_id = %d WHERE id = %d", 
+        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s', cocinero_id = %d WHERE idPedido = '%d'", 
             $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value),
             (int)$cocineroId,
             (int)$idPedido
@@ -212,11 +212,20 @@ class Pedido {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("UPDATE pedidos SET cocinero_id = %d, estadoPedido = '%s' WHERE idPedido = %d",
-            (int)$idCocinero,
-            $conn->real_escape_string($estadoPedido),
-            (int)$idPedido
-        );
+        if($estadoPedido === EstadoPedido::PENDIENTE->value){
+            $query = sprintf("UPDATE pedidos SET cocinero_id = null, estadoPedido = '%s' WHERE idPedido = %d",
+                $conn->real_escape_string($estadoPedido),
+                (int)$idPedido
+            );
+        }
+        
+        else{
+            $query = sprintf("UPDATE pedidos SET cocinero_id = %d, estadoPedido = '%s' WHERE idPedido = %d",
+                (int)$idCocinero,
+                $conn->real_escape_string($estadoPedido),
+                (int)$idPedido
+            );
+        }
 
         return $conn->query($query);
     }
