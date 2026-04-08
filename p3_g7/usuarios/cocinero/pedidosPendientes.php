@@ -10,7 +10,7 @@ $formulario = new FormularioPedidosPendientes();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Resultados de la búsqueda</h1>
+    <h1>Pedidos Pendientes</h1>
     $formularioHTML
 EOS;
 

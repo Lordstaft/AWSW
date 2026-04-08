@@ -4,47 +4,38 @@ namespace es\ucm\fdi\aw\pedidos;
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\pedidos\Pedido;
-use es\ucm\fdi\aw\usuarios\Usuario;
 
 
-class FormularioPedidosAsignados extends Formulario
+class FormularioEntregaPedido extends Formulario
 {
 
     public function __construct() {
-        parent::__construct('formPedidosAsignados', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/pedidosAsignados.php')
+        parent::__construct('formEntregaPedido', [
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/camarero/gestionarEntregas.php')
         ]);
     }
     
     protected function generaCamposFormulario(&$datos){
-        
-        $pedidos = '';
 
-        if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
-            $pedidos = Pedido::pedidosPendientes_Asignados(true);
-        }
-
-        else{
-            $pedidos = Pedido::pedidosPendientes_Asignados(false);
-        }
+        $pedidosEntrega = Pedido::pedidosListosEntrega();
 
         $filas = '';
 
-        if (!empty($pedidos) && is_array($pedidos)) {
-            foreach ($pedidos as $p) {
+        if (!empty($pedidosEntrega) && is_array($pedidosEntrega)) {
+            foreach ($pedidosEntrega as $p) {
                 $filas .= "<tr>
-                    <td>{$p->getPedidoId()}</td>
                     <td>{$p->getTipo()}</td>
                     <td>{$p->getFechaPedido()}</td>
                     <td>{$p->getEstadoPedido()}</td>
                     <td>
                         <div>
-                            <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Modificar</button>
+                            <button type='submit'>Entregar</button>
+                            <input type='hidden' name='idPedido' value='{$p->getPedidoId()}'>
                         </div>
                     </td>
                 </tr>";
             }
-        }
+        } 
 
         if($filas === ''){
             $html = <<<EOF
@@ -57,7 +48,6 @@ class FormularioPedidosAsignados extends Formulario
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>Id pedido</th>
                             <th>Tipo de pedido</th>
                             <th>Fecha de pedido</th>
                             <th>Estado</th>
@@ -72,7 +62,6 @@ class FormularioPedidosAsignados extends Formulario
         }
 
         return $html;
-
     }
 
     protected function procesaFormulario(&$datos)
@@ -84,10 +73,23 @@ class FormularioPedidosAsignados extends Formulario
         if(!$idPedido || empty($idPedido)){
             $mensajes = ['Error al localizar el pedido.'];
             $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/gerente/pedidosAsignados.php'));
+            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/camarero/gestionarEntregas.php'));
         }
 
-        $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/gerente/modificarAsignacionPedido.php?idPedido='.$idPedido));
-    }
+        else{
+            $pedido = Pedido::realizarEntrega($idPedido);
 
+            if(!$pedido){
+                $mensajes = ['Error al localizar el pedido.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+                $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/camarero/gestionarEntregas.php'));
+            }
+
+            else{
+                $mensajes = ['Pedido entregado con exito.'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+                $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/camarero/gestionarEntregas.php')); 
+            }
+        }
+    }
 }

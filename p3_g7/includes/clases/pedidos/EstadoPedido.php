@@ -8,4 +8,5 @@ enum EstadoPedido: string{
     case EN_PREPARACION = 'preparando';
     case EN_COCINA =  'cocinando';
     case ENTREGADO = 'entregado';
+    case LISTO = 'listo';
 }

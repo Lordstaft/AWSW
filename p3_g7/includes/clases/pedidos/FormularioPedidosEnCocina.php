@@ -40,11 +40,10 @@ class FormularioPedidosEnCocina extends Formulario{
 
                 foreach (EstadoPedido::cases() as $estado) {
 
-                    if ($p->getEstadoPedido() === $estado->value && $estado->value !== EstadoPedido::PENDIENTE->value) {
-
+                    if ($p->getEstadoPedido() === $estado->value) {
                         $estados .= "<option value='{$estado->value}' selected>{$estado->value}</option>";
                     } 
-                    else {
+                    elseif($estado->value !== EstadoPedido::CANCELADO->value && $estado->value !== EstadoPedido::PENDIENTE->value && $estado->value !== EstadoPedido::ENTREGADO->value && $estado->value !== EstadoPedido::RECIBIDO->value){
                         $estados .= "<option value='{$estado->value}'>{$estado->value}</option>";
                     }
                 }

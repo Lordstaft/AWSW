@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE IF NOT EXISTS `pedidos` (
   `idPedido` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) NOT NULL,
-  `estadoPedido` enum('pendiente','preparando','cocinando','enviado','entregado','cancelado') DEFAULT 'pendiente',
+  `estadoPedido` enum('pendiente','preparando','cocinando','enviado','entregado','cancelado','listo') DEFAULT 'pendiente',
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `tipo` enum('domicilio','recogida') NOT NULL,
   `total` decimal(10,2) NOT NULL,

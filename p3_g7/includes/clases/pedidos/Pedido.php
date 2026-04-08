@@ -112,9 +112,10 @@ class Pedido {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "SELECT * FROM pedidos WHERE estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND cocinero_id = %d",
+            "SELECT * FROM pedidos WHERE estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND cocinero_id = %d",
             $conn->real_escape_string(EstadoPedido::CANCELADO->value),
             $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
+            $conn->real_escape_string(EstadoPedido::LISTO->value),
             $conn->real_escape_string(EstadoPedido::RECIBIDO->value),
             (int)$cocineroId
         );
@@ -208,6 +209,35 @@ class Pedido {
         return null;
     }
 
+    public static function pedidosListosEntrega(){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s'", 
+            $conn->real_escape_string(EstadoPedido::LISTO->value)
+        );
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $pedidos = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $pedidos[] = new Pedido(
+                    $fila['idPedido'],
+                    null,
+                    $fila['estadoPedido'],
+                    $fila['fechaPedido'],
+                    $fila['tipo'],
+                    null,
+                    $fila['cocinero_id']
+                );
+            }
+            $rs->free();
+            return $pedidos;
+        }
+
+        return null;
+    }
+
     public static function modificarAsignacion($idPedido, $idCocinero, $estadoPedido) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -218,7 +248,7 @@ class Pedido {
                 (int)$idPedido
             );
         }
-        
+
         else{
             $query = sprintf("UPDATE pedidos SET cocinero_id = %d, estadoPedido = '%s' WHERE idPedido = %d",
                 (int)$idCocinero,
@@ -226,6 +256,17 @@ class Pedido {
                 (int)$idPedido
             );
         }
+
+        return $conn->query($query);
+    }
+
+    public static function realizarEntrega($idPedido){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s' WHERE idPedido = %d",
+            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
+            (int)$idPedido
+        );
 
         return $conn->query($query);
     }
