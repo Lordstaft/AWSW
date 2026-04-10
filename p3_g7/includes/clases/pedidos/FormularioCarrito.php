@@ -5,6 +5,7 @@ use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\productos\Producto;
 use es\ucm\fdi\aw\usuarios\Usuario;
+use es\ucm\fdi\aw\pedidos\EstadoPedido;
 
 class FormularioCarrito extends Formulario
 {
@@ -73,9 +74,57 @@ class FormularioCarrito extends Formulario
     }
     
     protected function procesaFormulario(&$datos){
+        $app = Aplicacion::getInstance();
+        if (isset($datos['confirmarPedido'])){
+            $totalPedido = 0;
+            $tipoPedido = '';
+            if($_SESSION['tipoPedido'] === 'llevar'){
+                $tipoPedido = 'domicilio';
+            }
+            elseif($_SESSION['tipoPedido'] === 'local'){
+                $tipoPedido = 'recogida';
+            }
+            $nombre = $_SESSION['nombreUsuario'];
+            $usuario = Usuario::buscaUsuario($nombre);
+            if (isset($_SESSION['idPedido'])) {
+                Pedido::eliminarPedido($_SESSION['idPedido']);
+            }
+            $nuevoPedido = Pedido::crearPedido($usuario->getId(), $tipoPedido, EstadoPedido::RECIBIDO->value);
 
-        if(isset($datos['cancelarPedido'])){
-            $app = Aplicacion::getInstance();
+            if(!$nuevoPedido){
+                $this->errores[] = "Se ha producido un error al intentar enviar el pedido";
+            }
+            else{
+                foreach ($_SESSION['carrito'] as $idProducto => $cantidad) {
+                    $producto = Producto::buscaPorId($idProducto);
+                    $precio = $producto->getPrecio();
+                    $total = $precio * $cantidad;
+                    $totalPedido += $total;
+                    $resul = Pedido::añadirProductoPedido($nuevoPedido->getPedidoId(), $producto->getId(), $cantidad, $producto->getPrecio(), $producto->getIva());
+
+                    if(!$resul){
+                        $mensajes = ['No ha sido posible gestionar el pedido, intentelo de nuevo mas tarde.'];
+                        $app->putAtributoPeticion('mensajes', $mensajes);
+                        Pedido::eliminarPedido($nuevoPedido->getPedidoId());
+                        $app->redirige(Aplicacion::getInstance()->resuelve('/inicio.php'));
+                    }
+                }
+
+                $idPedido = $nuevoPedido->getPedidoId();
+                $_SESSION['idPedido'] = $idPedido;
+                Pedido::actualizarPrecioPedido($idPedido, $totalPedido);
+                $mensajes = ['Pedido recibido'];
+                $app->putAtributoPeticion('mensajes', $mensajes);
+            }
+        }
+        elseif(isset($datos['cancelarPedido'])){
+            if (isset($_SESSION['idPedido'])) {
+                $pedido = Pedido::editarEstadoPedido($_SESSION['idPedido'], EstadoPedido::CANCELADO->value);
+                if(!$pedido){
+                    $this->errores[] = "Se ha producido un error al cancelar el pedido";
+                }
+                unset($_SESSION['idPedido']);
+            }
             unset($_SESSION['carrito']);
             unset($_SESSION['tipoPedido']);
             $mensajes = ['Se ha cancelado el pedido.'];

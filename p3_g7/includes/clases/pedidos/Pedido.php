@@ -74,9 +74,26 @@ class Pedido {
     public static function eliminarPedido($id){
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $conn->query("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
+        $sql1 = sprintf("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
+        $sql2 = sprintf("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
 
-        $conn->query("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
+        $conn->query($sql1);
+        $conn->query($sql2);
+    }
+
+    public static function editarEstadoPedido($id, $estado){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedidos SET estadoPedido = '%s' WHERE idPedido = '%d'",
+            (string)$estado,
+            (int)$id
+        );
+
+        if ($conn->query($query)) {
+            return true;
+        }
+        return false;
     }
 
     public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva){
@@ -84,12 +101,12 @@ class Pedido {
 
         $query = sprintf(
             "INSERT INTO pedido_productos (pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado)
-            VALUES (%d, %d, %d, %f, %d)",
+            VALUES (%d, %d, %d, %f, '%s')",
             (int)$pedidoId,
             (int)$productoId,
             (int)$cantidad,
             (float)$precio,
-            (int)$iva
+            (string)$iva
         );
 
         if ($conn->query($query)) {

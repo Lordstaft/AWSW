@@ -60,7 +60,7 @@ class FormularioPagar extends Formulario
                     <button type="submit" name="pagar">Pagar</button>
                 </div>
                 <div>
-                    <button type="submit" name="cancelar">Cancelar</button>
+                    <button type="submit" name="volver">Volver al carrito</button>
                 </div>
             </fieldset>
             EOF;
@@ -97,54 +97,28 @@ class FormularioPagar extends Formulario
 
         if ($cvv === '') {
             $this->errores['cvv'] = 'El CVV es obligatorio';
-        } 
+        }
+        
+        $app = Aplicacion::getInstance();
+        if(isset($datos['pagar'])){
+            if (count($this->errores) === 0) {
+                $idPedido = $_SESSION['idPedido'];
+                $pedido = Pedido::editarEstadoPedido($idPedido, EstadoPedido::PENDIENTE->value);
 
-        if (count($this->errores) === 0) {
-            $app = Aplicacion::getInstance();
-            if(isset($datos['pagar'])){
-                $totalPedido = 0;
-                $tipoPedido = '';
-                if($_SESSION['tipoPedido'] === 'llevar'){
-                    $tipoPedido = 'domicilio';
-                }
-                elseif($_SESSION['tipoPedido'] === 'local'){
-                    $tipoPedido = 'recogida';
-                }
-                $nombre = $_SESSION['nombreUsuario'];
-                $usuario = Usuario::buscaUsuario($nombre);
-                $nuevoPedido = Pedido::crearPedido($usuario->getId(), $tipoPedido, EstadoPedido::RECIBIDO->value);
-
-                if(!$nuevoPedido){
-                    $this->errores[] = "Se ha producido un error al intentar enviar el pedido";
+                if(!$pedido){
+                    $this->errores[] = "Se ha producido un error en el pago";
                 }
                 else{
-                    foreach ($_SESSION['carrito'] as $idProducto => $cantidad) {
-
-                        $producto = Producto::buscaPorId($idProducto);
-                        $precio = $producto->getPrecio();
-                        $total = $precio * $cantidad;
-                        $totalPedido += $total;
-                        $resul = Pedido::añadirProductoPedido($nuevoPedido->getPedidoId(), $producto->getId(), $cantidad, $producto->getPrecio(), $producto->getIva());
-
-                        if(!$resul){
-                            $mensajes = ['No ha sido posible gestionar el pedido, intentelo de nuevo mas tarde.'];
-                            $app->putAtributoPeticion('mensajes', $mensajes);
-                            Pedido::eliminarPedido($nuevoPedido->getPedidoId());
-                            $app->redirige(Aplicacion::getInstance()->resuelve('/inicio.php'));
-                        }
-                    }
-
-                    Pedido::actualizarPrecioPedido($nuevoPedido->getPedidoId(), $totalPedido);
-                    unset($_SESSION['carrito']);
                     unset($_SESSION['tipoPedido']);
-                    $mensajes = ['Pedido realizado con exito'];
+                    unset($_SESSION['carrito']);
+                    unset($_SESSION['idPedido']);
+                    $mensajes = ['Pago realizado con exito'];
                     $app->putAtributoPeticion('mensajes', $mensajes);
                 }
             }
-
-            elseif(isset($datos['cancelar'])){
-                $app->redirige(Aplicacion::getInstance()->resuelve('/pedidos/carrito.php'));
-            }
+        }
+        elseif(isset($datos['volver'])){
+            $app->redirige(Aplicacion::getInstance()->resuelve('/pedidos/carrito.php'));
         }
     }
 
