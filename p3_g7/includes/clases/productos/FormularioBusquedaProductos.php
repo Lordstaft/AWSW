@@ -62,7 +62,7 @@ class FormularioBusquedaProductos extends Formulario
         $app = Aplicacion::getInstance();
 
         $nombreProducto = filter_var($datos['nombre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $urlModificar = $app->resuelve('/usuarios/gerente/modificarProductos.php');
+        $urlModificar = Aplicacion::getInstance()->resuelve($app->resuelve('/usuarios/gerente/modificarProductos.php'));
 
         if ($nombreProducto === '') {        
             $categoria = filter_var($datos['categoria'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);

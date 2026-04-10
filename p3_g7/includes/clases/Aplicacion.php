@@ -153,6 +153,9 @@ class Aplicacion
         }
     }
 
+    public function getDirInstalacion() {
+        return $this->dirInstalacion;
+    }
     /**
      * Cierre de la aplicación.
      */
@@ -244,64 +247,6 @@ class Aplicacion
         $rutaVista = "/vistas{$rutaVista}";
         $this->doIncludeInterna($rutaVista, $params);
     }
-
-    public function subirImagen($file, $directorio = 'img') {
-
-        $this->compruebaInstanciaInicializada();
-
-        if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
-            return null;
-        }
-
-        $rutaDirectorio = $this->rutaRaizApp . '/' . $directorio;
-
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $nombreArchivo = uniqid() . '.' . $extension;
-
-        $rutaCompleta = $rutaDirectorio . '/' . $nombreArchivo;
-
-        if (move_uploaded_file($file['tmp_name'], $rutaCompleta)) {
-            return $nombreArchivo;
-        }
-
-        return null;
-    }
-
-    public function eliminarImagen(string $nombreArchivo = ''): bool {
-
-        $this->compruebaInstanciaInicializada();
-
-        if (empty($nombreArchivo)) {
-            return false;
-        }
-
-        // evitar rutas maliciosas
-        $nombreArchivo = basename($nombreArchivo);
-
-        $rutaCompleta = $this->rutaRaizApp . '/img/' . $nombreArchivo;
-
-        if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
-            return unlink($rutaCompleta);
-        }
-
-        return false;
-    }
-
-    public function reemplazarImagen($file, $imagenActual = null, $directorio = 'img') {
-
-        $this->compruebaInstanciaInicializada();
-
-        if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
-            return $imagenActual;
-        }
-
-        if (!empty($imagenActual)) {
-            $this->eliminarImagen($imagenActual);
-        }
-
-        return $this->subirImagen($file, $directorio);
-    }
-    
 
     public function paginaError($codigoRespuesta, $tituloPagina, $mensajeError, $explicacion = '')
     {

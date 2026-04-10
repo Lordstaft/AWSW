@@ -75,17 +75,14 @@ INSERT INTO `productos` (`id`, `nombreProd`, `descripcion`, `categoria_id`, `pre
 
 INSERT INTO `producto_imagenes` (`id`, `producto_id`, `rutaImagen`) VALUES
 (1, 1, 'cocacola.jpg'),
-(2, 1, 'cocacola_lata.jpg'),
 (3, 2, 'agua_mineral.jpg'),
 (4, 3, 'cafe_espresso.jpg'),
 (5, 4, 'bocadillo_jamon.jpg'),
 (6, 5, 'bocadillo_vegetal.jpg'),
-(7, 5, 'bocadillo_vegetal_abierto.jpg'),
 (8, 6, 'bocadillo_pollo.jpg'),
 (9, 7, 'ensalada_cesar.jpg'),
 (10, 8, 'ensalada_mixta.jpg'),
 (11, 9, 'hamburguesa_completa.jpg'),
-(12, 9, 'hamburguesa_interior.jpg'),
 (13, 10, 'lasana_casera.jpg'),
 (14, 11, 'pechuga_plancha.jpg'),
 (15, 12, 'tarta_queso.jpg'),

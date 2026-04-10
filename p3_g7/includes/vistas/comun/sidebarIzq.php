@@ -17,12 +17,6 @@ $app = Aplicacion::getInstance();
                 <li>
                     <a href="<?= $app->resuelve('/inicio.php') ?>">Inicio</a>
                 </li>
-                
-                <li>
-                    <a href="<?= $app->resuelve('/pedidos/pedido.php') ?>">
-                        Hacer pedido
-                    </a>
-                </li>
 
                 <li>
                     <a href="<?= $app->resuelve('/pedidos/carrito.php') ?>">

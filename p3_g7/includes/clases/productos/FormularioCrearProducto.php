@@ -162,16 +162,19 @@ class FormularioCrearProducto extends Formulario
         $categoria = Categoria::buscaPorNombre($nombreCategoria);
 
         if (count($this->errores) === 0) {
-            $app = Aplicacion::getInstance();
-            $resul = Producto::creaProducto($nombreProd, $descripcion, $categoria->getId(), $precio, $iva, $stock, $disponible, $ofertado);
 
-            if(!$resul){
-                $this->errores[] = "No se ha podido crear el producto, por favor inténtelo de nuevo.";
-            }
+            if(isset($datos['crearProducto'])){
+                $app = Aplicacion::getInstance();
+                $resul = Producto::creaProducto($nombreProd, $descripcion, $categoria->getId(), $precio, $iva, $stock, $disponible, $ofertado);
 
-            else{
-                $mensajes = ['Se ha creado el producto correctamente.'];
-                $app->putAtributoPeticion('mensajes', $mensajes);
+                if(!$resul){
+                    $this->errores[] = "No se ha podido crear el producto, por favor inténtelo de nuevo.";
+                }
+
+                else{
+                    $mensajes = ['Se ha creado el producto correctamente.'];
+                    $app->putAtributoPeticion('mensajes', $mensajes);
+                }
             }
         }
     }

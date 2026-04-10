@@ -78,32 +78,25 @@ class Producto {
         return $this->fechaCreacion;
     }
 
-    public static function imagenProducto($idProducto){
-        $conn = Aplicacion::getInstance()->getConexionBd();
-        $sql = sprintf(            
-            "SELECT * FROM producto_imagenes WHERE idProducto = %d",
-            (int)$idProducto
-        );
-
-        $rs = $conn->query($sql);
-    }
-
     public static function listar($categoria) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         if($categoria === 'Todos' || $categoria === '') {
-            $sql = sprintf("SELECT * FROM categorias c JOIN productos p ON c.id = p.categoria_id 
-            JOIN producto_imagenes pi ON p.id = pi.producto_id
-            ORDER BY c.nombre");
+            $sql = sprintf("SELECT p.*, pi.rutaImagen
+                FROM productos p
+                JOIN categorias c ON c.id = p.categoria_id
+                JOIN producto_imagenes pi ON p.id = pi.producto_id
+                ORDER BY c.nombre
+                ");
         }
 
         else{
-            $sql = "SELECT p.id, p.nombreProd, p.descripcion, p.precio, p.iva, p.disponible, p.ofertado,
-                        c.nombre, pi.rutaImagen AS categorias
-                    FROM productos p
-                    JOIN producto_imagenes pi ON p.id = pi.producto_id
-                    LEFT JOIN categorias c ON p.categoria_id = c.id
-                    ORDER BY p.nombreProd";
+            $sql = "SELECT p.*, pi.rutaImagen
+                FROM productos p
+                JOIN producto_imagenes pi ON p.id = pi.producto_id
+                LEFT JOIN categorias c ON p.categoria_id = c.id
+                ORDER BY p.nombreProd
+                ";
         }
 
         $rs = $conn->query($sql);
@@ -118,7 +111,7 @@ class Producto {
                     $fila['categoria'] ?? null,
                     $fila['precio'],
                     $fila['iva'],
-                    null,
+                    $fila['stock'],
                     $fila['disponible'],
                     $fila['ofertado'],
                     null,
@@ -181,7 +174,15 @@ class Producto {
             (int)$ofertado
         );
 
-        return $conn->query($query);
+        if ($conn->query($query)) {
+
+            $idProducto = $conn->insert_id;
+
+            $conn->query("INSERT INTO producto_imagenes (producto_id, rutaImagen)
+                        VALUES ($idProducto, 'producto_default.jpg')");
+
+            return true;
+        }
     }
 
     public static function buscaPorId($id)
@@ -252,19 +253,32 @@ class Producto {
         return null;
     }
 
-    public static function actualiza($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $disponible, $ofertado)
+    public static function actualiza($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
+        $conn->query(sprintf(
+            "DELETE FROM producto_imagenes WHERE producto_id = %d",
+            (int)$id
+        ));
+
+        $conn->query(sprintf(
+            "INSERT INTO producto_imagenes (producto_id, rutaImagen)
+            VALUES (%d, '%s')",
+            (int)$id,
+            $conn->real_escape_string($imagen)
+        ));
+
         $query = sprintf(
             "UPDATE productos
-             SET nombreProd = '%s',
+            SET nombreProd = '%s',
                 descripcion = '%s',
                 categoria_id = %d,
                 precio = %.2f,
                 iva = '%s',
                 disponible = %d,
-                ofertado = %d
+                ofertado = %d,
+                stock = %d
             WHERE id = %d",
             $conn->real_escape_string($nombreProd),
             $conn->real_escape_string($descripcion),
@@ -273,6 +287,7 @@ class Producto {
             $conn->real_escape_string($iva),
             (int)$disponible,
             (int)$ofertado,
+            (int)$stock,
             (int)$id
         );
 

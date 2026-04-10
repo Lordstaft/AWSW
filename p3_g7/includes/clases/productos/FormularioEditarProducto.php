@@ -5,6 +5,7 @@ use es\ucm\fdi\aw\productos\Producto;
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\productos\Categoria;
+use es\ucm\fdi\aw\Imagenes;
 
 class FormularioEditarProducto extends Formulario
 {
@@ -39,72 +40,100 @@ class FormularioEditarProducto extends Formulario
             $buttonEliminar = '<button type="submit" name="eliminarProducto">Eliminar producto</button>';
         }
 
+        $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $producto->getRutaImagen());
+
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombreProd', 'descripcion', 'precio', 'iva', 'disponible', 'ofertado'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombreProd', 'descripcion', 'precio', 'iva', 'disponible', 'ofertado', 'imagen'], $this->errores, 'span', array('class' => 'error'));
 
 
         $html = <<<EOF
         $htmlErroresGlobales
-        <fieldset>
-            <legend>Editar producto</legend>
+            <fieldset>
+                <legend>Editar producto</legend>
 
-            <label>Nombre:</label>
-            <input type="text" name="nombreProd" value="{$producto->getNombreProd()}" required>
+                <div>
+                    <label>Nombre:</label>
+                    <input type="text" name="nombreProd" value="{$producto->getNombreProd()}" required>
+                </div>
 
-            <label>Descripción:</label>
-            <textarea name="descripcion" required>{$producto->getDescripcion()}</textarea>
-            {$erroresCampos['descripcion']}
+                <div>
+                    <label>Descripción:</label>
+                    <textarea name="descripcion" required>{$producto->getDescripcion()}</textarea>
+                    {$erroresCampos['descripcion']}
+                </div>
 
-            <label>Categoría:</label>
-            <select name="categoria_id" required>
-                $opcionesCategorias
-            </select>
+                <div>
+                    <label>Categoría:</label>
+                    <select name="categoria_id" required>
+                        $opcionesCategorias
+                    </select>
+                </div>
 
-            <label>Precio:</label>
-            <input type="number" step="0.01" name="precio" value="{$producto->getPrecio()}" required>
-            {$erroresCampos['precio']}
+                <div>
+                    <label>Precio:</label>
+                    <input type="number" step="0.01" name="precio" value="{$producto->getPrecio()}" required>
+                    {$erroresCampos['precio']}
+                </div>
 
-            <label>IVA:</label>
-            <select name="iva" required>
-                <option value="4" {$this->selected($producto->getIva(), 4)}>4</option>
-                <option value="10" {$this->selected($producto->getIva(), 10)}>10</option>
-                <option value="21" {$this->selected($producto->getIva(), 21)}>21</option>
-                {$erroresCampos['iva']}
-            </select>
+                <div>
+                    <label>IVA:</label>
+                    <select name="iva" required>
+                        <option value="4" {$this->selected($producto->getIva(), 4)}>4</option>
+                        <option value="10" {$this->selected($producto->getIva(), 10)}>10</option>
+                        <option value="21" {$this->selected($producto->getIva(), 21)}>21</option>
+                    </select>
+                    {$erroresCampos['iva']}
+                </div>
 
-            <label>Stock:</label>
-            <input type="number" name="stock" value="{$producto->getStock()}" min="0" required>
+                <div>
+                    <label>Stock:</label>
+                    <input type="number" name="stock" value="{$producto->getStock()}" min="0" required>
+                </div>
 
-            <label>
-                <input type="checkbox" name="disponible" value="1" {$this->checked($producto->getDisponible())}>
-                Disponible
-                {$erroresCampos['disponible']}
-            </label>
+                <div>
+                    <label>
+                        <input type="checkbox" name="disponible" value="1" {$this->checked($producto->getDisponible())}>
+                        Disponible
+                    </label>
+                    {$erroresCampos['disponible']}
+                </div>
 
-            <input type="hidden" name="id" value="{$producto->getId()}">
+                <div>
+                    <label>
+                        <input type="checkbox" name="ofertado" value="1" {$this->checked($producto->getOfertado())}>
+                        Ofertado
+                    </label>
+                    {$erroresCampos['ofertado']}
+                </div>
 
-            <label>
-                <input type="checkbox" name="ofertado" value="1" {$this->checked($producto->getOfertado())}>
-                Ofertado
-                {$erroresCampos['ofertado']}
-            </label>
+                <input type="hidden" name="id" value="{$producto->getId()}">
 
-            <label>Imagen actual:</label>
-            <img src="/img/{$producto->getRutaImagen()}" width="120">
+                <div>
+                    <label>Imagen actual:</label><br>
+                    <img src={$rutaImagen} width="120">
+                </div>
+                {$erroresCampos['imagen']}
 
-            <label>
-                <input type="checkbox" name="eliminarImagen" value="1">
-                Eliminar imagen
-            </label>
+                <div>
+                    <label>
+                        <input type="checkbox" name="eliminarImagen" value="1">
+                        Eliminar imagen
+                    </label>
+                </div>
 
-            <label>Cambiar imagen:</label>
-            <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
+                <div>
+                    <label>Cambiar imagen:</label>
+                    <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
+                </div>
 
-            <button type="submit" name="editarProducto">Guardar cambios</button>
-            $buttonEliminar
-            <button type="submit" name="retirarProducto">Retirar</button>
-        </fieldset>
+                <div>
+                    <button type="submit" name="editarProducto">Guardar cambios</button>
+                    $buttonEliminar
+                    <button type="submit" name="retirarProducto">Retirar</button>
+                </div>
+
+            </fieldset>
         EOF;
 
         return $html;
@@ -164,10 +193,45 @@ class FormularioEditarProducto extends Formulario
             $id = filter_var($datos['id'] ?? '');
             $id = filter_var($id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+            if (!empty($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
+
+                if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
+                    $this->errores['imagen'] = 'Error al subir la imagen';
+                } 
+                else {
+                    $mime = mime_content_type($_FILES['imagen']['tmp_name']);
+
+                    $mimesPermitidos = ['image/jpeg', 'image/png'];
+
+                    if (!in_array($mime, $mimesPermitidos)) {
+                        $this->errores['imagen'] = 'Solo se permiten imágenes JPG o PNG';
+                    }
+
+                    if ($_FILES['imagen']['size'] > 5 * 1024 * 1024) {
+                        $this->errores['imagen'] = 'La imagen es demasiado grande';
+                    }
+                }
+            }
+
+            $imagen = new Imagenes();
+
             $disponible = isset($datos['disponible']) ? 1 : 0;
             $ofertado = isset($datos['ofertado']) ? 1 : 0;
 
+            $producto = Producto::buscaPorId($id);
+            $imagenActual = $producto->getRutaImagen() ?? '';
+
             if (count($this->errores) === 0) {
+                if (!empty($datos['eliminarImagen'])) {
+                    $imagen->eliminarImagen($imagenActual);
+                    $nombreImagen = null;
+                    }
+                else {
+                    $nombreImagen = $imagen->reemplazarImagen(
+                        $_FILES['imagen'], $imagenActual
+                    );
+                }
+
                 $ok = Producto::actualiza(
                     $id,
                     $nombreProd,
@@ -177,12 +241,14 @@ class FormularioEditarProducto extends Formulario
                     $iva,
                     $stock,
                     $disponible,
-                    $ofertado
+                    $ofertado,
+                    $nombreImagen
                 );
 
                 if ($ok) {
                     $mensajes = ['Se ha modificado el producto correctamente.'];
                     $app->putAtributoPeticion('mensajes', $mensajes);
+                    unset($_SESSION['resultadosBusqueda']);
                 } 
                 else {
                     $this->errores[] = "No se ha podido modificar el producto, por favor inténtelo de nuevo.";
@@ -190,7 +256,7 @@ class FormularioEditarProducto extends Formulario
             }
         }
 
-        elseif(isset($datos['retirarProducto'])){
+        if(isset($datos['retirarProducto'])){
             $id = filter_var($datos['id'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resul = Producto::retirar($id);
 
@@ -204,7 +270,7 @@ class FormularioEditarProducto extends Formulario
             }
         }
 
-        elseif(isset($datos['eliminarProducto'])){
+        if(isset($datos['eliminarProducto'])){
             $id = filter_var($datos['id'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resul = Producto::borra($id);
 
