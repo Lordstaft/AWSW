@@ -74,9 +74,26 @@ class Pedido {
     public static function eliminarPedido($id){
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $conn->query("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
+        $sql1 = sprintf("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
+        $sql2 = sprintf("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
 
-        $conn->query("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
+        $conn->query($sql1);
+        $conn->query($sql2);
+    }
+
+    public static function editarEstadoPedido($id, $estado){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedidos SET estadoPedido = '%s' WHERE idPedido = '%d'",
+            (string)$estado,
+            (int)$id
+        );
+
+        if ($conn->query($query)) {
+            return true;
+        }
+        return false;
     }
 
     public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva){
