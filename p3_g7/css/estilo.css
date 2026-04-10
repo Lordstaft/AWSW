@@ -273,6 +273,13 @@ a.deshabilitado {
 
 .mensajes input:checked + .mensaje { display: none; }
 
+.img-producto-tabla {
+    width: 60px; /* Tamaño pequeño */
+    height: 60px; 
+    object-fit: cover; /* Recorta la imagen para que no se deforme */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
 .avatar-usuario {
     width: 40px;
     height: 40px;
