@@ -229,8 +229,7 @@ class Usuario {
             $usuario = self::buscaUsuario($nombreUsuario);
             return $usuario;
         }
-
-        error_log("Error BD ({$conn->errno}): {$conn->error}");
+        
         return false;
     }
 

@@ -11,7 +11,8 @@ class FormularioCrearProducto extends Formulario
     public function __construct() {
         parent::__construct('formCrearProducto', [
         'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/registroProducto.php'),
-        'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/productos.php')
+        'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/productos.php'),
+        'enctype' => 'multipart/form-data'
         ]);
     }
     
@@ -41,7 +42,7 @@ class FormularioCrearProducto extends Formulario
 
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombreProd', 'categoria', 'descripcion', 'precio', 'iva', 'disponible', 'ofertado', 'stock'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombreProd', 'categoria', 'descripcion', 'precio', 'iva', 'disponible', 'ofertado', 'stock', 'imgProducto'], $this->errores, 'span', array('class' => 'error'));
 
 
         $html = <<<EOF
@@ -90,6 +91,10 @@ class FormularioCrearProducto extends Formulario
                 Ofertado
                 {$erroresCampos['ofertado']}
             </label>
+
+            <label>Subir imagen:</label>
+            <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
+            {$erroresCampos['imgProducto']}
 
             <button type="submit" name="crearProducto">Crear producto</button>
         </fieldset>

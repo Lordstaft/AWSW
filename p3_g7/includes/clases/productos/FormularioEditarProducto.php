@@ -12,7 +12,8 @@ class FormularioEditarProducto extends Formulario
     public function __construct() {
         parent::__construct('formEditarProducto', [
             'action' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/modificarProductos.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/productos.php')
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/gerente/productos.php'),
+            'enctype' => 'multipart/form-data'
         ]);
     }
 
@@ -88,6 +89,17 @@ class FormularioEditarProducto extends Formulario
                 Ofertado
                 {$erroresCampos['ofertado']}
             </label>
+
+            <label>Imagen actual:</label>
+            <img src="/img/{$producto->getRutaImagen()}" width="120">
+
+            <label>
+                <input type="checkbox" name="eliminarImagen" value="1">
+                Eliminar imagen
+            </label>
+
+            <label>Cambiar imagen:</label>
+            <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
 
             <button type="submit" name="editarProducto">Guardar cambios</button>
             $buttonEliminar

@@ -4,8 +4,6 @@ namespace es\ucm\fdi\aw\pedidos;
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\pedidos\Pedido;
-use es\ucm\fdi\aw\usuarios\Usuario;
-
 
 class FormularioPedidosAsignados extends Formulario
 {

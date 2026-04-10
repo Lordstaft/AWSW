@@ -25,7 +25,7 @@ class Pedido {
         $this->estadoPedido = $estadoPedido ?? EstadoPedido::PENDIENTE->value;
         $this->fechaPedido = $fechaPedido;
         $this->tipo = $tipo;
-        $this->total = $total;
+        $this->total = $total ?? 0;
         $this->cocinero_id = $cocinero_id ?? null;
     }
 
@@ -50,20 +50,54 @@ class Pedido {
     }
     
 
-    public static function crearPedido($usuarioId, $tipo, $carrito) {
+    public static function crearPedido($usuarioId, $tipo, $estadoPedido) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $total = 0;
+        $query = sprintf(
+            "INSERT INTO pedidos (usuario_id, tipo, estadoPedido)
+            VALUES ('%s', '%s', '%s')",
+            $conn->real_escape_string($usuarioId),
+            $conn->real_escape_string($tipo),
+            $conn->real_escape_string($estadoPedido)
+        );
 
-        foreach ($carrito as $id => $cantidad) {
-
-            $producto = Producto::buscaPorId($id);
-
-            if ($producto) {
-                $total += $producto['precio'] * $cantidad;
-            }
+        if ($conn->query($query)) {
+            $id = $conn->insert_id;
+            $pedido = self::buscaPedido($id);
+            return $pedido;
         }
+        
+        return false;
+    }
+
+    public static function eliminarPedido($id){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $conn->query("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
+
+        $conn->query("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
+    }
+
+    public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "INSERT INTO pedido_productos (pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado)
+            VALUES (%d, %d, %d, %f, %d)",
+            (int)$pedidoId,
+            (int)$productoId,
+            (int)$cantidad,
+            (float)$precio,
+            (int)$iva
+        );
+
+        if ($conn->query($query)) {
+            $conn->insert_id;
+            return true;
+        }
+
+        return false;
     }
 
     public static function pedidosPendientes() {
@@ -140,6 +174,18 @@ class Pedido {
         }
 
         return $pedidos;
+    }
+
+    public static function actualizarPrecioPedido($id, $total){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "UPDATE pedidos SET total = %f WHERE idPedido = '%d'",
+            (float)$total,
+            (int)$id
+        );
+
+        $conn->query($query);
     }
 
     public static function buscaPedido($idPedido) {
