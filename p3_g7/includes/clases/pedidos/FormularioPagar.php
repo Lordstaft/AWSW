@@ -97,11 +97,11 @@ class FormularioPagar extends Formulario
 
         if ($cvv === '') {
             $this->errores['cvv'] = 'El CVV es obligatorio';
-        } 
+        }
 
-        if (count($this->errores) === 0) {
-            $app = Aplicacion::getInstance();
-            if(isset($datos['pagar'])){
+        $app = Aplicacion::getInstance();
+        if(isset($datos['pagar'])){
+            if (count($this->errores) === 0) {
                 $totalPedido = 0;
                 $tipoPedido = '';
                 if($_SESSION['tipoPedido'] === 'llevar'){
@@ -141,10 +141,9 @@ class FormularioPagar extends Formulario
                     $app->putAtributoPeticion('mensajes', $mensajes);
                 }
             }
-
-            elseif(isset($datos['cancelar'])){
-                $app->redirige(Aplicacion::getInstance()->resuelve('/pedidos/carrito.php'));
-            }
+        }
+        elseif(isset($datos['cancelar'])){
+            $app->redirige(Aplicacion::getInstance()->resuelve('/pedidos/carrito.php'));
         }
     }
 
