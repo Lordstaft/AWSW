@@ -84,4 +84,5 @@ if (empty($carrito)) {
     ";
 }
 
-require __DIR__ . '/plantilla.php';
+$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];
+$app->generaVista('/plantillas/plantilla.php', $params);
