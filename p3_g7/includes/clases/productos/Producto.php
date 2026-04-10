@@ -222,9 +222,9 @@ class Producto {
     public static function listarProductosCliente(){
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $sql = sprintf("SELECT * FROM categorias c JOIN productos p ON c.id = p.categoria_id 
-        JOIN producto_imagenes pi ON p.id = pi.producto_id WHERE p.disponible = 1 AND p.stock > 0
-        ORDER BY c.nombre");
+        $sql = sprintf("SELECT c.nombre, p.*, pi.rutaImagen FROM categorias c 
+        JOIN productos p ON c.id = p.categoria_id JOIN producto_imagenes pi ON p.id = pi.producto_id 
+        WHERE p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
 
         $rs = $conn->query($sql);
 
