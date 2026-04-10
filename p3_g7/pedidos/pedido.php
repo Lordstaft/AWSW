@@ -4,10 +4,12 @@ require_once __DIR__ . '/../includes/config.php';
 use es\ucm\fdi\aw\productos\Categoria;
 use es\ucm\fdi\aw\Aplicacion;
 
-$conn = Aplicacion::getInstance()->getConexionBd();
+$app = Aplicacion::getInstance();
+$conn = $app->getConexionBd();
 
+/* Guardar tipo de pedido */
 if (isset($_GET['pagina'])) {
-    $_SESSION['pedido'] = $_GET['pagina'];
+    $_SESSION['tipoPedido'] = $_GET['pagina'];
 }
 
 $tituloPagina = "Realizar pedido";
@@ -19,10 +21,11 @@ $categorias = Categoria::listar();
 $contenidoPrincipal .= "<ul>";
 
 foreach ($categorias as $categoria) {
+
     $contenidoPrincipal .= "
     <li>
-        <a href='".$app->resuelve('/pedidos/pedido.php')."?categoria={$categoria->getId()}'>
-            {$categoria->getNombre()}
+        <a href='".$app->resuelve('/pedidos/pedido.php')."?categoria=".$categoria->getId()."'>
+            ".$categoria->getNombre()."
         </a>
     </li>
     ";
@@ -30,7 +33,9 @@ foreach ($categorias as $categoria) {
 
 $contenidoPrincipal .= "</ul>";
 
+/* Mostrar productos */
 if (isset($_GET['categoria'])) {
+
     $idCategoria = (int) $_GET['categoria'];
 
     $query = "SELECT id, nombreProd, precio
@@ -43,22 +48,37 @@ if (isset($_GET['categoria'])) {
     $contenidoPrincipal .= "<h2>Productos</h2>";
 
     while ($fila = $res->fetch_assoc()) {
-        $contenidoPrincipal .= "
-        <p>
-            <b>{$fila['nombreProd']}</b> - {$fila['precio']} €
-        </p>
 
-        <form action='".$app->resuelve('/productos/anadirCarrito.php')."' method='GET'>
-            <input type='hidden' name='id' value='".$fila['id']."'>
-            Cantidad:
-            <input type='number' name='cantidad' value='1' min='1'>
-            <button type='submit'>Añadir al carrito</button>
-        </form>
+        $contenidoPrincipal .= "
+        <div style='border:1px solid #ccc; padding:10px; margin:10px;'>
+
+            <p>
+                <b>{$fila['nombreProd']}</b> - {$fila['precio']} €
+            </p>
+
+            <form action='".$app->resuelve('/productos/anadirCarrito.php')."' method='GET'>
+
+                <input type='hidden' name='id' value='{$fila['id']}'>
+
+                Cantidad:
+                <input type='number' name='cantidad' value='1' min='1'>
+
+                <button type='submit'>Añadir al carrito</button>
+
+            </form>
+
+        </div>
         ";
     }
 }
 
-$contenidoPrincipal .= "<p><a href='".$app->resuelve('/pedidos/carrito.php')."'>Ver carrito</a></p>";
+/* Botón carrito */
+$contenidoPrincipal .= "
+<br>
+<a href='".$app->resuelve('/pedidos/carrito.php')."'>
+    Ver carrito
+</a>
+";
 
 $params = [
     'tituloPagina' => $tituloPagina,

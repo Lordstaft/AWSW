@@ -1,17 +1,33 @@
 <?php
-require __DIR__ . '/../includes/config.php';
+require __DIR__ . '/../../config.php';
 
-use es\ucm\fdi\aw\pedidos\FormularioPagar;
+use es\ucm\fdi\aw\Aplicacion;
 
-$tituloPagina = 'Realizar pago';
+$app = Aplicacion::getInstance();
 
-$formulario = new FormularioPagar();
-$formularioHTML = $formulario->gestiona();
+$tituloPagina = "Pago";
 
+/* Recibir tipo */
+$tipo = $_POST['tipo'] ?? 'recogida';
 
-$contenidoPrincipal = <<<EOS
-    $formularioHTML
-EOS;
+$contenidoPrincipal = "
+<h2>Pago</h2>
 
-$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];
-$app->generaVista('/plantillas/plantilla.php', $params);
+<form action='".$app->resuelve('/pedidos/confirmarPedido.php')."' method='POST'>
+
+<input type='hidden' name='tipo' value='$tipo'>
+
+<p>Número tarjeta:</p>
+<input type='text' required>
+
+<p>CVV:</p>
+<input type='text' required>
+
+<br><br>
+
+<button>Pagar</button>
+
+</form>
+";
+
+require __DIR__ . '/plantilla.php';
