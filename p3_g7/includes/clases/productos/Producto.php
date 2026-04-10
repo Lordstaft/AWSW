@@ -189,7 +189,8 @@ class Producto {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "SELECT * FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id WHERE p.id = %d",
+            "SELECT p.*, pi.rutaImagen FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id
+            WHERE p.id = %d GROUP BY p.id",
             (int)$id
         );
 
