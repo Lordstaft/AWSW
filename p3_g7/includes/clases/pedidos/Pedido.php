@@ -84,12 +84,12 @@ class Pedido {
 
         $query = sprintf(
             "INSERT INTO pedido_productos (pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado)
-            VALUES (%d, %d, %d, %f, %d)",
+            VALUES (%d, %d, %d, %f, '%s')",
             (int)$pedidoId,
             (int)$productoId,
             (int)$cantidad,
             (float)$precio,
-            (int)$iva
+            (string)$iva
         );
 
         if ($conn->query($query)) {
