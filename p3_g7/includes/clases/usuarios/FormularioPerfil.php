@@ -19,21 +19,17 @@ class FormularioPerfil extends Formulario
     }
     
     protected function generaCamposFormulario(&$datos){
+
         $busqueda = $_SESSION['nombreUsuario'];
-        $usuario = Usuario::buscaUsuarioId($busqueda);
-        $roles = '';
-        foreach (Roles::cases() as $rol) {
-            if ($usuario->getRol() === $rol->value) {
-                $roles .= "<option value='{$rol->value}' selected>{$rol->value}</option>";
-            } else {
-                $roles .= "<option value='{$rol->value}'>{$rol->value}</option>";
-            }
-        }
+        $usuario = Usuario::buscaUsuario($busqueda);
 
         $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $usuario->getAvatar());
 
+/*         var_dump($usuario);
+        exit(); */
+
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombreUsuario', 'nombre', 'apellidos', 'email', 'imagen'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['email', 'imagen'], $this->errores, 'span', array('class' => 'error'));
 
         $html = <<<EOF
         $htmlErroresGlobales
@@ -47,33 +43,23 @@ class FormularioPerfil extends Formulario
                 
                 <div>
                     <label for="nombre">Nombre:</label>
-                    <input id="nombre" type="text" name="nombre" value = "{$usuario->getNombre()}" />
-                    {$erroresCampos['nombre']}
+                    <input id="nombre" type="text" name="nombre" value = "{$usuario->getNombre()}" disabled/>
                 </div>
 
                 <div>
                     <label for="apellidos">Apellidos:</label>
-                    <input id="apellidos" type="text" name="apellidos" value = "{$usuario->getApellidos()}" />
-                    {$erroresCampos['apellidos']}
+                    <input id="apellidos" type="text" name="apellidos" value = "{$usuario->getApellidos()}" disabled/>
                 </div>
 
                 <div>
                     <label for="nombreUsuario">Nombre de usuario:</label>
-                    <input id="nombreUsuario" type="text" name="nombreUsuario" value = "{$usuario->getNombreUsuario()}" />
-                    {$erroresCampos['nombreUsuario']}
+                    <input id="nombreUsuario" type="text" name="nombreUsuario" value = "{$usuario->getNombreUsuario()}" disabled/>
                 </div>
 
                 <div>
                     <label for="email">Email:</label>
                     <input id="email" type="email" name="email" value = "{$usuario->getEmail()}" />
                     {$erroresCampos['email']}
-                </div>
-
-                <div>
-                    <label for="rol">Rol:</label>
-                        <select id="rol" name="rol">
-                        $roles
-                    </select>
                 </div>
 
                 <div>
@@ -93,7 +79,6 @@ class FormularioPerfil extends Formulario
 
                 <div>
                     <button type="submit" name="editarUsuario">Modificar</button>
-                    <button type="submit" name="eliminarUsuario">Eliminar</button>
                 </div>
             </fieldset>
         EOF;
@@ -106,27 +91,6 @@ class FormularioPerfil extends Formulario
         if(isset($datos['editarUsuario'])){
             $this->errores = [];
             $id = $datos['id'];
-
-            $nombreUsuario = trim($datos['nombreUsuario'] ?? '');
-            $nombreUsuario = filter_var($nombreUsuario, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ( ! $nombreUsuario || empty($nombreUsuario) ) {
-                $this->errores['nombreUsuario'] = 'El nombre de usuario no puede estar vacío';
-            }
-            
-            $nombre = trim($datos['nombre'] ?? '');
-            $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ( ! $nombre || empty($nombre) ) {
-                $this->errores['nombre'] = 'El nombre no puede estar vacío.';
-            }
-
-            $apellidos = trim($datos['apellidos'] ?? '');
-            $apellidos = filter_var($apellidos, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if ( ! $apellidos || empty($apellidos) ) {
-                $this->errores['apellidos'] = 'El apellido no puede estar vacío.';
-            }
-
-            $rol = trim($datos['rol'] ?? '');
-            $rol = filter_var($rol, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $email = trim($datos['email'] ?? '');
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -162,13 +126,13 @@ class FormularioPerfil extends Formulario
 
                 if (!empty($datos['eliminarImagen'])) {
                     $imagen->eliminarImagen($imagenActual);
-                    $nombreImagen = null;
-                    }
+                    $nombreImagen = 'usuario_default.png';
+                }
                 else {
                     $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $imagenActual);
                 }
 
-                $modificacion = Usuario::editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol, $nombreImagen);
+                $modificacion = Usuario::editarUsuario($id, $usuario->getNombreUsuario(), $usuario->getNombre(), $usuario->getApellidos(), $email, $usuario->getRol(), $nombreImagen);
 
                 if (!$modificacion) {
                     $this->errores[] = "No se ha podido modificar el usuario, por favor inténtelo de nuevo.";
@@ -177,19 +141,6 @@ class FormularioPerfil extends Formulario
                     $mensajes = ['Se ha modificado el usuario correctamente.'];
                     $app->putAtributoPeticion('mensajes', $mensajes);
                 }
-            }
-        }
-
-        elseif(isset($datos['eliminarUsuario'])){
-            $id = $datos['id'];
-            $resul = Usuario::eliminarUsuario($id);
-            if(!$resul){
-                $this->errores[] = "No se ha podido eliminar el usuario, por favor inténtelo de nuevo.";
-            }
-            else{
-                $mensajes = ['Se ha eliminado el usuario correctamente.'];
-                $app->putAtributoPeticion('mensajes', $mensajes);
-                unset($_SESSION['resultadosBusqueda']);
             }
         }
     }

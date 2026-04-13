@@ -25,8 +25,8 @@ $app = Aplicacion::getInstance();
                 </li>
 
                 <li>
-                    <a href="<?= $app->resuelve('/usuarios/pefil.php') ?>">
-                        Ver carrito
+                    <a href="<?= $app->resuelve('/usuarios/perfil.php') ?>">
+                        Perfil
                     </a>
                 </li>
 
