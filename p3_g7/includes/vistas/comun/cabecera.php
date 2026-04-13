@@ -3,10 +3,9 @@
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\usuarios\FormularioLogout;
 
-function mostrarSaludo()
+function mostrarSaludo($app)
 {
     $html = '';
-    $app = Aplicacion::getInstance();
     if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login'] === true)) {
         $nombreUsuario = $_SESSION['nombreUsuario'];
 
@@ -24,11 +23,16 @@ function mostrarSaludo()
 
     return $html;
 }
+$app = Aplicacion::getInstance();
 ?>
 
 <header>
-    <h1><?= $params['cabecera'] ?? 'BistroFDI' ?></h1>
-    <div class="saludo">
-        <?= mostrarSaludo(); ?>
+    <div class="cabecera-contenido">
+        <img src= "<?= $app->resuelve('/img/logo.png') ?>" alt="Logo BistroFDI" class="logo">
+        <h1><?= $params['cabecera'] ?? 'BistroFDI' ?></h1>
     </div>
+    <div class="saludo">
+        <?= mostrarSaludo($app); ?>
+    </div>
+     
 </header>
