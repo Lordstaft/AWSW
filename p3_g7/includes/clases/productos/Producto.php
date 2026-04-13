@@ -1,13 +1,10 @@
 <?php
 namespace es\ucm\fdi\aw\productos;
-
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\MagicProperties;
 
 class Producto {
-
     use MagicProperties;
-
     private $id;
     private $nombreProd;
     private $descripcion;
@@ -19,7 +16,6 @@ class Producto {
     private $ofertado;
     private $fechaCreacion;
     private $rutaImagen;
-
     public function __construct($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $fechaCreacion, $rutaImagen = null) {
         $this->id = $id;
         $this->nombreProd = $nombreProd;
@@ -33,74 +29,61 @@ class Producto {
         $this->fechaCreacion = $fechaCreacion ?? '';
         $this->rutaImagen = $rutaImagen ?? 'producto_default.jpg';
     }
-
     public function getId() {
         return $this->id;
     }
-
     public function getNombreProd() {
         return $this->nombreProd;
     }
-
     public function getDescripcion() {
         return $this->descripcion;
     }
-
     public function getRutaImagen(){
         return $this->rutaImagen;
     }
-
     public function getCategoriaId() {
         return $this->categoria_id;
     }
-
     public function getPrecio() {
         return $this->precio;
     }
-
     public function getIva() {
         return $this->iva;
     }
-
     public function getStock() {
         return $this->stock;
     }
-
     public function getDisponible() {
         return $this->disponible;
     }
-
     public function getOfertado() {
         return $this->ofertado;
     }
-
     public function getFechaCreacion() {
         return $this->fechaCreacion;
     }
-
     public static function listar($categoria) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         if($categoria === 'Todos' || $categoria === '') {
             $sql = sprintf("SELECT p.*, pi.rutaImagen
                 FROM productos p
                 JOIN categorias c ON c.id = p.categoria_id
                 JOIN producto_imagenes pi ON p.id = pi.producto_id
+                GROUP BY p.id
                 ORDER BY c.nombre
                 ");
         }
-
         else{
-            $sql = "SELECT p.*, pi.rutaImagen
+            $sql = sprintf("SELECT p.*, pi.rutaImagen
                 FROM productos p
                 JOIN producto_imagenes pi ON p.id = pi.producto_id
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                ORDER BY p.nombreProd
-                ";
+                WHERE categoria_id = %d
+                GROUP BY p.id
+                ORDER BY p.nombreProd",
+                (int)$categoria);
         }
-
         $rs = $conn->query($sql);
-
         $productos = [];
         if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
@@ -120,23 +103,17 @@ class Producto {
             }
             $rs->free();
         }
-
         return $productos;
     }
-
     public static function buscaPorNombre($nombreProd) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $query = sprintf(
             "SELECT * FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id WHERE p.nombreProd = '%s'",
             $conn->real_escape_string($nombreProd)
         );
-
         $rs = $conn->query($query);
-
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
-
             $producto = new Producto(
                 $fila['id'],
                 $fila['nombreProd'],
@@ -150,17 +127,13 @@ class Producto {
                 null,
                 $fila['rutaImagen']
             );
-
             $rs->free();
             return $producto;
         }
-
         return null;
     }
-
-    public static function creaProducto($nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado) {
+    public static function creaProducto($nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen = 'producto_default.jpg') {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $query = sprintf(
             "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado)
              VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d, %d)",
@@ -173,33 +146,28 @@ class Producto {
             (int)$disponible,
             (int)$ofertado
         );
-
         if ($conn->query($query)) {
-
             $idProducto = $conn->insert_id;
-
-            $conn->query("INSERT INTO producto_imagenes (producto_id, rutaImagen)
-                        VALUES ($idProducto, 'producto_default.jpg')");
-
+            $conn->query(sprintf(
+                "INSERT INTO producto_imagenes (producto_id, rutaImagen)
+                VALUES (%d, '%s')",
+                $idProducto,
+                $conn->real_escape_string($imagen)
+            ));
             return true;
         }
     }
-
     public static function buscaPorId($id)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $query = sprintf(
             "SELECT p.*, pi.rutaImagen FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id
             WHERE p.id = %d GROUP BY p.id",
             (int)$id
         );
-
         $rs = $conn->query($query);
-
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
-
             $producto = new Producto(
                 $fila['id'],
                 $fila['nombreProd'],
@@ -213,23 +181,17 @@ class Producto {
                 $fila['fechaCreacion'],
                 $fila['rutaImagen']
             );
-
             $rs->free();
             return $producto;
         }
-
         return null;
     }
-
     public static function listarProductosCliente(){
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $sql = sprintf("SELECT c.nombre, p.*, pi.rutaImagen FROM categorias c 
         JOIN productos p ON c.id = p.categoria_id JOIN producto_imagenes pi ON p.id = pi.producto_id 
         WHERE p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
-
         $rs = $conn->query($sql);
-
         $productos = [];
         if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
@@ -250,26 +212,21 @@ class Producto {
             $rs->free();
             return $productos;
         }
-
         return null;
     }
-
     public static function actualiza($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $conn->query(sprintf(
             "DELETE FROM producto_imagenes WHERE producto_id = %d",
             (int)$id
         ));
-
         $conn->query(sprintf(
             "INSERT INTO producto_imagenes (producto_id, rutaImagen)
             VALUES (%d, '%s')",
             (int)$id,
             $conn->real_escape_string($imagen)
         ));
-
         $query = sprintf(
             "UPDATE productos
             SET nombreProd = '%s',
@@ -291,31 +248,24 @@ class Producto {
             (int)$stock,
             (int)$id
         );
-
         return $conn->query($query);
     }
-
     public static function borra($id)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $query = sprintf(
             "DELETE FROM productos WHERE id = %d",
             (int)$id
         );
-
         return $conn->query($query);
     }
-
     public static function retirar($id)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
         $query = sprintf(
             "UPDATE productos SET disponible = 0 WHERE id = %d",
             (int)$id
         );
-
         return $conn->query($query);
     }
 }

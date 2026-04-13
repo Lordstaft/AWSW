@@ -3,6 +3,7 @@ namespace es\ucm\fdi\aw\usuarios;
 
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\Imagenes;
 use es\ucm\fdi\aw\usuarios\Usuario;
 
 class FormularioCrearUsuario extends Formulario
@@ -10,14 +11,16 @@ class FormularioCrearUsuario extends Formulario
     public function __construct() {
         if(isset($_SESSION['esAdmin']) && $_SESSION['esAdmin'] === true){
             parent::__construct('formEditarUsuario', [
-            'action' => Aplicacion::getInstance()->resuelve('/registro.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php')
+                'action' => Aplicacion::getInstance()->resuelve('/registro.php'),
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php'),
+                'enctype' => 'multipart/form-data'
             ]);
         }
         else{
             parent::__construct('formEditarUsuario', [
                 'action' => Aplicacion::getInstance()->resuelve('/registro.php'),
-                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/index.php')
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/index.php'),
+                'enctype' => 'multipart/form-data'
             ]);
         }
     }
@@ -102,6 +105,11 @@ class FormularioCrearUsuario extends Formulario
                 $mostrarRoles
 
                 <div>
+                    <label>Subir avatar:</label>
+                    <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
+                </div>
+
+                <div>
                     <button type="submit" name="crearUsuario">Crear</button>
                 </div>
             </fieldset>
@@ -160,11 +168,26 @@ class FormularioCrearUsuario extends Formulario
 
         if (count($this->errores) === 0) {
             $app = Aplicacion::getInstance();
-            $resul = Usuario::creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos);
+
+            $imagenNombre = 'usuario_default.jpg';
+            if (!empty($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $mimesPermitidos = ['image/jpeg', 'image/png'];
+                $mime = mime_content_type($_FILES['imagen']['tmp_name']);
+                if (in_array($mime, $mimesPermitidos) && $_FILES['imagen']['size'] <= 5 * 1024 * 1024) {
+                    $imgHandler = new Imagenes();
+                    $subido = $imgHandler->subirImagen($_FILES['imagen']);
+                    if ($subido) {
+                        $imagenNombre = $subido;
+                    }
+                }
+            }
+            $resul = Usuario::creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos, $imagenNombre);
 
             if(!$resul){
-                $mensajes = ['Error al intentar crear el usuario.'];
-                $app->putAtributoPeticion('mensajes', $mensajes);
+                $this->errores[] = 'Error al intentar crear el usuario';
+                if ($imagenNombre !== 'usuario_default.jpg') {
+                    $imgHandler->eliminarImagen($imagenNombre);
+                }
             }
 
             else{

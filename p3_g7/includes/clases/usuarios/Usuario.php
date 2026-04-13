@@ -27,7 +27,7 @@ class Usuario {
         $this->apellidos = $apellidos;
         $this->password = $password;
         $this->rol = $rol;
-        $this->avatar = $avatar ?? "default.jpg";
+        $this->avatar = $avatar ?? "usuario_default.png";
         $this->fechaRegistro = $fechaRegistro ?? '';
     }
 
@@ -203,7 +203,7 @@ class Usuario {
         return false;
     }
 
-    public static function creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos) {
+    public static function creaUsuario($nombreUsuario, $nombre, $password, $rol, $email, $apellidos, $imagen) {
 
         $check = self::buscaUsuario($nombreUsuario);
         if ($check) {
@@ -214,14 +214,15 @@ class Usuario {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         $query = sprintf(
-            "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol)
-            VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+            "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol, avatar)
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
             $conn->real_escape_string($nombreUsuario),
             $conn->real_escape_string($email),
             $conn->real_escape_string($nombre),
             $conn->real_escape_string($apellidos),
             $conn->real_escape_string($passwordHash),
-            $conn->real_escape_string($rol)
+            $conn->real_escape_string($rol),
+            $conn->real_escape_string($imagen)
         );
 
         if ($conn->query($query)) {
@@ -242,16 +243,18 @@ class Usuario {
     }
     
 
-    public static function editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol) {
+    public static function editarUsuario($id, $nombreUsuario, $nombre, $apellidos, $email, $rol, $imagen) {
+
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "UPDATE usuarios SET nombreUsuario = '%s', email = '%s', nombre = '%s', apellidos = '%s', rol = '%s' WHERE id = '%d'",
+            "UPDATE usuarios SET nombreUsuario = '%s', email = '%s', nombre = '%s', apellidos = '%s', rol = '%s', avatar = '%s' WHERE id = '%d'",
             $conn->real_escape_string($nombreUsuario),
             $conn->real_escape_string($email),
             $conn->real_escape_string($nombre),
             $conn->real_escape_string($apellidos),
             $conn->real_escape_string($rol),
+            $conn->real_escape_string($imagen),
             (int)$id
         );
 

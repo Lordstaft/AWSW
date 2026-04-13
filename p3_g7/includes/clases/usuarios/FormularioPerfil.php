@@ -5,21 +5,21 @@ use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\Imagenes;
 use es\ucm\fdi\aw\usuarios\Usuario;
-use es\ucm\fdi\aw\usuarios\Roles;
+use es\ucm\fdi\aw\pedidos\Pedido;
 
-class FormularioEditarUsuario extends Formulario
+class FormularioPerfil extends Formulario
 {
 
     public function __construct() {
-        parent::__construct('formEditarUsuario', [
-            'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarUsuario.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin.php'),
+        parent::__construct('formPerfil', [
+            'action' => Aplicacion::getInstance()->resuelve('/usuarios/perfil.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/perfil.php'),
             'enctype' => 'multipart/form-data'
         ]);
     }
     
     protected function generaCamposFormulario(&$datos){
-        $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
+        $busqueda = $_SESSION['nombreUsuario'];
         $usuario = Usuario::buscaUsuarioId($busqueda);
         $roles = '';
         foreach (Roles::cases() as $rol) {

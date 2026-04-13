@@ -24,6 +24,12 @@ $app = Aplicacion::getInstance();
                     </a>
                 </li>
 
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/pefil.php') ?>">
+                        Ver carrito
+                    </a>
+                </li>
+
         <?php endif; ?>
 
 

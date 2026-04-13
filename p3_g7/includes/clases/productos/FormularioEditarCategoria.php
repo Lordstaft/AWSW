@@ -3,6 +3,7 @@ namespace es\ucm\fdi\aw\productos;
 
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\Imagenes;
 use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioEditarCategoria extends Formulario
@@ -12,7 +13,8 @@ class FormularioEditarCategoria extends Formulario
         parent::__construct('formEditarCategoria');
             parent::__construct('formEditarCategoria', [
                 'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarCategorias.php'),
-                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/busquedaCategoria.php')
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin/categorias.php'),
+                'enctype' => 'multipart/form-data'
          ]);
         }
 
@@ -22,13 +24,20 @@ class FormularioEditarCategoria extends Formulario
 
         $categoria = Categoria::buscaPorId($busqueda);
 
+        $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $categoria->getImgCategoriaProd());
+
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombre', 'descripcion', 'imgCategoria'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombre', 'descripcion', 'imagen'], $this->errores, 'span', array('class' => 'error'));
 
         $html = <<<EOF
         $htmlErroresGlobales
         <fieldset>
             <legend>Editar categoría</legend>
+
+            <div>
+                <label>Imagen actual:</label><br>
+                <img src={$rutaImagen}>
+            </div>
 
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" value="{$categoria->getNombre()}" required>
@@ -38,9 +47,11 @@ class FormularioEditarCategoria extends Formulario
             <textarea name="descripcion" required>{$categoria->getDescripcion()}</textarea>
             {$erroresCampos['descripcion']}
 
-            <label for="imgCategoriaProd">Imagen:</label>
-            <input type="text" name="imgCategoriaProd" value="{$categoria->getImgCategoriaProd()}">
-            {$erroresCampos['imgCategoria']}
+            <div>
+                <label>Cambiar imagen:</label>
+                <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
+            </div>
+            {$erroresCampos['imagen']}
 
             <input type="hidden" name="id" value="{$categoria->getId()}">
 
@@ -69,19 +80,38 @@ class FormularioEditarCategoria extends Formulario
             $this->errores['descripcion'] = 'La descripción de la categoría no puede estar vacía';
         }
 
-        $imgCategoriaProd = trim($datos['imgCategoriaProd'] ?? '');
-        $imgCategoriaProd = filter_var($imgCategoriaProd, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if (!$imgCategoriaProd || empty($imgCategoriaProd) ) {
-            $this->errores['imgCategoriaProd'] = 'La imagen de la categoría no puede estar vacía';
-        }
-
         $id = trim($datos['id']);
         $id = filter_var($id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+        if (!empty($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
+
+            if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
+                $this->errores['imagen'] = 'Error al subir la imagen';
+            } 
+            else {
+                $mime = mime_content_type($_FILES['imagen']['tmp_name']);
+
+                $mimesPermitidos = ['image/jpeg', 'image/png'];
+
+                if (!in_array($mime, $mimesPermitidos)) {
+                    $this->errores['imagen'] = 'Solo se permiten imágenes JPG o PNG';
+                }
+
+                if ($_FILES['imagen']['size'] > 5 * 1024 * 1024) {
+                    $this->errores['imagen'] = 'La imagen es demasiado grande';
+                }
+            }
+        }
+
 
         if (count($this->errores) === 0) {
+
             if(isset($datos['editarCategoria'])){
-                $ok = Categoria::actualiza($id, $nombre, $descripcion, $imgCategoriaProd);
+                $imagen = new Imagenes();
+                $categoria = Categoria::buscaPorId($id);
+                $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $categoria->getImgCategoriaProd());
+
+                $ok = Categoria::actualiza($id, $nombre, $descripcion, $nombreImagen);
 
                 if ($ok) {
                     $mensajes = ['Se ha actualizado la categoría correctamente.'];

@@ -92,34 +92,28 @@ class FormularioEditarProducto extends Formulario
                 </div>
 
                 <div>
-                    <label>
+                    <label>Disponible</label>
                         <input type="checkbox" name="disponible" value="1" {$this->checked($producto->getDisponible())}>
-                        Disponible
-                    </label>
-                    {$erroresCampos['disponible']}
+                        {$erroresCampos['disponible']}
                 </div>
 
                 <div>
-                    <label>
+                    <label>Ofertado</label>
                         <input type="checkbox" name="ofertado" value="1" {$this->checked($producto->getOfertado())}>
-                        Ofertado
-                    </label>
-                    {$erroresCampos['ofertado']}
+                        {$erroresCampos['ofertado']}
                 </div>
 
                 <input type="hidden" name="id" value="{$producto->getId()}">
 
                 <div>
                     <label>Imagen actual:</label><br>
-                    <img src={$rutaImagen} width="120">
+                    <img src={$rutaImagen}>
                 </div>
                 {$erroresCampos['imagen']}
 
                 <div>
-                    <label>
+                    <label>Eliminar imagen</label>
                         <input type="checkbox" name="eliminarImagen" value="1">
-                        Eliminar imagen
-                    </label>
                 </div>
 
                 <div>

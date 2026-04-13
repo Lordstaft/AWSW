@@ -5,70 +5,55 @@ use es\ucm\fdi\aw\Aplicacion;
 class Imagenes {
 
     private $rutaRaizApp;
-
     public function __construct() {
         $app = Aplicacion::getInstance();
         $this->rutaRaizApp = dirname($app->getDirInstalacion());
     }
 
     public function subirImagen($file, $directorio = 'img') {
-
         $nombreArchivo = '';
-
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             return null;
         }
-
         $rutaDirectorio = $this->rutaRaizApp . '/' . trim($directorio, '/');
-
         if (!is_dir($rutaDirectorio)) {
             mkdir($rutaDirectorio, 0755, true);
         }
-
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $nombreArchivo = uniqid('img_', true) . '.' . $extension;
-
         $rutaCompleta = $rutaDirectorio . '/' . $nombreArchivo;
-
         if (move_uploaded_file($file['tmp_name'], $rutaCompleta)) {
             return $nombreArchivo;
         }
-
         return null;
     }
 
     public  function eliminarImagen(string $nombreArchivo = ''): bool {
-
         if (empty($nombreArchivo)) {
             return false;
         }
-
         $nombreArchivo = basename($nombreArchivo);
-
+        if ($nombreArchivo === 'producto_default.jpg') {
+            return false;
+        }
         $rutaCompleta = $this->rutaRaizApp . '/img/' . $nombreArchivo;
-
         if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
             return unlink($rutaCompleta);
         }
-
         return false;
     }
 
     public function reemplazarImagen($file, $imagenActual = null, $directorio = 'img') {
-
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             return $imagenActual;
         }
-
         $nuevoNombre = $this->subirImagen($file, $directorio);
-
         if ($nuevoNombre !== null) {
             if (!empty($imagenActual)) {
                 $this->eliminarImagen($imagenActual);
             }
             return $nuevoNombre;
         }
-
         return $imagenActual;
     }
 }

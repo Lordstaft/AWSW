@@ -23,7 +23,7 @@ class FormularioBusquedaProductos extends Formulario
         $listaCategorias = Categoria::buscaCategorias();
 
         foreach ($listaCategorias as $p) {
-            $categoria .= "<option value='{$p->getNombre()}'{$p->getNombre()}</option>";
+            $categoria .= "<option value='{$p->getNombre()}'>{$p->getNombre()}</option>";
         }
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
@@ -67,7 +67,14 @@ class FormularioBusquedaProductos extends Formulario
         if ($nombreProducto === '') {        
             $categoria = filter_var($datos['categoria'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $productos = Producto::listar($categoria);
+            if($categoria !== 'Todos' && $categoria !== ''){
+                $resultado = Categoria::buscaPorNombre($categoria);
+                $productos = Producto::listar($resultado->getId());
+            }
+
+            else{
+                $productos = Producto::listar($categoria);
+            }
 
             if (!empty($productos) && is_array($productos)) {
                 foreach ($productos as $p) {

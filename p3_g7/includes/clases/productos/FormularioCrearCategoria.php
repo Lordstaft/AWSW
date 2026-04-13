@@ -3,6 +3,7 @@ namespace es\ucm\fdi\aw\productos;
 
 use es\ucm\fdi\aw\Formulario;
 use es\ucm\fdi\aw\Aplicacion;
+use es\ucm\fdi\aw\Imagenes;
 use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioCrearCategoria extends Formulario
@@ -17,10 +18,9 @@ class FormularioCrearCategoria extends Formulario
     protected function generaCamposFormulario(&$datos){
         $nombreCategoria = $datos['nombreCategoria'] ?? '';
         $descripcionCategoria = $datos['descripcionCategoria'] ?? '';
-        $imgCategoriaProd = $datos['imgCategoriaProd'] ?? '';
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-        $erroresCampos = self::generaErroresCampos(['nombreCategoria', 'descripcionCategoria', 'imgCategoria'], $this->errores, 'span', array('class' => 'error'));
+        $erroresCampos = self::generaErroresCampos(['nombreCategoria', 'descripcionCategoria'], $this->errores, 'span', array('class' => 'error'));
 
         $html = <<<EOF
         $htmlErroresGlobales
@@ -40,9 +40,8 @@ class FormularioCrearCategoria extends Formulario
                 </div>
 
                 <div>
-                    <label for="imgCategoria">Imagen de la categoría:</label>
-                    <input id="imgCategoria" type="text" name="imgCategoria" value = "$imgCategoriaProd" />
-                    {$erroresCampos['imgCategoria']}
+                    <label>Subir imagen:</label>
+                    <input type="file" name="imagen" accept=".jpg,.jpeg,.png" required>
                 </div>
 
                 <div>
@@ -75,17 +74,27 @@ class FormularioCrearCategoria extends Formulario
             $this->errores['descripcionCategoria'] = 'La descripción de la categoría no puede estar vacía';
         }
 
-        $imgCategoria = trim($datos['imgCategoria'] ?? '');
-        $imgCategoria = filter_var($imgCategoria, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if (!$imgCategoria || empty($imgCategoria) ) {
-            $this->errores['imgCategoria'] = 'La imagen de la categoría no puede estar vacía';
-        }
-
         if (count($this->errores) === 0) {
-            $resul = Categoria::crea($nombreCategoria, $descripcionCategoria, $imgCategoria);
+            $imagenNombre = 'categoria_default.jpg';
+            if (!empty($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $mimesPermitidos = ['image/jpeg', 'image/png'];
+                $mime = mime_content_type($_FILES['imagen']['tmp_name']);
+                if (in_array($mime, $mimesPermitidos) && $_FILES['imagen']['size'] <= 5 * 1024 * 1024) {
+                    $imgHandler = new Imagenes();
+                    $subido = $imgHandler->subirImagen($_FILES['imagen']);
+                    if ($subido) {
+                        $imagenNombre = $subido;
+                    }
+                }
+            }
+
+            $resul = Categoria::crea($nombreCategoria, $descripcionCategoria, $imagenNombre);
 
             if(!$resul){
                 $this->errores[] = "No se ha podido crear la categoría. Inténtalo de nuevo.";
+                if($imagenNombre !== 'categoria_default.jpg'){
+                    $imgHandler->eliminarImagen($imagenNombre);
+                }
             }
 
             else{
