@@ -41,53 +41,74 @@ class FormularioCrearProducto extends Formulario
         $htmlErroresGlobales
         <fieldset>
             <legend>Crear producto</legend>
+            <div>
             <label>Nombre:</label>
             <input type="text" name="nombreProd" value="{$nombreProducto}" required>
             {$erroresCampos['nombreProd']}
+            </div>
 
+            <div>
             <label>Descripción:</label>
             <textarea name="descripcion" required>{$descripcionProducto}</textarea>
             {$erroresCampos['descripcion']}
+            </div>
 
+            <div>
             <label>Categoría:</label>
             <select name="categoria_id" required>
                 $categoria
             </select>
-
             {$erroresCampos['categoria']}
+            </div>
+
+            <div>
             <label>Precio:</label>
             <input type="number" step="0.01" name="precio" value="{$precioProducto}" required>
             {$erroresCampos['precio']}
+            </div>
 
+            <div>
             <label>IVA:</label>
             <select name="iva" required>
                 <option value="4" {$this->selected($iva, 4)}>4</option>
                 <option value="10" {$this->selected($iva, 10)}>10</option>
                 <option value="21" {$this->selected($iva, 21)}>21</option>
                 {$erroresCampos['iva']}
-
             </select>
+            </div>
+            
+            <div>
             <label>Stock:</label>
             <input type="number" name="stock" value="{$stock}" min="0" required>
             {$erroresCampos['stock']}
+            </div>
 
+            <div>
             <label>
                 <input type="checkbox" name="disponible" value="1" {$this->checked($disponible)}>
                 Disponible
                 {$erroresCampos['disponible']}
             </label>
+            </div>
 
+            <div>
             <label>
                 <input type="checkbox" name="ofertado" value="1" {$this->checked($ofertado)}>
                 Ofertado
                 {$erroresCampos['ofertado']}
             </label>
+            </div>
 
+            <div>
             <label>Subir imagen:</label>
             <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
             {$erroresCampos['imgProducto']}
+            </div>
 
+            <div>
             <button type="submit" name="crearProducto">Crear producto</button>
+            </div>
+
         </fieldset>
         EOF;
         return $html;

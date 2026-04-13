@@ -41,6 +41,10 @@ class Pedido {
         return $this->idPedido;
     }
 
+    public function getTotal(){
+        return $this->total;
+    }
+
     public function getTipo() {
         return $this->tipo;
     }
@@ -315,6 +319,47 @@ class Pedido {
         );
 
         return $conn->query($query);
+    }
+
+    public static function pedidosUsuario($usuario_id, $tipo){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        if($tipo){
+            $query = sprintf("SELECT * FROM pedidos WHERE usuario_id = %d AND estadoPedido != '%s' AND estadoPedido != '%s'",
+            (int)$usuario_id,
+            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
+            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
+        );
+        }
+
+        else{
+            $query = sprintf("SELECT * FROM pedidos WHERE usuario_id = %d AND (estadoPedido = '%s' OR estadoPedido = '%s')",
+            (int)$usuario_id,
+            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
+            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
+        );
+        }
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $pedidos = [];
+            while ($fila = $rs->fetch_assoc()) {
+                $pedidos[] = new Pedido(
+                    $fila['idPedido'],
+                    null,
+                    $fila['estadoPedido'],
+                    $fila['fechaPedido'],
+                    $fila['tipo'],
+                    $fila['total'],
+                    null
+                );
+            }
+            $rs->free();
+            return $pedidos;
+        }
+
+        return null;
     }
 
     public static function buscaProductos($idPedido) {

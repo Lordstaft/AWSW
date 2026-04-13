@@ -218,12 +218,10 @@ class FormularioEditarProducto extends Formulario
             if (count($this->errores) === 0) {
                 if (!empty($datos['eliminarImagen'])) {
                     $imagen->eliminarImagen($imagenActual);
-                    $nombreImagen = null;
+                    $nombreImagen = 'producto_default.jpg';
                     }
                 else {
-                    $nombreImagen = $imagen->reemplazarImagen(
-                        $_FILES['imagen'], $imagenActual
-                    );
+                    $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $imagenActual);
                 }
 
                 $ok = Producto::actualiza(
