@@ -50,7 +50,7 @@ $contenidoPrincipal = <<<EOS
     <a href="{$app->resuelve('/ofertas/crearOferta.php')}">Crear oferta</a>
 </p>
 
-<table border="1">
+<table class="tabla-ofertas">
     <thead>
         <tr>
             <th>Nombre</th>
