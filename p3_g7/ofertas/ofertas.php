@@ -44,7 +44,7 @@ if ($ofertas) {
 
 $tituloPagina = 'Ofertas';
 $contenidoPrincipal = <<<EOS
-<h1>Listado de ofertas</h1>
+<h2>Listado de ofertas</h2>
 
 <p>
     <a href="{$app->resuelve('/ofertas/crearOferta.php')}">Crear oferta</a>
