@@ -5,7 +5,7 @@ $app = Aplicacion::getInstance();
 ?>
 
 <nav id="sidebarIzq">
-    <h3>Navegación</h3>
+    <h2>Navegación</h2>
     <ul>
 
         <?php if (isset($_SESSION['login']) && $_SESSION['login'] === true) : ?>
