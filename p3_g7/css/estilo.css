@@ -387,3 +387,14 @@ a.deshabilitado {
         gap: 20px;
     }
 }
+
+.tabla-ofertas {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    .tabla-ofertas th,
+    .tabla-ofertas td {
+        border: 1px solid #000;
+        padding: 6px;
+    }
