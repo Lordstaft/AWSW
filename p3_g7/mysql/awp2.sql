@@ -330,7 +330,8 @@ CREATE TABLE ofertas (
     descripcion TEXT,
     fechaInicio DATE NOT NULL,
     fechaFin DATE NOT NULL,
-    descuento DECIMAL(5,2) NOT NULL
+    descuento DECIMAL(5,2) NOT NULL,
+    activa INT
 );
 
 CREATE TABLE oferta_productos (
@@ -395,6 +396,11 @@ VALUES
     (2, 1, 1),
     (3, 15, 1),
     (3, 1, 1);
+
+ALTER TABLE ofertas ADD COLUMN activa TINYINT(1) NOT NULL DEFAULT 1;
+UPDATE ofertas SET activa = 1;
+
+UPDATE ofertas SET activa = 1;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
