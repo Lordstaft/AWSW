@@ -53,25 +53,25 @@ class Pedido {
         return $this->estadoPedido;
     }
     
-
-    public static function crearPedido($usuarioId, $tipo, $estadoPedido) {
-
+    public static function crearPedido($usuarioId, $tipo, $estado, $subtotalSinDescuento, $descuentoAplicado, $total)
+    {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "INSERT INTO pedidos (usuario_id, tipo, estadoPedido)
-            VALUES ('%s', '%s', '%s')",
-            $conn->real_escape_string($usuarioId),
+            "INSERT INTO pedidos (usuario_id, estado, tipo, subtotalSinDescuento, descuentoAplicado, total)
+            VALUES (%d, '%s', '%s', %f, %f, %f)",
+            (int) $usuarioId,
+            $conn->real_escape_string($estado),
             $conn->real_escape_string($tipo),
-            $conn->real_escape_string($estadoPedido)
+            (float) $subtotalSinDescuento,
+            (float) $descuentoAplicado,
+            (float) $total
         );
 
         if ($conn->query($query)) {
-            $id = $conn->insert_id;
-            $pedido = self::buscaPedido($id);
-            return $pedido;
+            return $conn->insert_id;
         }
-        
+
         return false;
     }
 
@@ -395,6 +395,23 @@ class Pedido {
         }
 
         return $productos;
+    }
+
+    # Función necesaria para que funcione la funcionalidad 4: gestión de ofertas
+    public static function insertarOfertaPedido($pedidoId, $ofertaId, $vecesAplicada, $descuentoAplicado)
+    {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "INSERT INTO pedido_ofertas (pedido_id, oferta_id, vecesAplicada, descuentoAplicado)
+            VALUES (%d, %d, %d, %f)",
+            (int) $pedidoId,
+            (int) $ofertaId,
+            (int) $vecesAplicada,
+            (float) $descuentoAplicado
+        );
+
+        return $conn->query($query);
     }
 
 }
