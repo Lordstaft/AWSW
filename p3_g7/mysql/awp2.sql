@@ -320,6 +320,81 @@ ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 COMMIT;
 
+ALTER TABLE pedidos
+ADD COLUMN subtotalSinDescuento DECIMAL(10,2) DEFAULT 0,
+ADD COLUMN descuentoAplicado DECIMAL(10,2) DEFAULT 0;
+
+CREATE TABLE ofertas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fechaInicio DATE NOT NULL,
+    fechaFin DATE NOT NULL,
+    descuento DECIMAL(5,2) NOT NULL
+);
+
+CREATE TABLE oferta_productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    oferta_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad INT NOT NULL,
+
+    FOREIGN KEY (oferta_id)
+        REFERENCES ofertas(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pedido_ofertas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    oferta_id INT NOT NULL,
+    vecesAplicada INT NOT NULL,
+    descuentoTotal DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (pedido_id)
+        REFERENCES pedidos(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (oferta_id)
+        REFERENCES ofertas(id)
+        ON DELETE CASCADE
+);
+INSERT INTO ofertas (nombre, descripcion, fechaInicio, fechaFin, descuento)
+VALUES
+(
+    'Desayuno Bistro',
+    'Incluye 1 Café Espresso y 1 Tarta de Queso',
+    '2026-04-15',
+    '2026-05-31',
+    20.00
+),
+(
+    'Menú Hamburguesa',
+    'Hamburguesa completa con patatas fritas y bebida',
+    '2026-04-15',
+    '2026-06-30',
+    15.00
+),
+(
+    'Pack Snack',
+    'Nachos con queso y bebida',
+    '2026-04-15',
+    '2026-05-31',
+    10.00
+);
+INSERT INTO oferta_productos (oferta_id, producto_id, cantidad)
+VALUES
+    (1, 3, 1),
+    (1, 12, 1),
+    (2, 9, 1),
+    (2, 14, 1),
+    (2, 1, 1),
+    (3, 15, 1),
+    (3, 1, 1);
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
