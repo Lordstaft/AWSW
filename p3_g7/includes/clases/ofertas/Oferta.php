@@ -367,4 +367,83 @@ class Oferta {
             && $hoy >= $this->fechaInicio
             && $hoy <= $this->fechaFin;
     }
+
+    # Este método calcula:
+    #
+    #cuántas veces se aplica cada oferta
+    #cuánto descuento total genera
+    #qué ofertas se aplicaron
+    #
+    public static function calcularOfertasAplicadas($carrito, $idsOfertas)
+    {
+        $carritoDisponible = $carrito;
+        $descuentoTotal = 0;
+        $ofertasAplicadas = [];
+
+        foreach ($idsOfertas as $idOferta) {
+
+            $oferta = self::buscaOferta($idOferta);
+
+            if (!$oferta) {
+                continue;
+            }
+
+            $productosOferta = $oferta->getProductos();
+
+            $vecesAplicada = -1;
+            $precioPack = 0;
+
+            foreach ($productosOferta as $producto) {
+
+                $idProd = (int) $producto['producto_id'];
+                $cantidadNecesaria = (int) $producto['cantidad'];
+                $cantidadCarrito = 0;
+
+                if (isset($carritoDisponible[$idProd])) {
+                    $cantidadCarrito = (int) $carritoDisponible[$idProd];
+                }
+
+                $vecesProducto = (int) ($cantidadCarrito / $cantidadNecesaria);
+
+                if ($vecesAplicada === -1 || $vecesProducto < $vecesAplicada) {
+                    $vecesAplicada = $vecesProducto;
+                }
+
+                $precio = (float) $producto['precio'];
+                $iva = (int) $producto['iva'];
+
+                $precioConIva = $precio + ($precio * $iva / 100);
+                $precioPack += $precioConIva * $cantidadNecesaria;
+            }
+
+            if ($vecesAplicada > 0) {
+
+                $descuentoOferta = round(
+                    $precioPack * ($oferta->getDescuento() / 100) * $vecesAplicada,
+                    2
+                );
+
+                $descuentoTotal += $descuentoOferta;
+
+                foreach ($productosOferta as $producto) {
+                    $idProd = (int) $producto['producto_id'];
+                    $cantidadNecesaria = (int) $producto['cantidad'];
+
+                    $carritoDisponible[$idProd] =
+                        $carritoDisponible[$idProd] - ($cantidadNecesaria * $vecesAplicada);
+                }
+
+                $ofertasAplicadas[] = [
+                    'oferta_id' => $idOferta,
+                    'veces' => $vecesAplicada,
+                    'descuento' => $descuentoOferta
+                ];
+            }
+        }
+
+        return [
+            'descuentoTotal' => $descuentoTotal,
+            'ofertasAplicadas' => $ofertasAplicadas
+        ];
+    }
 }
