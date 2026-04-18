@@ -72,6 +72,12 @@ $app = Aplicacion::getInstance();
                     </a>
                 </li>
 
+                <li>
+                    <a href="<?= $app->resuelve('/usuarios/gerente/ofertas.php') ?>">
+                        Gestionar ofertas
+                    </a>
+                </li>
+
         <?php endif; ?>
 
         <!-- CAMARERO -->
