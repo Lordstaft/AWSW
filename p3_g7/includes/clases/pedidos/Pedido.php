@@ -3,26 +3,27 @@ namespace es\ucm\fdi\aw\pedidos;
 
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\productos\Producto;
-use es\ucm\fdi\aw\usuarios\EstadosPedido;
-
 use es\ucm\fdi\aw\MagicProperties;
 
 class Pedido {
 
     use MagicProperties;
 
-    private $idPedido;
+    // Estados posibles según la BD:
+    // 'nuevo', 'recibido', 'en_preparacion', 'cocinando', 'listo_cocina', 'terminado', 'entregado', 'cancelado'
+
+    private $id;
     private $usuario_id;
-    private $estadoPedido;
+    private $estado;
     private $fechaPedido;
     private $tipo;
     private $total;
     private $cocinero_id;
 
-    public function __construct($idPedido, $usuario_id, $estadoPedido, $fechaPedido, $tipo, $total, $cocinero_id) {
-        $this->idPedido = $idPedido;
+    public function __construct($id, $usuario_id, $estado, $fechaPedido, $tipo, $total, $cocinero_id) {
+        $this->id = $id;
         $this->usuario_id = $usuario_id;
-        $this->estadoPedido = $estadoPedido ?? EstadoPedido::PENDIENTE->value;
+        $this->estado = $estado ?? 'nuevo';
         $this->fechaPedido = $fechaPedido;
         $this->tipo = $tipo;
         $this->total = $total ?? 0;
@@ -38,10 +39,10 @@ class Pedido {
     }
 
     public function getPedidoId() {
-        return $this->idPedido;
+        return $this->id;
     }
 
-    public function getTotal(){
+    public function getTotal() {
         return $this->total;
     }
 
@@ -50,9 +51,9 @@ class Pedido {
     }
 
     public function getEstadoPedido() {
-        return $this->estadoPedido;
+        return $this->estado;
     }
-    
+
     public static function crearPedido($usuarioId, $tipo, $estado, $subtotalSinDescuento, $descuentoAplicado, $total)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -75,15 +76,14 @@ class Pedido {
         return false;
     }
 
-    public static function eliminarPedido($id){
+    public static function eliminarPedido($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $conn->query("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id);
-
-        $conn->query("DELETE FROM pedidos WHERE idPedido = %d", (int)$id);
+        $conn->query(sprintf("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id));
+        $conn->query(sprintf("DELETE FROM pedidos WHERE id = %d", (int)$id));
     }
 
-    public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva){
+    public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
@@ -97,7 +97,6 @@ class Pedido {
         );
 
         if ($conn->query($query)) {
-            $conn->insert_id;
             return true;
         }
 
@@ -105,10 +104,9 @@ class Pedido {
     }
 
     public static function pedidosPendientes() {
-
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s'", $conn->real_escape_string(EstadoPedido::PENDIENTE->value));
+        $query = "SELECT * FROM pedidos WHERE estado = 'nuevo'";
 
         $rs = $conn->query($query);
 
@@ -116,9 +114,9 @@ class Pedido {
             $pedidos = [];
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
-                    $fila['idPedido'],
+                    $fila['id'],
                     $fila['usuario_id'],
-                    $fila['estadoPedido'],
+                    $fila['estado'],
                     $fila['fechaPedido'],
                     $fila['tipo'],
                     $fila['total'],
@@ -132,29 +130,25 @@ class Pedido {
         return null;
     }
 
-    public static function asignarPedido($idPedido, $cocineroId) {
-
+    public static function asignarPedido($id, $cocineroId) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s', cocinero_id = %d WHERE idPedido = '%d'", 
-            $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value),
+        $query = sprintf(
+            "UPDATE pedidos SET estado = 'en_preparacion', cocinero_id = %d WHERE id = %d",
             (int)$cocineroId,
-            (int)$idPedido
+            (int)$id
         );
 
         return $conn->query($query);
     }
 
     public static function pedidosPendientesCocinero($cocineroId) {
-
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "SELECT * FROM pedidos WHERE estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND estadoPedido != '%s' AND cocinero_id = %d",
-            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
-            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
-            $conn->real_escape_string(EstadoPedido::LISTO->value),
-            $conn->real_escape_string(EstadoPedido::RECIBIDO->value),
+            "SELECT * FROM pedidos
+             WHERE estado NOT IN ('cancelado', 'entregado', 'listo_cocina', 'recibido')
+             AND cocinero_id = %d",
             (int)$cocineroId
         );
 
@@ -165,9 +159,9 @@ class Pedido {
         if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
-                    $fila['idPedido'],
+                    $fila['id'],
                     null,
-                    $fila['estadoPedido'],
+                    $fila['estado'],
                     $fila['fechaPedido'],
                     $fila['tipo'],
                     null,
@@ -180,11 +174,11 @@ class Pedido {
         return $pedidos;
     }
 
-    public static function actualizarPrecioPedido($id, $total){
+    public static function actualizarPrecioPedido($id, $total) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "UPDATE pedidos SET total = %f WHERE idPedido = '%d'",
+            "UPDATE pedidos SET total = %f WHERE id = %d",
             (float)$total,
             (int)$id
         );
@@ -192,11 +186,10 @@ class Pedido {
         $conn->query($query);
     }
 
-    public static function buscaPedido($idPedido) {
-
+    public static function buscaPedido($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT * FROM pedidos WHERE idPedido = %d", (int)$idPedido);
+        $query = sprintf("SELECT * FROM pedidos WHERE id = %d", (int)$id);
 
         $rs = $conn->query($query);
 
@@ -204,9 +197,9 @@ class Pedido {
             $fila = $rs->fetch_assoc();
 
             $pedido = new Pedido(
-                $fila['idPedido'],
+                $fila['id'],
                 null,
-                $fila['estadoPedido'],
+                $fila['estado'],
                 $fila['fechaPedido'],
                 $fila['tipo'],
                 null,
@@ -221,20 +214,12 @@ class Pedido {
     }
 
     public static function pedidosPendientes_Asignados($esAdmin) {
-
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         if ($esAdmin) {
-            $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido != '%s'", 
-                $conn->real_escape_string(EstadoPedido::ENTREGADO->value)
-            );
-        }
-
-        else {
-            $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s' AND estadoPedido = '%s'", 
-                $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
-                $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value)
-            );
+            $query = "SELECT * FROM pedidos WHERE estado != 'entregado'";
+        } else {
+            $query = "SELECT * FROM pedidos WHERE estado IN ('nuevo', 'en_preparacion')";
         }
 
         $rs = $conn->query($query);
@@ -243,9 +228,9 @@ class Pedido {
             $pedidos = [];
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
-                    $fila['idPedido'],
+                    $fila['id'],
                     null,
-                    $fila['estadoPedido'],
+                    $fila['estado'],
                     $fila['fechaPedido'],
                     $fila['tipo'],
                     null,
@@ -259,12 +244,10 @@ class Pedido {
         return null;
     }
 
-    public static function pedidosListosEntrega(){
+    public static function pedidosListosEntrega() {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT * FROM pedidos WHERE estadoPedido = '%s'", 
-            $conn->real_escape_string(EstadoPedido::LISTO->value)
-        );
+        $query = "SELECT * FROM pedidos WHERE estado = 'listo_cocina'";
 
         $rs = $conn->query($query);
 
@@ -272,9 +255,9 @@ class Pedido {
             $pedidos = [];
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
-                    $fila['idPedido'],
+                    $fila['id'],
                     null,
-                    $fila['estadoPedido'],
+                    $fila['estado'],
                     $fila['fechaPedido'],
                     $fila['tipo'],
                     null,
@@ -288,56 +271,51 @@ class Pedido {
         return null;
     }
 
-    public static function modificarAsignacion($idPedido, $idCocinero, $estadoPedido) {
-
+    public static function modificarAsignacion($id, $idCocinero, $estado) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        if($estadoPedido === EstadoPedido::PENDIENTE->value){
-            $query = sprintf("UPDATE pedidos SET cocinero_id = null, estadoPedido = '%s' WHERE idPedido = %d",
-                $conn->real_escape_string($estadoPedido),
-                (int)$idPedido
+        if ($estado === 'nuevo') {
+            $query = sprintf(
+                "UPDATE pedidos SET cocinero_id = null, estado = '%s' WHERE id = %d",
+                $conn->real_escape_string($estado),
+                (int)$id
             );
-        }
-
-        else{
-            $query = sprintf("UPDATE pedidos SET cocinero_id = %d, estadoPedido = '%s' WHERE idPedido = %d",
+        } else {
+            $query = sprintf(
+                "UPDATE pedidos SET cocinero_id = %d, estado = '%s' WHERE id = %d",
                 (int)$idCocinero,
-                $conn->real_escape_string($estadoPedido),
-                (int)$idPedido
+                $conn->real_escape_string($estado),
+                (int)$id
             );
         }
 
         return $conn->query($query);
     }
 
-    public static function realizarEntrega($idPedido){
+    public static function realizarEntrega($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("UPDATE pedidos SET estadoPedido = '%s' WHERE idPedido = %d",
-            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
-            (int)$idPedido
+        $query = sprintf(
+            "UPDATE pedidos SET estado = 'entregado' WHERE id = %d",
+            (int)$id
         );
 
         return $conn->query($query);
     }
 
-    public static function pedidosUsuario($usuario_id, $tipo){
+    public static function pedidosUsuario($usuario_id, $tipo) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        if($tipo){
-            $query = sprintf("SELECT * FROM pedidos WHERE usuario_id = %d AND estadoPedido != '%s' AND estadoPedido != '%s'",
-            (int)$usuario_id,
-            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
-            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
-        );
-        }
-
-        else{
-            $query = sprintf("SELECT * FROM pedidos WHERE usuario_id = %d AND (estadoPedido = '%s' OR estadoPedido = '%s')",
-            (int)$usuario_id,
-            $conn->real_escape_string(EstadoPedido::ENTREGADO->value),
-            $conn->real_escape_string(EstadoPedido::CANCELADO->value),
-        );
+        if ($tipo) {
+            $query = sprintf(
+                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado NOT IN ('entregado', 'cancelado')",
+                (int)$usuario_id
+            );
+        } else {
+            $query = sprintf(
+                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado IN ('entregado', 'cancelado')",
+                (int)$usuario_id
+            );
         }
 
         $rs = $conn->query($query);
@@ -346,9 +324,9 @@ class Pedido {
             $pedidos = [];
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
-                    $fila['idPedido'],
+                    $fila['id'],
                     null,
-                    $fila['estadoPedido'],
+                    $fila['estado'],
                     $fila['fechaPedido'],
                     $fila['tipo'],
                     $fila['total'],
@@ -362,12 +340,14 @@ class Pedido {
         return null;
     }
 
-    public static function buscaProductos($idPedido) {
-
+    public static function buscaProductos($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT p.* FROM productos p JOIN pedido_productos pp ON p.id = pp.producto_id  WHERE pp.pedido_id = %d",
-            (int)$idPedido
+        $query = sprintf(
+            "SELECT p.* FROM productos p
+             JOIN pedido_productos pp ON p.id = pp.producto_id
+             WHERE pp.pedido_id = %d",
+            (int)$id
         );
 
         $rs = $conn->query($query);
@@ -376,7 +356,6 @@ class Pedido {
 
         if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
-
                 $productos[] = new Producto(
                     $fila['id'],
                     $fila['nombreProd'],
@@ -390,25 +369,24 @@ class Pedido {
                     $fila['fechaCreacion']
                 );
             }
-
             $rs->free();
         }
 
         return $productos;
     }
 
-    # Función necesaria para que funcione la funcionalidad 4: gestión de ofertas
-    public static function insertarOfertaPedido($pedidoId, $ofertaId, $vecesAplicada, $descuentoAplicado)
+    // Función necesaria para que funcione la funcionalidad 4: gestión de ofertas
+    public static function insertarOfertaPedido($pedidoId, $ofertaId, $vecesAplicada, $descuentoTotal)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "INSERT INTO pedido_ofertas (pedido_id, oferta_id, vecesAplicada, descuentoAplicado)
+            "INSERT INTO pedido_ofertas (pedido_id, oferta_id, vecesAplicada, descuentoTotal)
             VALUES (%d, %d, %d, %f)",
             (int) $pedidoId,
             (int) $ofertaId,
             (int) $vecesAplicada,
-            (float) $descuentoAplicado
+            (float) $descuentoTotal
         );
 
         return $conn->query($query);
