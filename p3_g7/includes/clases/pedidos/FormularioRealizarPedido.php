@@ -17,15 +17,17 @@ class FormularioRealizarPedido extends Formulario
 
     protected function generaCamposFormulario(&$datos){
 
-        $realizarPedido = $_SESSION['tipoPedido'] ?? $_GET['pedido'] ?? '';
+        $tipoPedidoGet = $_GET['pedido'] ?? '';
 
-        if(isset($_SESSION['carrito']) && isset($_SESSION['tipoPedido']) && $_SESSION['tipoPedido'] !== $_GET['pedido']){
+        // Solo bloquea si hay productos en el carrito Y el tipo es distinto
+        if (!empty($_SESSION['carrito']) && isset($_SESSION['tipoPedido']) && $_SESSION['tipoPedido'] !== $tipoPedidoGet) {
             $app = Aplicacion::getInstance();
             $mensajes = ["Debes completar tu pedido para {$_SESSION['tipoPedido']}, revisa tu carrito."];
             $app->putAtributoPeticion('mensajes', $mensajes);
             $app->redirige(Aplicacion::getInstance()->resuelve('/inicio.php'));
         }
 
+        $realizarPedido = $_SESSION['tipoPedido'] ?? $tipoPedidoGet;
         $_SESSION['tipoPedido'] = $realizarPedido;
 
         $tipoPedido = ($realizarPedido === 'local') ? "para consumir en local" : "para llevar";
@@ -36,7 +38,6 @@ class FormularioRealizarPedido extends Formulario
 
         if (!empty($productos) && is_array($productos)) {
             foreach ($productos as $p) {
-
                 $filas .= "<tr>
                     <td><img src='/img/{$p->getRutaImagen()}'></td>
                     <td>{$p->getNombreProd()}</td>
@@ -47,14 +48,13 @@ class FormularioRealizarPedido extends Formulario
                     </td>
                 </tr>";
             }
-        } 
-        else {
+        } else {
             $filas = null;
         }
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
 
-        if($filas !== null){
+        if ($filas !== null) {
             $html = <<<EOS
                 <h1>Pedido {$tipoPedido}</h1>
 
@@ -78,9 +78,7 @@ class FormularioRealizarPedido extends Formulario
                     <button type="submit" name="realizarPedido">Realizar pedido</button>
                 </fieldset>
             EOS;
-        }
-        
-        else{
+        } else {
             $html = <<<EOS
                 <h1>Pedido {$tipoPedido}</h1>
                 <p>En estos momentos no podemos procesar el pedido, intentelo mas tarde.</p>
