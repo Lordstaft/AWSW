@@ -1,13 +1,13 @@
 <?php
 namespace es\ucm\fdi\aw\ofertas;
-
+ 
 use es\ucm\fdi\aw\Aplicacion;
 use es\ucm\fdi\aw\MagicProperties;
-
+ 
 class Oferta {
-
+ 
     use MagicProperties;
-
+ 
     private $idOferta;
     private $nombre;
     private $descripcion;
@@ -15,7 +15,7 @@ class Oferta {
     private $fechaFin;
     private $descuento;
     private $activa;
-
+ 
     public function __construct($idOferta, $nombre, $descripcion, $fechaInicio, $fechaFin, $descuento, $activa = 1) {
         $this->idOferta = $idOferta;
         $this->nombre = $nombre;
@@ -25,105 +25,105 @@ class Oferta {
         $this->descuento = $descuento;
         $this->activa = $activa ?? 1;
     }
-
+ 
     public function getIdOferta() {
         return $this->idOferta;
     }
-
+ 
     public function getNombre() {
         return $this->nombre;
     }
-
+ 
     public function getDescripcion() {
         return $this->descripcion;
     }
-
+ 
     public function getFechaInicio() {
         return $this->fechaInicio;
     }
-
+ 
     public function getFechaFin() {
         return $this->fechaFin;
     }
-
+ 
     public function getDescuento() {
         return $this->descuento;
     }
-
+ 
     public function getActiva() {
         return $this->activa;
     }
-
+ 
     public static function crearOferta($nombre, $descripcion, $fechaInicio, $fechaFin, $descuento) {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
+        // 5 columnas → 5 placeholders
         $query = sprintf(
-            "INSERT INTO ofertas (nombre, descripcion, fechaInicio, fechaFin, descuento, activa)
-             VALUES ('%s', '%s', '%s', '%s', %f, %d)",
+            "INSERT INTO ofertas (nombre, descripcion, fechaInicio, fechaFin, descuento)
+             VALUES ('%s', '%s', '%s', '%s', %f)",
             $conn->real_escape_string($nombre),
             $conn->real_escape_string($descripcion),
             $conn->real_escape_string($fechaInicio),
             $conn->real_escape_string($fechaFin),
-            (float)$descuento,
-            1
+            (float)$descuento
         );
-
+ 
         if ($conn->query($query)) {
             $idOferta = $conn->insert_id;
             return self::buscaOferta($idOferta);
         }
-
+ 
         return false;
     }
-
+ 
     public static function crearOfertaConProductos($nombre, $descripcion, $fechaInicio, $fechaFin, $descuento, $productos) {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
+        // 5 columnas → 5 placeholders
         $query = sprintf(
-            "INSERT INTO ofertas (nombre, descripcion, fechaInicio, fechaFin, descuento, activa)
-             VALUES ('%s', '%s', '%s', '%s', %f, %d)",
+            "INSERT INTO ofertas (nombre, descripcion, fechaInicio, fechaFin, descuento)
+             VALUES ('%s', '%s', '%s', '%s', %f)",
             $conn->real_escape_string($nombre),
             $conn->real_escape_string($descripcion),
             $conn->real_escape_string($fechaInicio),
             $conn->real_escape_string($fechaFin),
-            (float)$descuento,
-            1
+            (float)$descuento
         );
-
+ 
         if (!$conn->query($query)) {
             return false;
         }
-
+ 
         $idOferta = (int)$conn->insert_id;
-
+ 
         foreach ($productos as $productoId => $cantidad) {
             $productoId = (int)$productoId;
             $cantidad = (int)$cantidad;
-
+ 
             if ($productoId > 0 && $cantidad > 0) {
                 self::añadirProductoOferta($idOferta, $productoId, $cantidad);
             }
         }
-
+ 
         return self::buscaOferta($idOferta);
     }
-
+ 
     public static function eliminarOferta($idOferta) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "DELETE FROM ofertas WHERE id = %d",
             (int)$idOferta
         );
-
+ 
         return $conn->query($query);
     }
-
+ 
     public static function añadirProductoOferta($idOferta, $productoId, $cantidad) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "INSERT INTO oferta_productos (oferta_id, producto_id, cantidad)
              VALUES (%d, %d, %d)",
@@ -131,17 +131,17 @@ class Oferta {
             (int)$productoId,
             (int)$cantidad
         );
-
+ 
         if ($conn->query($query)) {
             return true;
         }
-
+ 
         return false;
     }
-
+ 
     public static function actualizarOferta($idOferta, $nombre, $descripcion, $fechaInicio, $fechaFin, $descuento, $activa = 1) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "UPDATE ofertas
              SET nombre = '%s',
@@ -159,13 +159,13 @@ class Oferta {
             (int)$activa,
             (int)$idOferta
         );
-
+ 
         return $conn->query($query);
     }
-
+ 
     public static function actualizarOfertaConProductos($idOferta, $nombre, $descripcion, $fechaInicio, $fechaFin, $descuento, $productos, $activa = 1) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "UPDATE ofertas
              SET nombre = '%s',
@@ -183,44 +183,44 @@ class Oferta {
             (int)$activa,
             (int)$idOferta
         );
-
+ 
         if (!$conn->query($query)) {
             return false;
         }
-
+ 
         $queryDelete = sprintf(
             "DELETE FROM oferta_productos WHERE oferta_id = %d",
             (int)$idOferta
         );
-
+ 
         $conn->query($queryDelete);
-
+ 
         foreach ($productos as $productoId => $cantidad) {
             $productoId = (int)$productoId;
             $cantidad = (int)$cantidad;
-
+ 
             if ($productoId > 0 && $cantidad > 0) {
                 self::añadirProductoOferta($idOferta, $productoId, $cantidad);
             }
         }
-
+ 
         return true;
     }
-
+ 
     public static function buscaOferta($idOferta) {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "SELECT * FROM ofertas WHERE id = %d",
             (int)$idOferta
         );
-
+ 
         $rs = $conn->query($query);
-
+ 
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
-
+ 
             $oferta = new Oferta(
                 $fila['id'],
                 $fila['nombre'],
@@ -230,25 +230,25 @@ class Oferta {
                 $fila['descuento'],
                 $fila['activa']
             );
-
+ 
             $rs->free();
             return $oferta;
         }
-
+ 
         return null;
     }
-
+ 
     public static function listarOfertas() {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = "SELECT * FROM ofertas ORDER BY fechaInicio DESC, id DESC";
-
+ 
         $rs = $conn->query($query);
-
+ 
         if ($rs && $rs->num_rows > 0) {
             $ofertas = [];
-
+ 
             while ($fila = $rs->fetch_assoc()) {
                 $ofertas[] = new Oferta(
                     $fila['id'],
@@ -260,28 +260,28 @@ class Oferta {
                     $fila['activa']
                 );
             }
-
+ 
             $rs->free();
             return $ofertas;
         }
-
+ 
         return null;
     }
-
+ 
     public static function ofertasDisponibles() {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = "SELECT * FROM ofertas
                   WHERE activa = 1
                   AND CURDATE() BETWEEN fechaInicio AND fechaFin
                   ORDER BY fechaInicio DESC, id DESC";
-
+ 
         $rs = $conn->query($query);
-
+ 
         if ($rs && $rs->num_rows > 0) {
             $ofertas = [];
-
+ 
             while ($fila = $rs->fetch_assoc()) {
                 $ofertas[] = new Oferta(
                     $fila['id'],
@@ -293,18 +293,18 @@ class Oferta {
                     $fila['activa']
                 );
             }
-
+ 
             $rs->free();
             return $ofertas;
         }
-
+ 
         return null;
     }
-
+ 
     public static function productosOferta($idOferta) {
-
+ 
         $conn = Aplicacion::getInstance()->getConexionBd();
-
+ 
         $query = sprintf(
             "SELECT op.producto_id, op.cantidad, p.nombreProd, p.precio, p.iva
              FROM oferta_productos op
@@ -313,126 +313,120 @@ class Oferta {
              ORDER BY p.nombreProd ASC",
             (int)$idOferta
         );
-
+ 
         $rs = $conn->query($query);
-
+ 
         $productos = [];
-
+ 
         if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
                 $productos[] = $fila;
             }
-
+ 
             $rs->free();
         }
-
+ 
         return $productos;
     }
-
+ 
     public function getProductos() {
         return self::productosOferta($this->idOferta);
     }
-
+ 
     public function precioPackConIva() {
         $productos = self::productosOferta($this->idOferta);
         $total = 0;
-
+ 
         foreach ($productos as $producto) {
             $precio = (float)$producto['precio'];
             $iva = (int)$producto['iva'];
             $cantidad = (int)$producto['cantidad'];
-
+ 
             $precioConIva = $precio * (1 + ($iva / 100));
             $total += $precioConIva * $cantidad;
         }
-
+ 
         return round($total, 2);
     }
-
+ 
     public function ahorroOferta() {
         $precioBase = $this->precioPackConIva();
         $descuento = (float)$this->descuento;
-
+ 
         return round($precioBase * ($descuento / 100), 2);
     }
-
+ 
     public function precioFinalOferta() {
         return round($this->precioPackConIva() - $this->ahorroOferta(), 2);
     }
-
+ 
     public function estaDisponible() {
         $hoy = date('Y-m-d');
-
+ 
         return $this->activa
             && $hoy >= $this->fechaInicio
             && $hoy <= $this->fechaFin;
     }
-
-    # Este método calcula:
-    #
-    #cuántas veces se aplica cada oferta
-    #cuánto descuento total genera
-    #qué ofertas se aplicaron
-    #
+ 
     public static function calcularOfertasAplicadas($carrito, $idsOfertas)
     {
         $carritoDisponible = $carrito;
         $descuentoTotal = 0;
         $ofertasAplicadas = [];
-
+ 
         foreach ($idsOfertas as $idOferta) {
-
+ 
             $oferta = self::buscaOferta($idOferta);
-
+ 
             if (!$oferta) {
                 continue;
             }
-
+ 
             $productosOferta = $oferta->getProductos();
-
+ 
             $vecesAplicada = -1;
             $precioPack = 0;
-
+ 
             foreach ($productosOferta as $producto) {
-
+ 
                 $idProd = (int) $producto['producto_id'];
                 $cantidadNecesaria = (int) $producto['cantidad'];
                 $cantidadCarrito = 0;
-
+ 
                 if (isset($carritoDisponible[$idProd])) {
                     $cantidadCarrito = (int) $carritoDisponible[$idProd];
                 }
-
+ 
                 $vecesProducto = (int) ($cantidadCarrito / $cantidadNecesaria);
-
+ 
                 if ($vecesAplicada === -1 || $vecesProducto < $vecesAplicada) {
                     $vecesAplicada = $vecesProducto;
                 }
-
+ 
                 $precio = (float) $producto['precio'];
                 $iva = (int) $producto['iva'];
-
+ 
                 $precioConIva = $precio + ($precio * $iva / 100);
                 $precioPack += $precioConIva * $cantidadNecesaria;
             }
-
+ 
             if ($vecesAplicada > 0) {
-
+ 
                 $descuentoOferta = round(
                     $precioPack * ($oferta->getDescuento() / 100) * $vecesAplicada,
                     2
                 );
-
+ 
                 $descuentoTotal += $descuentoOferta;
-
+ 
                 foreach ($productosOferta as $producto) {
                     $idProd = (int) $producto['producto_id'];
                     $cantidadNecesaria = (int) $producto['cantidad'];
-
+ 
                     $carritoDisponible[$idProd] =
                         $carritoDisponible[$idProd] - ($cantidadNecesaria * $vecesAplicada);
                 }
-
+ 
                 $ofertasAplicadas[] = [
                     'oferta_id' => $idOferta,
                     'veces' => $vecesAplicada,
@@ -440,7 +434,7 @@ class Oferta {
                 ];
             }
         }
-
+ 
         return [
             'descuentoTotal' => $descuentoTotal,
             'ofertasAplicadas' => $ofertasAplicadas
