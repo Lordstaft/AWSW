@@ -18,7 +18,7 @@ function mostrarSaludo($app)
         $registroUrl = $app->resuelve('/registro.php');
         $html = <<<EOS
         Usuario desconocido. <a href="{$loginUrl}">Login</a> <a href="{$registroUrl}">Registro</a>
-      EOS;
+        EOS;
     }
 
     return $html;
@@ -28,11 +28,4 @@ $app = Aplicacion::getInstance();
 
 <header>
     <div class="cabecera-contenido">
-        <img src= "<?= $app->resuelve('/img/logo.png') ?>" alt="Logo BistroFDI" class="logo">
-        <h1><?= $params['cabecera'] ?? 'BistroFDI' ?></h1>
-    </div>
-    <div class="saludo">
-        <?= mostrarSaludo($app); ?>
-    </div>
-     
-</header>
+        <img src="<?= $app->resuelve('/img/logo.png') ?>" alt="Logo BistroFDI" class
