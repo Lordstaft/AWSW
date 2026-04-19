@@ -1,3 +1,3 @@
 <footer>
-	<p>Práctica 3, Grupo 7, Aplicaciones Web</p>
+	<p>Proyecto final de la asignatura Aplicaciones Web FDI UCM, Grupo 7, Aleksandra Lisicka, Pablo Sánchez, Carlos Rondón</p>
 </footer>
