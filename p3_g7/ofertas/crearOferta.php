@@ -5,12 +5,12 @@ use es\ucm\fdi\aw\ofertas\FormularioCrearOferta;
 
 $tituloPagina = 'Crear Oferta';
 
-$formulario = new FormularioCrearOferta();
-$formularioHTML = $formulario->gestiona();
+$form = new FormularioCrearOferta();
+$htmlForm = $form->gestiona();
 
 $contenidoPrincipal = <<<EOS
-<h1>Crear oferta</h1>
-$formularioHTML
+<h2>Crear oferta</h2>
+$htmlForm
 EOS;
 
 $params = [

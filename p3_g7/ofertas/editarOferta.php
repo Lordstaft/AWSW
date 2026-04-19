@@ -8,12 +8,12 @@ $idOferta = (int)$idOferta;
 
 $tituloPagina = 'Editar Oferta';
 
-$formulario = new FormularioEditarOferta($idOferta);
-$formularioHTML = $formulario->gestiona();
+$form = new FormularioEditarOferta($idOferta);
+$htmlForm = $form->gestiona();
 
 $contenidoPrincipal = <<<EOS
-<h1>Editar oferta</h1>
-$formularioHTML
+<h2>Editar oferta</h2>
+$htmlForm
 EOS;
 
 $params = [
