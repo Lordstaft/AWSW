@@ -1,4 +1,5 @@
 <?php
+if (!empty($params['ocultarNav'])) return;
 use es\ucm\fdi\aw\Aplicacion;
 
 $app = Aplicacion::getInstance();
