@@ -10,6 +10,8 @@ $urlLocal    = $app->resuelve('/pedidos/realizarPedido.php?pedido=local');
 
 $imagenFondo = $app->resuelve('/img/bistroFDI_cafeteria.jpg');
 
+$ocultarNav = !isset($_SESSION['login']) || !$_SESSION['login'];
+
 if (!isset($_SESSION['login']) || !$_SESSION['login']) {
     // Usuario NO autenticado
     $contenidoPrincipal = <<<EOS
@@ -56,5 +58,10 @@ EOS;
 EOS;
 }
 
-$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];
+$params = [
+    'tituloPagina' => $tituloPagina,
+    'contenidoPrincipal' => $contenidoPrincipal,
+    'cabecera' => 'Bistro FDI',
+    'ocultarNav' => $ocultarNav
+];
 $app->generaVista('/plantillas/plantilla.php', $params);
