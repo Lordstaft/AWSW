@@ -40,9 +40,20 @@ else {
         $usuario = $pedido['usuario'];
         $estado = $pedido['estado'];
         $cocinero = $pedido['cocinero'];
+        $avatarCocinero = $pedido['avatarCocinero'] ?? null;
 
         if (!$cocinero) {
-            $cocinero = '-';
+            $htmlCocinero = '-';
+        }
+        else {
+            $rutaAvatar = $app->resuelve('/img/' . ($avatarCocinero ?? 'usuario_default.png'));
+
+            $htmlCocinero = "
+                <div class='cocinero-info'>
+                    <img src='{$rutaAvatar}' class='avatar-cocinero' alt='avatar cocinero'>
+                    <span>{$cocinero}</span>
+                </div>
+            ";
         }
 
         $contenidoPrincipal .= "
@@ -50,7 +61,7 @@ else {
                 <td>$id</td>
                 <td>$usuario</td>
                 <td>$estado</td>
-                <td>$cocinero</td>
+                <td>$htmlCocinero</td>
             </tr>
         ";
     }
