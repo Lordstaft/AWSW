@@ -54,9 +54,13 @@ class Pedido {
         return $this->estado;
     }
 
-    public static function crearPedido($usuarioId, $tipo, $estado, $subtotalSinDescuento, $descuentoAplicado, $total)
+    public static function crearPedido($usuarioId, $tipo, $estado = 'nuevo', $subtotalSinDescuento, $descuentoAplicado, $total)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
+
+        if (empty($estado)) {
+            $estado = 'nuevo';
+        }
 
         $query = sprintf(
             "INSERT INTO pedidos (usuario_id, estado, tipo, subtotalSinDescuento, descuentoAplicado, total)
@@ -106,28 +110,31 @@ class Pedido {
     public static function pedidosPendientes() {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "SELECT * FROM pedidos WHERE estado = 'nuevo'";
+        $query = "
+            SELECT 
+                p.id,
+                u.nombreUsuario AS usuario,
+                p.estado,
+                c.nombreUsuario AS cocinero,
+                c.avatar AS avatarCocinero
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            LEFT JOIN usuarios c ON p.cocinero_id = c.id
+            WHERE p.estado = 'nuevo'
+        ";
 
         $rs = $conn->query($query);
 
-        if ($rs && $rs->num_rows > 0) {
-            $pedidos = [];
+        $pedidos = [];
+
+        if ($rs) {
             while ($fila = $rs->fetch_assoc()) {
-                $pedidos[] = new Pedido(
-                    $fila['id'],
-                    $fila['usuario_id'],
-                    $fila['estado'],
-                    $fila['fechaPedido'],
-                    $fila['tipo'],
-                    $fila['total'],
-                    $fila['cocinero_id']
-                );
+                $pedidos[] = $fila;
             }
             $rs->free();
-            return $pedidos;
         }
 
-        return null;
+        return $pedidos;
     }
 
     public static function asignarPedido($id, $cocineroId) {
