@@ -11,8 +11,8 @@ class FormularioLogin extends Formulario
 
     public function __construct() {
         parent::__construct('formLogin', [
-            'action' => Aplicacion::getInstance()->resuelve('index.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('inicio.php')
+            'action' => Aplicacion::getInstance()->resuelve('login.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('index.php')
         ]);
     }
 
