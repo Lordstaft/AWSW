@@ -13,7 +13,7 @@ $app = Aplicacion::getInstance();
 
         <!-- CLIENTE -->
         <li>
-            <a href="<?= $app->resuelve('/inicio.php') ?>">Inicio</a>
+            <a href="<?= $app->resuelve('/index.php') ?>">Inicio</a>
         </li>
         <li>
             <a href="<?= $app->resuelve('/pedidos/carrito.php') ?>">Ver carrito</a>
