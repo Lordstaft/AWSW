@@ -1,9 +1,5 @@
 <?php
 require_once __DIR__.'/includes/config.php';
-$app->redirige($app->resuelve('/index.php'));
-
-<?php
-require_once __DIR__.'/includes/config.php';
 
 $tituloPagina = 'Inicio';
 
