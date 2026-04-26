@@ -24,7 +24,7 @@ class FormularioRealizarPedido extends Formulario
             $app = Aplicacion::getInstance();
             $mensajes = ["Debes completar tu pedido para {$_SESSION['tipoPedido']}, revisa tu carrito."];
             $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige(Aplicacion::getInstance()->resuelve('/inicio.php'));
+            $app->redirige(Aplicacion::getInstance()->resuelve('/index.php'));
         }
 
         $realizarPedido = $_SESSION['tipoPedido'] ?? $tipoPedidoGet;
