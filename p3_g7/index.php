@@ -7,11 +7,6 @@ require_once __DIR__.'/includes/config.php';
 
 $tituloPagina = 'Inicio';
 
-// Si no está autenticado, mandarlo al login
-if (!isset($_SESSION['login']) || !$_SESSION['login']) {
-    $app->redirige($app->resuelve('/index.php'));
-}
-
 $urlLogin    = $app->resuelve('/login.php');
 $urlRegistro = $app->resuelve('/registro.php');
 $urlLlevar   = $app->resuelve('/pedidos/realizarPedido.php?pedido=llevar');
