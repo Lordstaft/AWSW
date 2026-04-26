@@ -11,6 +11,7 @@ function mostrarSaludo($app, $ocultarNav = false)
 
         $formLogout = new FormularioLogout();
         $htmlLogout = $formLogout->gestiona();
+        $avatar = $_SESSION['avatar'] ?? 'usuario_default.png';
         $html = "Bienvenido, {$nombreUsuario}. $htmlLogout";
     } 
     else {
