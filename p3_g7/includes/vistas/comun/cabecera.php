@@ -11,8 +11,20 @@ function mostrarSaludo($app, $ocultarNav = false)
 
         $formLogout = new FormularioLogout();
         $htmlLogout = $formLogout->gestiona();
+        
+        // avatar del usuario
         $avatar = $_SESSION['avatar'] ?? 'usuario_default.png';
-        $html = "Bienvenido, {$nombreUsuario}. $htmlLogout";
+
+        // ruta correcta a /img/
+        $rutaAvatar = $app->resuelve('/img/' . $avatar);
+
+        $html = <<<HTML
+        <div class="usuario-cabecera">
+            <img src="{$rutaAvatar}" class="avatar-cabecera" alt="avatar">
+            <span>Bienvenido, {$nombreUsuario}</span>
+            {$htmlLogout}
+        </div>
+        HTML;
     } 
     else {
     // Solo mostrar login/registro en el header si NO estamos ocultando la nav
