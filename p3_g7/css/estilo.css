@@ -428,6 +428,9 @@ main article a.opcion-pedido:visited {
 
 /* ── HERO INICIO ── */
 .hero {
+    background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('../img/bistroFDI_cafeteria.jpg');
+    background-size: cover;
+    background-position: center;
     text-align: center;
     padding: 40px 20px;
     border-radius: 8px;
