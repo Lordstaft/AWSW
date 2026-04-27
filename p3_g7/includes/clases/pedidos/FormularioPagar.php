@@ -137,144 +137,146 @@ class FormularioPagar extends Formulario
 
     protected function procesaFormulario(&$datos)
     {
-        $this->errores = [];
-
-        $nombreTitular  = $datos['nombreTitular']  ?? '';
-        $numeroTarjeta  = $datos['numeroTarjeta']  ?? '';
-        $fechaCaducidad = $datos['fechaCaducidad'] ?? '';
-        $cvv            = $datos['cvv']            ?? '';
-
-        if ($nombreTitular === '')
-            $this->errores['nombreTitular'] = 'El nombre del titular no puede estar vacío';
-
-        if ($numeroTarjeta === '')
-            $this->errores['numeroTarjeta'] = 'El número de tarjeta no puede estar vacío';
-        elseif (!preg_match('/^[0-9]{16}$/', $numeroTarjeta))
-            $this->errores['numeroTarjeta'] = 'El número de tarjeta debe tener 16 dígitos';
-
-        if ($fechaCaducidad === '')
-            $this->errores['fechaCaducidad'] = 'La fecha de caducidad es obligatoria';
-        elseif ($fechaCaducidad < date('Y-m'))
-            $this->errores['fechaCaducidad'] = 'La tarjeta está caducada';
-
-        if ($cvv === '')
-            $this->errores['cvv'] = 'El CVV es obligatorio';
-
-        if (count($this->errores) > 0) return;
-
         $app = Aplicacion::getInstance();
 
         if (isset($datos['pagar'])) {
 
-            $carrito = $_SESSION['carrito'] ?? [];
+            $this->errores = [];
 
-            // Se calcula el subtotal del pedido antes de aplicar ofertas.
-            $subtotalSinDescuento = 0;
+            $nombreTitular  = $datos['nombreTitular']  ?? '';
+            $numeroTarjeta  = $datos['numeroTarjeta']  ?? '';
+            $fechaCaducidad = $datos['fechaCaducidad'] ?? '';
+            $cvv            = $datos['cvv']            ?? '';
 
-            foreach ($carrito as $idProducto => $cantidad) {
-                $producto = Producto::buscaPorId($idProducto);
-                if (!$producto) continue;
+            if ($nombreTitular === '')
+                $this->errores['nombreTitular'] = 'El nombre del titular no puede estar vacío';
 
-                $precioConIva = (float)$producto->getPrecio() * (1 + (int)$producto->getIva() / 100);
-                $subtotalSinDescuento += $precioConIva * $cantidad;
-            }
+            if ($numeroTarjeta === '')
+                $this->errores['numeroTarjeta'] = 'El número de tarjeta no puede estar vacío';
+            elseif (!preg_match('/^[0-9]{16}$/', $numeroTarjeta))
+                $this->errores['numeroTarjeta'] = 'El número de tarjeta debe tener 16 dígitos';
 
-            // FUNCIONALIDAD 4:
-            // Variables para guardar el descuento total y el detalle de las ofertas aplicadas.
-            $descuentoAplicado = 0;
-            $ofertasAplicadasDetalle = [];
+            if ($fechaCaducidad === '')
+                $this->errores['fechaCaducidad'] = 'La fecha de caducidad es obligatoria';
+            elseif ($fechaCaducidad < date('Y-m'))
+                $this->errores['fechaCaducidad'] = 'La tarjeta está caducada';
 
-            $ofertaActivada = $_SESSION['oferta_activada'] ?? null;
+            if ($cvv === '')
+                $this->errores['cvv'] = 'El CVV es obligatorio';
 
-            // Se vuelve a validar la oferta en el momento del pago.
-            // Esto evita aplicar ofertas caducadas o no disponibles.
-            if ($ofertaActivada) {
-                $oferta = Oferta::buscaOferta($ofertaActivada);
+            if (count($this->errores) === 0) {
 
-                if ($oferta && $oferta->estaDisponible()) {
+                $carrito = $_SESSION['carrito'] ?? [];
 
-                    // FUNCIONALIDAD 4:
-                    // Se calcula cuántas veces se aplica la oferta
-                    // y cuánto descuento genera.
-                    $resultado = Oferta::calcularOfertasAplicadas($carrito, [$ofertaActivada]);
+                // Se calcula el subtotal del pedido antes de aplicar ofertas.
+                $subtotalSinDescuento = 0;
 
-                    $descuentoAplicado = $resultado['descuentoTotal'];
-                    $ofertasAplicadasDetalle = $resultado['ofertasAplicadas'];
+                foreach ($carrito as $idProducto => $cantidad) {
+                    $producto = Producto::buscaPorId($idProducto);
+                    if (!$producto) continue;
+
+                    $precioConIva = (float)$producto->getPrecio() * (1 + (int)$producto->getIva() / 100);
+                    $subtotalSinDescuento += $precioConIva * $cantidad;
                 }
-            }
 
-            // FUNCIONALIDAD 4:
-            // Precio final del pedido después de aplicar descuentos.
-            $total = max(0, $subtotalSinDescuento - $descuentoAplicado);
+                // FUNCIONALIDAD 4:
+                // Variables para guardar el descuento total y el detalle de las ofertas aplicadas.
+                $descuentoAplicado = 0;
+                $ofertasAplicadasDetalle = [];
 
-            $tipoPedido = 'recogida';
-            if (($_SESSION['tipoPedido'] ?? '') === 'llevar') {
-                $tipoPedido = 'domicilio';
-            }
+                $ofertaActivada = $_SESSION['oferta_activada'] ?? null;
 
-            $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
+                // Se vuelve a validar la oferta en el momento del pago.
+                // Esto evita aplicar ofertas caducadas o no disponibles.
+                if ($ofertaActivada) {
+                    $oferta = Oferta::buscaOferta($ofertaActivada);
 
-            // FUNCIONALIDAD 4:
-            // Ahora el pedido se crea guardando también:
-            // - subtotal sin descuento
-            // - descuento aplicado
-            // - total final
-            $nuevoPedidoId = Pedido::crearPedido(
-                $usuario->getId(),
-                $tipoPedido,
-                EstadoPedido::RECIBIDO->value,
-                $subtotalSinDescuento,
-                $descuentoAplicado,
-                $total
-            );
+                    if ($oferta && $oferta->estaDisponible()) {
 
-            if (!$nuevoPedidoId) {
-                $this->errores[] = "Se ha producido un error al intentar enviar el pedido";
-                return;
-            }
+                        // FUNCIONALIDAD 4:
+                        // Se calcula cuántas veces se aplica la oferta
+                        // y cuánto descuento genera.
+                        $resultado = Oferta::calcularOfertasAplicadas($carrito, [$ofertaActivada]);
 
-            // Se insertan los productos comprados dentro del pedido.
-            foreach ($carrito as $idProducto => $cantidad) {
-                $producto = Producto::buscaPorId($idProducto);
-                if (!$producto) continue;
+                        $descuentoAplicado = $resultado['descuentoTotal'];
+                        $ofertasAplicadasDetalle = $resultado['ofertasAplicadas'];
+                    }
+                }
 
-                $resul = Pedido::añadirProductoPedido(
-                    $nuevoPedidoId,
-                    $producto->getId(),
-                    $cantidad,
-                    $producto->getPrecio(),
-                    $producto->getIva()
+                // FUNCIONALIDAD 4:
+                // Precio final del pedido después de aplicar descuentos.
+                $total = max(0, $subtotalSinDescuento - $descuentoAplicado);
+
+                $tipoPedido = 'recogida';
+                if (($_SESSION['tipoPedido'] ?? '') === 'llevar') {
+                    $tipoPedido = 'domicilio';
+                }
+
+                $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
+
+                // FUNCIONALIDAD 4:
+                // Ahora el pedido se crea guardando también:
+                // - subtotal sin descuento
+                // - descuento aplicado
+                // - total final
+                $nuevoPedidoId = Pedido::crearPedido(
+                    $usuario->getId(),
+                    $tipoPedido,
+                    EstadoPedido::RECIBIDO->value,
+                    $subtotalSinDescuento,
+                    $descuentoAplicado,
+                    $total
                 );
 
-                if (!$resul) {
-                    $app->putAtributoPeticion('mensajes', ['No ha sido posible gestionar el pedido, inténtelo de nuevo más tarde.']);
-                    Pedido::eliminarPedido($nuevoPedidoId);
-                    $app->redirige($app->resuelve('/index.php'));
+                if (!$nuevoPedidoId) {
+                    $this->errores[] = "Se ha producido un error al intentar enviar el pedido";
                     return;
                 }
+
+                // Se insertan los productos comprados dentro del pedido.
+                foreach ($carrito as $idProducto => $cantidad) {
+                    $producto = Producto::buscaPorId($idProducto);
+                    if (!$producto) continue;
+
+                    $resul = Pedido::añadirProductoPedido(
+                        $nuevoPedidoId,
+                        $producto->getId(),
+                        $cantidad,
+                        $producto->getPrecio(),
+                        $producto->getIva()
+                    );
+
+                    if (!$resul) {
+                        $app->putAtributoPeticion('mensajes', ['No ha sido posible gestionar el pedido, inténtelo de nuevo más tarde.']);
+                        Pedido::eliminarPedido($nuevoPedidoId);
+                        $app->redirige($app->resuelve('/index.php'));
+                        return;
+                    }
+                }
+
+                // FUNCIONALIDAD 4:
+                // Se guardan en la base de datos las ofertas aplicadas al pedido.
+                // Esto permite saber posteriormente qué descuento tuvo el pedido
+                // y cuántas veces se aplicó cada oferta.
+                foreach ($ofertasAplicadasDetalle as $ofertaAplicada) {
+                    Pedido::insertarOfertaPedido(
+                        $nuevoPedidoId,
+                        $ofertaAplicada['oferta_id'],
+                        $ofertaAplicada['veces'],
+                        $ofertaAplicada['descuento']
+                    );
+                }
+
+                // Se limpia la sesión una vez finalizado el pedido.
+                // También se elimina la oferta activada.
+                unset($_SESSION['carrito'], $_SESSION['tipoPedido'], $_SESSION['oferta_activada']);
+
+                $app->putAtributoPeticion('mensajes', ['Pedido realizado con éxito']);
             }
 
-            // FUNCIONALIDAD 4:
-            // Se guardan en la base de datos las ofertas aplicadas al pedido.
-            // Esto permite saber posteriormente qué descuento tuvo el pedido
-            // y cuántas veces se aplicó cada oferta.
-            foreach ($ofertasAplicadasDetalle as $ofertaAplicada) {
-                Pedido::insertarOfertaPedido(
-                    $nuevoPedidoId,
-                    $ofertaAplicada['oferta_id'],
-                    $ofertaAplicada['veces'],
-                    $ofertaAplicada['descuento']
-                );
-            }
-
-            // Se limpia la sesión una vez finalizado el pedido.
-            // También se elimina la oferta activada.
-            unset($_SESSION['carrito'], $_SESSION['tipoPedido'], $_SESSION['oferta_activada']);
-
-            $app->putAtributoPeticion('mensajes', ['Pedido realizado con éxito']);
-
-        } elseif (isset($datos['cancelar'])) {
-            $app->redirige($app->resuelve('/pedidos/carrito.php'));
+        }
+        elseif (isset($datos['cancelar'])) {
+            $app->redirige(Aplicacion::getInstance()->resuelve('/pedidos/carrito.php'));
         }
     }
 
