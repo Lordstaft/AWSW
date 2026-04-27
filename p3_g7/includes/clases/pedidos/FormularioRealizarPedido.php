@@ -39,7 +39,7 @@ class FormularioRealizarPedido extends Formulario
         if (!empty($productos) && is_array($productos)) {
             foreach ($productos as $p) {
                 $filas .= "<tr>
-                    <td><img src='/img/{$p->getRutaImagen()}'></td>
+                    <td><img class='img-producto-tabla' src=". Aplicacion::getInstance()->resuelve("/img/" . $p->getRutaImagen()) . "></td>
                     <td>{$p->getNombreProd()}</td>
                     <td>{$p->getDescripcion()}</td>
                     <td>{$p->getPrecio()}€</td>
