@@ -504,3 +504,29 @@ main article a.opcion-pedido:hover .opcion-desc {
 div {
     margin: 10px;
 }
+
+.nav-item {
+    position: relative; /* aquí sí, para anclar el tooltip */
+    list-style: disc; /* mantiene el bullet */
+}
+
+    .nav-item .tooltip {
+        visibility: hidden; /* Oculto por defecto, pero ocupa espacio */
+        opacity: 0; /* Transparente por defecto, permite la transición suave */
+        background-color: #2c3e50; /* Fondo gris oscuro del tooltip */
+        color: #fff; /* Texto blanco */
+        padding: 6px 10px; /* Espacio interior: 6px arriba/abajo, 10px izquierda/derecha */
+        border-radius: 3px; /* Bordes redondeados */
+        position: absolute; /* Se posiciona respecto al li (que tiene relative) */
+        left: 110%; /* Lo coloca a la derecha del li, fuera de él */
+        top: 50%; /* Lo baja hasta la mitad del li */
+        transform: translateY(-50%); /* Lo sube la mitad de su propio alto, quedando centrado */
+        white-space: nowrap; /* Evita que el texto haga salto de línea */
+        transition: opacity 0.3s; /* La aparición tarda 0.3 segundos, efecto suave */
+        z-index: 10; /* Se muestra por encima de otros elementos */
+    }
+
+.nav-item:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
