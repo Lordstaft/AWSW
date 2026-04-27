@@ -18,6 +18,22 @@ SET time_zone = "+00:00";
 
 -- Base de datos: `awp2`
 
+DROP TABLE IF EXISTS `usuarios`;
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreUsuario` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `apellidos` varchar(150) NOT NULL,
+  `contraseña` varchar(255) NOT NULL,
+  `rol` enum('cliente','gerente','camarero','cocinero','admin') NOT NULL DEFAULT 'cliente',
+  `avatar` varchar(255) DEFAULT NULL,
+  `fechaRegistro` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombreUsuario` (`nombreUsuario`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE IF NOT EXISTS `categorias` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -28,11 +44,27 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `productos`;
+CREATE TABLE IF NOT EXISTS `productos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreProd` varchar(150) NOT NULL,
+  `descripcion` text NOT NULL,
+  `categoria_id` int(11) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `iva` enum('4','10','21') NOT NULL,
+  `stock` int(11) DEFAULT 0,
+  `disponible` tinyint(1) DEFAULT 1,
+  `ofertado` tinyint(1) DEFAULT 0,
+  `fechaCreacion` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `categoria_id` (`categoria_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE IF NOT EXISTS `pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) NOT NULL,
-  `estado` enum('nuevo','recibido','en_preparacion','cocinando','listo_cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
+  `estado` enum('nuevo','enviado','preparando','cocinando','listo','entregado','cancelado','pendiente') DEFAULT 'nuevo',
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `tipo` enum('domicilio','recogida') NOT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0,
@@ -58,22 +90,6 @@ CREATE TABLE IF NOT EXISTS `pedido_productos` (
   KEY `producto_id` (`producto_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `productos`;
-CREATE TABLE IF NOT EXISTS `productos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombreProd` varchar(150) NOT NULL,
-  `descripcion` text NOT NULL,
-  `categoria_id` int(11) NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
-  `iva` enum('4','10','21') NOT NULL,
-  `stock` int(11) DEFAULT 0,
-  `disponible` tinyint(1) DEFAULT 1,
-  `ofertado` tinyint(1) DEFAULT 0,
-  `fechaCreacion` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `categoria_id` (`categoria_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 DROP TABLE IF EXISTS `producto_imagenes`;
 CREATE TABLE IF NOT EXISTS `producto_imagenes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -81,22 +97,6 @@ CREATE TABLE IF NOT EXISTS `producto_imagenes` (
   `rutaImagen` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-DROP TABLE IF EXISTS `usuarios`;
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombreUsuario` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellidos` varchar(150) NOT NULL,
-  `contraseña` varchar(255) NOT NULL,
-  `rol` enum('cliente','gerente','camarero','cocinero','admin') NOT NULL DEFAULT 'cliente',
-  `avatar` varchar(255) DEFAULT NULL,
-  `fechaRegistro` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nombreUsuario` (`nombreUsuario`),
-  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 DROP TABLE IF EXISTS `ofertas`;
@@ -136,6 +136,9 @@ CREATE TABLE IF NOT EXISTS `pedido_ofertas` (
 
 -- Restricciones
 
+ALTER TABLE `productos`
+  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
+
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `fk_pedidos_cocinero` FOREIGN KEY (`cocinero_id`) REFERENCES `usuarios` (`id`),
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
@@ -143,9 +146,6 @@ ALTER TABLE `pedidos`
 ALTER TABLE `pedido_productos`
   ADD CONSTRAINT `pedido_productos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `pedido_productos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
-
-ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
 
 ALTER TABLE `producto_imagenes`
   ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
