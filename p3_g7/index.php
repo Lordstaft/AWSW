@@ -15,7 +15,7 @@ $ocultarNav = !isset($_SESSION['login']) || !$_SESSION['login'];
 if (!isset($_SESSION['login']) || !$_SESSION['login']) {
     // Usuario NO autenticado
     $contenidoPrincipal = <<<EOS
-    <div class="hero" style="background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('$imagenFondo'); background-size: cover; background-position: center;">
+    <div class="hero">
         <div class="hero-texto">
             <h2>Bienvenido a Bistro FDI</h2>
             <p>Cocina fresca, pedidos rápidos. Identifícate para realizar tu pedido.</p>
@@ -37,7 +37,7 @@ EOS;
 } else {
     // Usuario autenticado
     $contenidoPrincipal = <<<EOS
-    <div class="hero" style="background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('$imagenFondo'); background-size: cover; background-position: center;">
+    <div class="hero">
         <div class="hero-texto">
             <h2>Bienvenido a Bistro FDI</h2>
             <p>Cocina fresca, pedidos rápidos. ¿Cómo quieres tu pedido hoy?</p>
