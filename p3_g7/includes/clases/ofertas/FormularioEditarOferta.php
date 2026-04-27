@@ -71,25 +71,25 @@ EOS;
         <fieldset>
             <legend>Editar oferta</legend>
  
-            <p>
+            <div>
                 <label for="nombre">Nombre:</label><br>
                 <input type="text" name="nombre" id="nombre" value="{$nombre}" required>
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <label for="descripcion">Descripción:</label><br>
                 <textarea name="descripcion" id="descripcion" rows="4" cols="50">{$descripcion}</textarea>
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <label for="fechaInicio">Fecha de inicio:</label><br>
                 <input type="date" name="fechaInicio" id="fechaInicio" value="{$fechaInicio}" required>
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <label for="fechaFin">Fecha de fin:</label><br>
                 <input type="date" name="fechaFin" id="fechaFin" value="{$fechaFin}" required>
-            </p>
+            </div>
  
             <h3>Productos incluidos en la oferta</h3>
  
@@ -109,24 +109,24 @@ EOS;
  
             <h3>Resumen del pack</h3>
  
-            <p>
+            <div>
                 <label for="precioPack">Precio del pack con IVA:</label><br>
                 <input type="number" step="0.01" id="precioPack" name="precioPack" value="0.00" readonly>
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <label for="precioFinal">Precio final de la oferta:</label><br>
                 <input type="number" step="0.01" min="0" name="precioFinal" id="precioFinal" value="{$precioFinal}">
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <label for="descuento">Descuento (%):</label><br>
                 <input type="number" step="0.01" min="0" name="descuento" id="descuento" value="{$descuento}" readonly>
-            </p>
+            </div>
  
-            <p>
+            <div>
                 <button type="submit">Guardar cambios</button>
-            </p>
+            </div>
         </fieldset>
  
         <script>

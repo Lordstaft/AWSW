@@ -37,7 +37,7 @@ class FormularioPedidosAsignados extends Formulario
                     <td>{$p->getEstadoPedido()}</td>
                     <td>
                         <div>
-                            <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Modificar</button>
+                            <button type='submit' name='modificar'>Modificar</button>
                         </div>
                     </td>
                 </tr>";

@@ -280,7 +280,7 @@ class Pedido {
     public static function modificarAsignacion($id, $idCocinero, $estado) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        if ($estado === 'nuevo') {
+        if ($estado === 'nuevo' || $estado === 'pendiente') {
             $query = sprintf(
                 "UPDATE pedidos SET cocinero_id = null, estado = '%s' WHERE id = %d",
                 $conn->real_escape_string($estado),
