@@ -8,8 +8,6 @@ $urlRegistro = $app->resuelve('/registro.php');
 $urlLlevar   = $app->resuelve('/pedidos/realizarPedido.php?pedido=llevar');
 $urlLocal    = $app->resuelve('/pedidos/realizarPedido.php?pedido=local');
 
-$imagenFondo = $app->resuelve('/img/bistroFDI_cafeteria.jpg');
-
 $ocultarNav = !isset($_SESSION['login']) || !$_SESSION['login'];
 
 if (!isset($_SESSION['login']) || !$_SESSION['login']) {
