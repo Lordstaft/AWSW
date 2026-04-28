@@ -114,7 +114,7 @@ class FormularioBusquedaUsuarios extends Formulario
         if ($filas !== null) {
             $_SESSION['resultadosBusqueda'] = <<<EOS
             <h3>Busqueda de usuarios</h3>
-            <table>
+            <table class="tabla-general">
                 <thead>
                     <tr>
                         <th>Nombre</th>

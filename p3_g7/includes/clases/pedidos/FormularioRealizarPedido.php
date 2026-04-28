@@ -60,7 +60,7 @@ class FormularioRealizarPedido extends Formulario
 
                 $htmlErroresGlobales
                 <fieldset>
-                    <table>
+                    <table class="tabla-general">
                         <thead>
                             <tr>
                                 <th>Imagen</th>

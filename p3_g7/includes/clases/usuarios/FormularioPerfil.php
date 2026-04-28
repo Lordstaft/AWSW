@@ -80,7 +80,7 @@ class FormularioPerfil extends Formulario
                 </tr>";
             }
 
-            $tablaRealizados = "<table>
+            $tablaRealizados = "<table class='tabla-general'>
                 <thead>
                     <tr>
                         <th>Fecha del pedido</th>

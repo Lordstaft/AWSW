@@ -47,7 +47,7 @@ class FormularioPedidosPendientes extends Formulario
 
         else{
             $html = <<<EOF
-                <table>
+                <table class="tabla-general">
                     <thead>
                         <tr>
                             <th>Tipo de pedido</th>

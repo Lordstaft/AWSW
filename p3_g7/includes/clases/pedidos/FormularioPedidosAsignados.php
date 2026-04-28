@@ -52,7 +52,7 @@ class FormularioPedidosAsignados extends Formulario
 
         else{
             $html = <<<EOF
-                <table>
+                <table class="tabla-general">
                     <thead>
                         <tr>
                             <th>Id pedido</th>

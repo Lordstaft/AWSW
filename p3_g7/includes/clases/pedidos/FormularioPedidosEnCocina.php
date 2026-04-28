@@ -73,7 +73,7 @@ class FormularioPedidosEnCocina extends Formulario{
         }
 
         $html = <<<EOF
-            <table>
+            <table class="tabla-general">
                 <thead>
                     <tr>
                         <th>ID Pedido</th>

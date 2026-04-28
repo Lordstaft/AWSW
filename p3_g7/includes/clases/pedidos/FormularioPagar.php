@@ -222,7 +222,7 @@ class FormularioPagar extends Formulario
                 $nuevoPedidoId = Pedido::crearPedido(
                     $usuario->getId(),
                     $tipoPedido,
-                    EstadoPedido::RECIBIDO->value,
+                    EstadoPedido::NUEVO->value,
                     $subtotalSinDescuento,
                     $descuentoAplicado,
                     $total
