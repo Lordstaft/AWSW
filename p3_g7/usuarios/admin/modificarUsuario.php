@@ -10,7 +10,7 @@ $formularioHTML = $formulario->gestiona();
 
 
 $contenidoPrincipal = <<<EOS
-    <h1>Editar usuario</h1>
+    <h2>Editar usuario</h2>
     $formularioHTML
 EOS;
 

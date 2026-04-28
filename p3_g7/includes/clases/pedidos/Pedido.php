@@ -110,7 +110,11 @@ class Pedido {
     public static function pedidosPendientes() {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "SELECT * FROM pedidos WHERE estado = 'nuevo'";
+        $query = sprintf(
+            "SELECT * FROM pedidos WHERE estado IN ('%s', '%s')",
+            $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
+            $conn->real_escape_string(EstadoPedido::NUEVO->value)
+        );
 
         $rs = $conn->query($query);
 
@@ -140,7 +144,7 @@ class Pedido {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "UPDATE pedidos SET estado = 'en_preparacion', cocinero_id = %d WHERE id = %d",
+            "UPDATE pedidos SET estado = 'preparando', cocinero_id = %d WHERE id = %d",
             (int)$cocineroId,
             (int)$id
         );
@@ -153,7 +157,7 @@ class Pedido {
 
         $query = sprintf(
             "SELECT * FROM pedidos
-             WHERE estado NOT IN ('cancelado', 'entregado', 'listo_cocina', 'recibido')
+             WHERE estado NOT IN ('cancelado', 'entregado', 'listo', 'recibido')
              AND cocinero_id = %d",
             (int)$cocineroId
         );
@@ -220,18 +224,27 @@ class Pedido {
     }
 
     public static function pedidosPendientes_Asignados($esAdmin) {
+
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         if ($esAdmin) {
-            $query = "SELECT * FROM pedidos WHERE estado != 'entregado'";
+            $query = sprintf(
+                "SELECT * FROM pedidos WHERE estado != '%s'",
+                $conn->real_escape_string(EstadoPedido::ENTREGADO->value)
+            );
         } else {
-            $query = "SELECT * FROM pedidos WHERE estado IN ('nuevo', 'en_preparacion')";
+            $query = sprintf(
+                "SELECT * FROM pedidos WHERE estado IN ('%s','%s')",
+                $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
+                $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value)
+            );
         }
 
         $rs = $conn->query($query);
 
         if ($rs && $rs->num_rows > 0) {
             $pedidos = [];
+
             while ($fila = $rs->fetch_assoc()) {
                 $pedidos[] = new Pedido(
                     $fila['id'],
@@ -243,6 +256,7 @@ class Pedido {
                     $fila['cocinero_id']
                 );
             }
+
             $rs->free();
             return $pedidos;
         }
@@ -250,10 +264,11 @@ class Pedido {
         return null;
     }
 
+
     public static function pedidosListosEntrega() {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "SELECT * FROM pedidos WHERE estado = 'listo_cocina'";
+        $query = "SELECT * FROM pedidos WHERE estado = 'listo'";
 
         $rs = $conn->query($query);
 
@@ -280,9 +295,9 @@ class Pedido {
     public static function modificarAsignacion($id, $idCocinero, $estado) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        if ($estado === 'nuevo' || $estado === 'pendiente') {
+        if ($estado === EstadoPedido::PENDIENTE->value || $estado === EstadoPedido::NUEVO->value) {
             $query = sprintf(
-                "UPDATE pedidos SET cocinero_id = null, estado = '%s' WHERE id = %d",
+                "UPDATE pedidos SET cocinero_id = NULL, estado = '%s' WHERE id = %d",
                 $conn->real_escape_string($estado),
                 (int)$id
             );

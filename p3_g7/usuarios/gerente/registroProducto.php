@@ -7,7 +7,7 @@ $formulario = new FormularioCrearProducto();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Crear Producto</h1>
+    <h2>Crear Producto</h2>
     $formularioHTML
 EOS;
 

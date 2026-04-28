@@ -36,15 +36,15 @@ class FormularioEditarCategoria extends Formulario
 
             <div>
                 <label>Imagen actual:</label><br>
-                <img src={$rutaImagen}>
+                <img src={$rutaImagen} alt="Imagen de la categoría">
             </div>
 
             <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" value="{$categoria->getNombre()}" required>
+            <input type="text" id="nombre" name="nombre" value="{$categoria->getNombre()}" required>
             {$erroresCampos['nombre']}
 
             <label for="descripcion">Descripción:</label>
-            <textarea name="descripcion" required>{$categoria->getDescripcion()}</textarea>
+            <textarea id="descripcion" name="descripcion" required>{$categoria->getDescripcion()}</textarea>
             {$erroresCampos['descripcion']}
 
             <div>

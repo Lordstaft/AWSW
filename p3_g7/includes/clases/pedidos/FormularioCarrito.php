@@ -214,7 +214,7 @@ class FormularioCarrito extends Formulario
 
                 <h2>Tu carrito</h2>
 
-                <table border="1">
+                <table>
 
                     <thead>
                         <tr>

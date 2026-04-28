@@ -9,7 +9,7 @@ $formulario = new FormularioBusquedaCategoria();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Busqueda de categorías</h1>
+    <h2>Busqueda de categorías</h2>
     $formularioHTML
 EOS;
 

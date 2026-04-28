@@ -112,7 +112,7 @@ class FormularioBusquedaCategoria extends Formulario
 
         if ($filas !== null) {
             $_SESSION['resultadosBusqueda'] = <<<EOS
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <th>Nombre</th>

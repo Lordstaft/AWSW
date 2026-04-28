@@ -12,7 +12,7 @@ $formularioHTML = $formulario->gestiona();
 $resultados = $_SESSION['resultadosBusqueda'];
 
 $contenidoPrincipal = <<<EOS
-    <h1>Busqueda de productos</h1>
+    <h2>Busqueda de productos</h2>
     $resultados
 EOS;
 

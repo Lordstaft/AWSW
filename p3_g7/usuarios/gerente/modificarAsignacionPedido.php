@@ -10,7 +10,7 @@ $formularioHTML = $formulario->gestiona();
 
 
 $contenidoPrincipal = <<<EOS
-    <h1>Modificar asignación de pedido</h1>
+    <h2>Modificar asignación de pedido</h2>
     $formularioHTML
 EOS;
 

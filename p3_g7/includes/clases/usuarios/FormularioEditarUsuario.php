@@ -42,7 +42,7 @@ class FormularioEditarUsuario extends Formulario
 
                 <div>
                     <label>Avatar</label><br>
-                    <img src={$rutaImagen}>
+                    <img src={$rutaImagen} alt="Imagen de perfil">
                 </div>
                 
                 <div>

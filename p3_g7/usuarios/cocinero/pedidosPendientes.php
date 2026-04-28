@@ -10,7 +10,7 @@ $formulario = new FormularioPedidosPendientes();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Pedidos Pendientes</h1>
+    <h2>Pedidos Pendientes</h2>
     $formularioHTML
 EOS;
 

@@ -80,7 +80,7 @@ class FormularioPerfil extends Formulario
                 </tr>";
             }
 
-            $tablaRealizados = "<table border='1'>
+            $tablaRealizados = "<table>
                 <thead>
                     <tr>
                         <th>Fecha del pedido</th>
@@ -110,7 +110,7 @@ class FormularioPerfil extends Formulario
 
                 <div>
                     <label>Avatar</label><br>
-                    <img src={$rutaImagen}>
+                    <img src={$rutaImagen} alt="Imagen de perfil">
                 </div>
                 
                 <div>

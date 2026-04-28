@@ -10,7 +10,7 @@ $formulario = new FormularioBusquedaProductos();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Busqueda de productos</h1>
+    <h2>Busqueda de productos</h2>
     $formularioHTML
 EOS;
 

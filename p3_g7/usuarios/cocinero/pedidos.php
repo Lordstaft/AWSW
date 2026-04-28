@@ -11,7 +11,7 @@ $formularioHTML = $formulario->gestiona();
 
 
 $contenidoPrincipal = <<<EOS
-    <h1>Resultados de la búsqueda</h1>
+    <h2>Resultados de la búsqueda</h2>
     $formularioHTML
 EOS;
 

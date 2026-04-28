@@ -11,7 +11,7 @@ $formularioHTML = $formulario->gestiona();
 $resultado = $_SESSION['resultadosBusqueda'];
 
 $contenidoPrincipal = <<<EOS
-    <h1>Busqueda de categorías</h1>
+    <h2>Busqueda de categorías</h2>
     $resultado
 EOS;
 

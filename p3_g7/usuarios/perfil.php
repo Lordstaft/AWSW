@@ -7,7 +7,7 @@ $formulario = new FormularioPerfil();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Perfil</h1>
+    <h2>Perfil</h2>
     $formularioHTML
 EOS;
 

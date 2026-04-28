@@ -107,7 +107,7 @@ class FormularioEditarProducto extends Formulario
 
                 <div>
                     <label>Imagen actual:</label><br>
-                    <img src={$rutaImagen}>
+                    <img src={$rutaImagen} alt="Imagen del producto">
                 </div>
                 {$erroresCampos['imagen']}
 

@@ -9,7 +9,7 @@ $formulario = new FormularioPedidosAsignados();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Gestion de Pedidos</h1>
+    <h2>Gestion de Pedidos</h2>
     $formularioHTML
 EOS;
 

@@ -7,7 +7,7 @@ $formulario = new FormularioCrearCategoria();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Crear categoria</h1>
+    <h2>Crear categoria</h2>
     $formularioHTML
 EOS;
 

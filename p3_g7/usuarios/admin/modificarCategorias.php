@@ -9,7 +9,7 @@ $formulario = new FormularioEditarCategoria();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Editar categorías</h1>
+    <h2>Editar categorías</h2>
     $formularioHTML
 EOS;
 

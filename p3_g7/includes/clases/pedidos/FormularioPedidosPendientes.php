@@ -22,6 +22,7 @@ class FormularioPedidosPendientes extends Formulario
         $pedidosPendientes = Pedido::pedidosPendientes();
 
         $filas = '';
+        $opcion = '';
 
         if (!empty($pedidosPendientes) && is_array($pedidosPendientes)) {
             foreach ($pedidosPendientes as $p) {
@@ -31,8 +32,7 @@ class FormularioPedidosPendientes extends Formulario
                     <td>{$p->getEstadoPedido()}</td>
                     <td>
                         <div>
-                            <button type='submit'>Asignar</button>
-                            <input type='hidden' name='idPedido' value='{$p->getPedidoId()}'>
+                            <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Asignar</button>
                         </div>
                     </td>
                 </tr>";
@@ -47,7 +47,7 @@ class FormularioPedidosPendientes extends Formulario
 
         else{
             $html = <<<EOF
-                <table border="1">
+                <table>
                     <thead>
                         <tr>
                             <th>Tipo de pedido</th>

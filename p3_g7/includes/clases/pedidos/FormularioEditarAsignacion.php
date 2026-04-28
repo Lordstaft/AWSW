@@ -26,6 +26,26 @@ class FormularioEditarAsignacion extends Formulario
         $opciones = '';
         $opcionesEstados = '';
 
+        $selectedCocinero = $pedido->getCocineroId();
+
+        if ($selectedCocinero) {
+            $opciones = "<option value='' disabled>-- Selecciona cocinero --</option>";
+        }
+
+        else {
+            $opciones = "<option value='' disabled selected>-- Selecciona cocinero --</option>";
+        }
+
+        $selectedEstado = $pedido->getEstadoPedido();
+
+        if ($selectedEstado) {
+            $opcionesEstados = "<option value='' disabled>-- Selecciona estado --</option>";
+        } 
+        
+        else {
+            $opcionesEstados = "<option value='' disabled selected>-- Selecciona estado --</option>";
+        }
+
         foreach($cocineros as $c){
             if($pedido->getCocineroId() === $c->getId()){
                 $opciones .= "<option value='{$c->getId()}' selected>{$c->getNombre()}</option>";
@@ -106,7 +126,7 @@ class FormularioEditarAsignacion extends Formulario
 
         $cocineroId = Usuario::buscaUsuarioId($cocinero);
 
-        if($estadoPedido === EstadoPedido::PENDIENTE->value){
+        if($estadoPedido === EstadoPedido::PENDIENTE->value || $estadoPedido === EstadoPedido::NUEVO->value){
            $modificacion = Pedido::modificarAsignacion($idPedido, null, $estadoPedido); 
         }
 

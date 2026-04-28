@@ -15,7 +15,7 @@ $formulario = new FormularioCrearUsuario();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Crear Usuario</h1>
+    <h2>Crear Usuario</h2>
     $formularioHTML
 EOS;
 

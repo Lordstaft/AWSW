@@ -7,7 +7,7 @@ $formulario = new FormularioBusquedaUsuarios();
 $formularioHTML = $formulario->gestiona();
 
 $contenidoPrincipal = <<<EOS
-    <h1>Buscar Usuario</h1>
+    <h2>Buscar Usuario</h2>
     $formularioHTML
 EOS;
 

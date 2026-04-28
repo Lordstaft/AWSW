@@ -37,7 +37,7 @@ class FormularioPedidosAsignados extends Formulario
                     <td>{$p->getEstadoPedido()}</td>
                     <td>
                         <div>
-                            <button type='submit' name='modificar'>Modificar</button>
+                            <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Modificar</button>
                         </div>
                     </td>
                 </tr>";
@@ -52,7 +52,7 @@ class FormularioPedidosAsignados extends Formulario
 
         else{
             $html = <<<EOF
-                <table border="1">
+                <table>
                     <thead>
                         <tr>
                             <th>Id pedido</th>

@@ -43,7 +43,7 @@ class FormularioPedidosEnCocina extends Formulario{
                     if ($p->getEstadoPedido() === $estado->value) {
                         $estados .= "<option value='{$estado->value}' selected>{$estado->value}</option>";
                     } 
-                    elseif($estado->value !== EstadoPedido::CANCELADO->value && $estado->value !== EstadoPedido::PENDIENTE->value && $estado->value !== EstadoPedido::ENTREGADO->value && $estado->value !== EstadoPedido::RECIBIDO->value){
+                    elseif($estado->value !== EstadoPedido::CANCELADO->value && $estado->value !== EstadoPedido::PENDIENTE->value && $estado->value !== EstadoPedido::ENTREGADO->value && $estado->value !== EstadoPedido::NUEVO->value){
                         $estados .= "<option value='{$estado->value}'>{$estado->value}</option>";
                     }
                 }
@@ -73,7 +73,7 @@ class FormularioPedidosEnCocina extends Formulario{
         }
 
         $html = <<<EOF
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <th>ID Pedido</th>
