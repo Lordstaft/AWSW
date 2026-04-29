@@ -60,7 +60,7 @@ class FormularioPedidosEnCocina extends Formulario{
                         {$erroresCampos['estado']}
                     </td>
                     <td>
-                        <button type='submit' name='modificar'>
+                        <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>
                             Modificar
                         </button>
                     </td>
