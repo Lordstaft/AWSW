@@ -313,6 +313,23 @@ class Pedido {
         return $conn->query($query);
     }
 
+
+    public static function marcarPlatoPreparado($pedidoId, $productoId) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        // INSERT IGNORE garantiza que existe la fila aunque no se inicializó antes
+        $conn->query(sprintf(
+            "INSERT IGNORE INTO pedido_producto_estado (pedido_id, producto_id, preparado) VALUES (%d, %d, 1)",
+            (int)$pedidoId,
+            (int)$productoId
+        ));
+
+        return $conn->query(sprintf(
+            "UPDATE pedido_producto_estado SET preparado = 1 WHERE pedido_id = %d AND producto_id = %d",
+            (int)$pedidoId,
+            (int)$productoId
+        ));
+    }
+
     public static function realizarEntrega($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
@@ -359,6 +376,52 @@ class Pedido {
         }
 
         return null;
+    }
+
+    public static function buscaProductosCocina($id) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "SELECT p.*, pp.cantidad, 
+                    COALESCE(ppe.preparado, 0) AS preparado
+            FROM productos p
+            JOIN pedido_productos pp ON p.id = pp.producto_id
+            LEFT JOIN pedido_producto_estado ppe 
+                ON p.id = ppe.producto_id AND pp.pedido_id = ppe.pedido_id
+            WHERE pp.pedido_id = %d",
+            (int)$id
+        );
+
+        $rs = $conn->query($query);
+
+        $resultado = [];
+
+        if ($rs) {
+            while ($fila = $rs->fetch_assoc()) {
+
+                $producto = new Producto(
+                    $fila['id'],
+                    $fila['nombreProd'],
+                    $fila['descripcion'],
+                    $fila['categoria_id'],
+                    $fila['precio'],
+                    $fila['iva'],
+                    $fila['stock'],
+                    $fila['disponible'],
+                    $fila['ofertado'],
+                    $fila['fechaCreacion']
+                );
+
+                $resultado[] = [
+                    'producto'  => $producto,
+                    'cantidad'  => $fila['cantidad'],
+                    'preparado' => (int)$fila['preparado']
+                ];
+            }
+            $rs->free();
+        }
+
+        return $resultado;
     }
 
     public static function buscaProductos($id) {

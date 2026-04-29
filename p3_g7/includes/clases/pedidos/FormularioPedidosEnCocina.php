@@ -7,7 +7,7 @@ use es\ucm\fdi\aw\pedidos\Pedido;
 use es\ucm\fdi\aw\usuarios\Usuario;
 use es\ucm\fdi\aw\pedidos\EstadoPedido;
 
-class FormularioPedidosEnCocina extends Formulario{
+class FormularioPedidosEnCocina extends Formulario {
 
     public function __construct() {
         parent::__construct('formPedidosEnCocina', [
@@ -17,111 +17,208 @@ class FormularioPedidosEnCocina extends Formulario{
 
     protected function generaCamposFormulario(&$datos)
     {
+        $cocinero = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
+        $pedidos  = Pedido::pedidosPendientesCocinero($cocinero->getId());
+
+        if (empty($pedidos)) {
+            return '<p>No hay pedidos pendientes de preparar.</p>';
+        }
+
+        $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
+        $erroresCampos = self::generaErroresCampos(['estado'], $this->errores, 'span', array('class' => 'error'));
         $filas = '';
 
-        $cocinero = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
-        $pedidosPendientes = Pedido::pedidosPendientesCocinero($cocinero->getId());
+        foreach ($pedidos as $pedido) {
 
-        $erroresCampos = self::generaErroresCampos(['estado'], $this->errores, 'span', array('class' => 'error'));
+            $platosHtml     = $this->generaListaPlatos($pedido);
+            $selectEstados  = $this->generaSelectEstados($pedido);
 
-        if (!empty($pedidosPendientes) && is_array($pedidosPendientes)) {
-
-            foreach ($pedidosPendientes as $p) {
-
-                $productosPedido = Pedido::buscaProductos($p->getPedidoId());
-                $productos = '';
-                $estados = '';
-
-                foreach ($productosPedido as $s) {
-                    $productos .= "<ul>
-                        <li>{$s->getNombreProd()}</li>
-                    </ul>";
-                }
-
-                foreach (EstadoPedido::cases() as $estado) {
-
-                    if ($p->getEstadoPedido() === $estado->value) {
-                        $estados .= "<option value='{$estado->value}' selected>{$estado->value}</option>";
-                    } 
-                    elseif($estado->value !== EstadoPedido::CANCELADO->value && $estado->value !== EstadoPedido::PENDIENTE->value && $estado->value !== EstadoPedido::ENTREGADO->value && $estado->value !== EstadoPedido::NUEVO->value){
-                        $estados .= "<option value='{$estado->value}'>{$estado->value}</option>";
-                    }
-                }
-
-                $filas .= "
-                <tr>
-                    <td>{$p->getPedidoId()}</td>
-                    <td>{$p->getFechaPedido()}</td>
-                    <td>$productos</td>
-                    <td>
-                        <select name='estado'>
-                            $estados
-                        </select>
-                        {$erroresCampos['estado']}
-                    </td>
-                    <td>
-                        <button type='submit' name='modificar'>
-                            Modificar
-                        </button>
-                    </td>
-                </tr>";
-            }
-        }
-        else {
-            $filas = "No hay pedidos pendientes de preparar.";
-            return $filas;
+            $filas .= "
+            <tr>
+                <td>{$pedido->getPedidoId()}</td>
+                <td>{$pedido->getFechaPedido()}</td>
+                <td>{$platosHtml}</td>
+                <td>
+                    {$selectEstados}
+                    {$erroresCampos['estado']}
+                </td>
+                <td>
+                    <button type='submit' name='idPedido' value='{$pedido->getPedidoId()}'>
+                        Actualizar
+                    </button>
+                </td>
+            </tr>";
         }
 
-        $html = <<<EOF
+        return <<<HTML
+            $htmlErroresGlobales
             <table class="tabla-general">
                 <thead>
                     <tr>
-                        <th>ID Pedido</th>
-                        <th>Fecha de pedido</th>
-                        <th>Productos</th>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Platos</th>
                         <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     $filas
                 </tbody>
             </table>
-        EOF;
-
-        return $html;
+        HTML;
     }
-        protected function procesaFormulario(&$datos)
+
+    /**
+     * Genera la lista de platos de un pedido
+     */
+    private function generaListaPlatos($pedido)
     {
-        $app = Aplicacion::getInstance();
-        $idPedido = trim($datos['idPedido'] ?? '');
-        $idPedido = filter_var($idPedido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $items = Pedido::buscaProductosCocina($pedido->getPedidoId());
+        $html = '<ul class="lista-platos">';
 
-        if(!$idPedido || empty($idPedido)){
-            $mensajes = ['Error al localizar el pedido.'];
-            $app->putAtributoPeticion('mensajes', $mensajes);
-            $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'));
+        foreach ($items as $item) {
+            $producto   = $item['producto'];
+            $cantidad   = $item['cantidad'];
+            $preparado  = $item['preparado'];
+
+            $nombre = htmlspecialchars($producto->getNombreProd());
+            $icono  = $preparado ? '✅' : '⬜';
+
+            $boton = $preparado ? '' : "
+                <button type='submit' name='marcarPlato[{$pedido->getPedidoId()}][{$producto->getId()}]' value='1' class='btn-plato'> listo </button>";
+
+            $html .= "
+                <li class='lista-platos'>
+                    {$icono} {$nombre} x {$cantidad} {$boton}
+                </li>";
         }
 
-        $estadoPedido = trim($datos['estado'] ?? '');
-        $estadoPedido = filter_var($estadoPedido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        return $html . '</ul>';
+    }
 
-        if(!$estadoPedido || empty($estadoPedido)){
-            $this->errores['estado'] = 'El estado del pedido no puede estar vacío';
-        }
+    /**
+     * Genera el select de estados permitidos
+     */
+    private function generaSelectEstados($pedido)
+    {
+        $estadoActual = $pedido->getEstadoPedido();
+        $opciones = '';
 
-        if(count($this->errores) === 0){
-            $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
-            $modificacion = Pedido::modificarAsignacion($idPedido, $usuario->getId(), $estadoPedido);
+        foreach (EstadoPedido::cases() as $estado) {
 
-            if(!$modificacion){
-                $this->errores[] = "Error al modificar el estado del pedido.";
+            // Estados NO permitidos para cocina
+            if (in_array($estado->value, [
+                EstadoPedido::CANCELADO->value,
+                EstadoPedido::PENDIENTE->value,
+                EstadoPedido::ENTREGADO->value,
+                EstadoPedido::NUEVO->value
+            ])) {
+                continue;
             }
 
-            else{
-                $mensajes = ['Se ha actualizado el estado del pedido.'];
-                $app->putAtributoPeticion('mensajes', $mensajes);
-                $app->redirige(Aplicacion::getInstance()->resuelve('/usuarios/cocinero/pedidosPendientes.php'));
+            $selected = ($estadoActual === $estado->value) ? 'selected' : '';
+
+            $opciones .= "<option value='{$estado->value}' {$selected}>
+                {$estado->value}
+            </option>";
+        }
+
+        return "<select name='estado'>{$opciones}</select>";
+    }
+
+    protected function procesaFormulario(&$datos)
+    {
+        $app = Aplicacion::getInstance();
+
+        if (isset($datos['marcarPlato']) && is_array($datos['marcarPlato'])) {
+            foreach ($datos['marcarPlato'] as $pedidoId => $productos) {
+                foreach ($productos as $productoId => $valor) {
+                    if ((int)$valor === 1) {
+                        Pedido::marcarPlatoPreparado((int)$pedidoId, (int)$productoId);
+                    }
+                }
+            }
+
+            $app->putAtributoPeticion('mensajes', ['Plato marcado como preparado.']);
+            $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+            return;
+        }
+
+        $idPedido = filter_var($datos['idPedido'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+
+        if (!$idPedido) {
+            $app->putAtributoPeticion('mensajes', ['Error al localizar el pedido.']);
+            $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+            return;
+        }
+
+        $estadoPedido = filter_var($datos['estado'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if (!$estadoPedido) {
+            $this->errores['estado'] = 'El estado del pedido no puede estar vacío';
+            return;
+        }
+
+        if (empty($this->errores)) {
+            $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
+
+            if(isset($datos['idPedido'])){
+                $pedidoCorrecto = true;
+
+                $items = Pedido::buscaProductosCocina($idPedido);
+
+                foreach ($items as $item) {
+                    if ((int)$item['preparado'] === 0) {
+                        $pedidoCorrecto = false;
+                        break;
+                    }
+                }
+
+
+
+                if($estadoPedido !== EstadoPedido::LISTO->value && $pedidoCorrecto === false){
+                    $ok = Pedido::modificarAsignacion(
+                        (int)$idPedido,
+                        $usuario->getId(),
+                        $estadoPedido
+                    );
+                    if(!$ok) {
+                        $this->errores[] = 'Error al modificar el estado del pedido.';
+                    }
+                    else {
+                        $app->putAtributoPeticion('mensajes', ['Estado actualizado correctamente.']);
+                        $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+                    }
+                }
+
+                elseif($estadoPedido === EstadoPedido::LISTO->value && $pedidoCorrecto === true){
+                    $ok = Pedido::modificarAsignacion(
+                        (int)$idPedido,
+                        $usuario->getId(),
+                        $estadoPedido
+                    );
+                    if(!$ok) {
+                        $this->errores[] = 'Error al modificar el estado del pedido.';
+                    }
+                    else {
+                        $app->putAtributoPeticion('mensajes', ['Estado actualizado correctamente.']);
+                        $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+                    }
+                }
+
+                elseif($estadoPedido === EstadoPedido::LISTO->value && $pedidoCorrecto === false){
+                    $this->errores[] = 'Error al modificar el pedido.';
+                    $app->putAtributoPeticion('mensajes', ['Los platos no estan preparados.']);
+                    $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+                }
+                
+                else{
+                    $this->errores[] = 'Error al modificar el pedido.';
+                    $app->putAtributoPeticion('mensajes', ['Los platos ya estan preparados, por favor actualice el estado del pedido a listo.']);
+                    $app->redirige($app->resuelve('/usuarios/cocinero/pedidos.php'));
+                }
+
             }
         }
     }

@@ -1,20 +1,8 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 06-04-2026 a las 05:40:56
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 -- Base de datos: `awp2`
 
@@ -32,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombreUsuario` (`nombreUsuario`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE IF NOT EXISTS `categorias` (
@@ -42,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   `imgCategoriaProd` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `productos`;
 CREATE TABLE IF NOT EXISTS `productos` (
@@ -58,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `productos` (
   `fechaCreacion` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `categoria_id` (`categoria_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE IF NOT EXISTS `pedidos` (
@@ -74,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`),
   KEY `fk_pedidos_cocinero` (`cocinero_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `pedido_productos`;
 CREATE TABLE IF NOT EXISTS `pedido_productos` (
@@ -88,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `pedido_productos` (
   PRIMARY KEY (`id`),
   KEY `pedido_id` (`pedido_id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `producto_imagenes`;
 CREATE TABLE IF NOT EXISTS `producto_imagenes` (
@@ -97,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `producto_imagenes` (
   `rutaImagen` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `ofertas`;
 CREATE TABLE IF NOT EXISTS `ofertas` (
@@ -109,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `ofertas` (
   `descuento` decimal(5,2) NOT NULL,
   `activa` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `oferta_productos`;
 CREATE TABLE IF NOT EXISTS `oferta_productos` (
@@ -120,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `oferta_productos` (
   PRIMARY KEY (`id`),
   KEY `oferta_id` (`oferta_id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `pedido_ofertas`;
 CREATE TABLE IF NOT EXISTS `pedido_ofertas` (
@@ -132,34 +120,58 @@ CREATE TABLE IF NOT EXISTS `pedido_ofertas` (
   PRIMARY KEY (`id`),
   KEY `pedido_id` (`pedido_id`),
   KEY `oferta_id` (`oferta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Restricciones
+DROP TABLE IF EXISTS `pedido_producto_estado`;
+CREATE TABLE IF NOT EXISTS `pedido_producto_estado` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `pedido_id` INT(11) NOT NULL,
+  `producto_id` INT(11) NOT NULL,
+  `preparado` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_pedido_producto` (`pedido_id`, `producto_id`),
+  KEY `pedido_id` (`pedido_id`),
+  KEY `producto_id` (`producto_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- FOREIGN KEYS
 
 ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
+  ADD CONSTRAINT `productos_ibfk_1`
+  FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
 
 ALTER TABLE `pedidos`
-  ADD CONSTRAINT `fk_pedidos_cocinero` FOREIGN KEY (`cocinero_id`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+  ADD CONSTRAINT `fk_pedidos_cocinero`
+  FOREIGN KEY (`cocinero_id`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `pedidos_ibfk_1`
+  FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 ALTER TABLE `pedido_productos`
-  ADD CONSTRAINT `pedido_productos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `pedido_productos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
+  ADD CONSTRAINT `pedido_productos_ibfk_1`
+  FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_productos_ibfk_2`
+  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 ALTER TABLE `producto_imagenes`
-  ADD CONSTRAINT `producto_imagenes_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `producto_imagenes_ibfk_1`
+  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `oferta_productos`
-  ADD CONSTRAINT `oferta_productos_ibfk_1` FOREIGN KEY (`oferta_id`) REFERENCES `ofertas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `oferta_productos_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `oferta_productos_ibfk_1`
+  FOREIGN KEY (`oferta_id`) REFERENCES `ofertas` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `oferta_productos_ibfk_2`
+  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `pedido_ofertas`
-  ADD CONSTRAINT `pedido_ofertas_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `pedido_ofertas_ibfk_2` FOREIGN KEY (`oferta_id`) REFERENCES `ofertas` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `pedido_ofertas_ibfk_1`
+  FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_ofertas_ibfk_2`
+  FOREIGN KEY (`oferta_id`) REFERENCES `ofertas` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `pedido_producto_estado`
+  ADD CONSTRAINT `fk_ppe_pedido`
+  FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ppe_producto`
+  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -584,6 +584,19 @@ main article a.opcion-pedido:visited {
     color: #888;
     font-weight: normal;
 }
+
+.lista-platos li {
+    display: flex;
+    align-items: center;   /* alinea icono + texto + botón */
+    gap: 6px;
+}
+
+.btn-plato {
+    margin-left: auto;     /* manda el botón a la derecha */
+    font-size: 12px;       /* más pequeño */
+    padding: 2px 6px;      /* compacto */
+}
+
 /* Descripción gris pequeña */
 
 main article a.opcion-pedido:hover .opcion-desc {
