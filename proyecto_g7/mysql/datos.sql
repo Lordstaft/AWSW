@@ -44,25 +44,25 @@ INSERT INTO `productos` (`id`, `nombreProd`, `descripcion`, `categoria_id`, `pre
 -- 4. IMAGENES PRODUCTO
 INSERT INTO `producto_imagenes` (`id`, `producto_id`, `rutaImagen`) VALUES
 (1, 1, 'cocacola.jpg'),
-(3, 2, 'agua_mineral.jpg'),
-(4, 3, 'cafe_espresso.jpg'),
-(5, 4, 'bocadillo_jamon.jpg'),
-(6, 5, 'bocadillo_vegetal.jpg'),
-(8, 6, 'bocadillo_pollo.jpg'),
-(9, 7, 'ensalada_cesar.jpg'),
-(10, 8, 'ensalada_mixta.jpg'),
-(11, 9, 'hamburguesa_completa.jpg'),
-(13, 10, 'lasana_casera.jpg'),
-(14, 11, 'pechuga_plancha.jpg'),
-(15, 12, 'tarta_queso.jpg'),
-(16, 13, 'brownie_chocolate.jpg'),
-(17, 14, 'patatas_fritas.jpg'),
-(18, 15, 'nachos_queso.jpg');
+(2, 2, 'agua_mineral.jpg'),
+(3, 3, 'cafe_espresso.jpg'),
+(4, 4, 'bocadillo_jamon.jpg'),
+(5, 5, 'bocadillo_vegetal.jpg'),
+(6, 6, 'bocadillo_pollo.jpg'),
+(7, 7, 'ensalada_cesar.jpg'),
+(8, 8, 'ensalada_mixta.jpg'),
+(9, 9, 'hamburguesa_completa.jpg'),
+(10, 10, 'lasana_casera.jpg'),
+(11, 11, 'pechuga_plancha.jpg'),
+(12, 12, 'tarta_queso.jpg'),
+(13, 13, 'brownie_chocolate.jpg'),
+(14, 14, 'patatas_fritas.jpg'),
+(15, 15, 'nachos_queso.jpg');
 
 -- 5. PEDIDOS
 INSERT INTO `pedidos` (`id`, `usuario_id`, `estado`, `fechaPedido`, `tipo`, `total`, `cocinero_id`) VALUES
 (1, 25, 'cocinando', '2026-03-05 13:00:00', 'recogida', 6.30, 27),
-(2, 26, 'en_preparacion', '2026-03-05 13:05:00', 'domicilio', 10.00, 28),
+(2, 26, 'preparando', '2026-03-05 13:05:00', 'domicilio', 10.00, 28),
 (3, 25, 'entregado', '2026-03-05 13:10:00', 'domicilio', 12.50, 27),
 (4, 26, 'entregado', '2026-03-05 13:20:00', 'recogida', 8.50, 28),
 (5, 25, 'nuevo', '2026-03-05 13:25:00', 'domicilio', 9.00, NULL),
