@@ -15,15 +15,12 @@ function mostrarSaludo($app, $ocultarNav = false)
         // avatar del usuario
         $avatar = $_SESSION['avatar'] ?? 'usuario_default.png';
 
+        // ruta correcta a /img/
         $rutaAvatar = $app->resuelve('/img/' . $avatar);
-        $rutaPerfil = $app->resuelve('/usuarios/perfil.php');
 
         $html = <<<HTML
         <div class="usuario-cabecera">
-            <a href="{$rutaPerfil}">
-                <img src="{$rutaAvatar}" class="avatar-cabecera" alt="avatar">
-                
-            </a>
+            <img src="{$rutaAvatar}" class="avatar-cabecera" alt="avatar">
             <span>Bienvenido, {$nombreUsuario}</span>
             {$htmlLogout}
         </div>
