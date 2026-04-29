@@ -512,34 +512,35 @@ a.deshabilitado {
     margin-top: 20px; /* Espacio encima */
 }
 
-.tabla-general {
-    width: 100%;
-    border-collapse: separate;   /* IMPORTANTE para separar filas */
-    border-spacing: 0 10px;      /* espacio vertical entre filas */
-    text-align: center;          /* centra todo el contenido */
-}
-
+/* Estilos para las celdas de encabezado (th):
+   define el relleno interno y el color de fondo gris claro */
 .tabla-general th {
     padding: 10px;
     background-color: #f5f5f5;
 }
 
+/* Estilos para las celdas de datos (td):
+   mayor padding que th y fondo blanco para resaltar el contenido */
 .tabla-general td {
     padding: 12px;
     background-color: #ffffff;
 }
 
-/* Opcional: estilo tipo "tarjeta" */
+/* Estilo opcional tipo "tarjeta":
+   añade sombra suave a cada fila para dar sensación de profundidad/elevación */
 .tabla-general tr {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* Opcional: redondear filas */
+/* Redondea las esquinas izquierdas de la primera celda,
+   para simular el borde izquierdo redondeado de la fila */
 .tabla-general td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
 
+/* Redondea las esquinas derechas de la última celda,
+   para simular el borde derecho redondeado de la fila */
 .tabla-general td:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
