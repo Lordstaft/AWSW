@@ -27,7 +27,7 @@ class Usuario {
         $this->apellidos = $apellidos;
         $this->password = $password;
         $this->rol = $rol;
-        $this->avatar = $avatar ?? "usuario_default.png";
+        $this->avatar = $avatar ?? "usuario_default.jpg";
         $this->fechaRegistro = $fechaRegistro ?? '';
     }
 

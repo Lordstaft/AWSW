@@ -162,7 +162,7 @@ class FormularioEditarUsuario extends Formulario
 
                 if (!empty($datos['eliminarImagen'])) {
                     $imagen->eliminarImagen($imagenActual);
-                    $nombreImagen = null;
+                    $nombreImagen = "usuario_default.jpg";
                     }
                 else {
                     $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $imagenActual);
