@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `productos` (
   `stock` int(11) DEFAULT 0,
   `disponible` tinyint(1) DEFAULT 1,
   `ofertado` tinyint(1) DEFAULT 0,
+  `rutaImg` varchar(255) DEFAULT NULL,
   `fechaCreacion` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `categoria_id` (`categoria_id`)
@@ -75,15 +76,6 @@ CREATE TABLE IF NOT EXISTS `pedido_productos` (
   `preparado` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `pedido_id` (`pedido_id`),
-  KEY `producto_id` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `producto_imagenes`;
-CREATE TABLE IF NOT EXISTS `producto_imagenes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `producto_id` int(11) NOT NULL,
-  `rutaImagen` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
   KEY `producto_id` (`producto_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -151,10 +143,6 @@ ALTER TABLE `pedido_productos`
   FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `pedido_productos_ibfk_2`
   FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
-
-ALTER TABLE `producto_imagenes`
-  ADD CONSTRAINT `producto_imagenes_ibfk_1`
-  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `oferta_productos`
   ADD CONSTRAINT `oferta_productos_ibfk_1`

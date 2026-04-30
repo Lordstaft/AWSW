@@ -22,31 +22,31 @@ INSERT INTO categorias (id, nombre, descripcion, imgCategoriaProd) VALUES
 (6,'Snacks','Snacks...','snacks.jpg');
 
 -- 3. PRODUCTOS (TODOS LOS NECESARIOS)
-INSERT INTO productos (id, nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado, fechaCreacion) VALUES
-(1,'Coca-Cola 33cl','Refresco...',1,2.00,'10',100,1,0,'2026-03-04 16:26:45'),
-(2,'Agua Mineral 50cl','Agua...',1,1.50,'10',150,1,0,'2026-03-04 16:26:45'),
-(3,'Café Espresso','Café...',1,1.80,'10',80,1,0,'2026-03-04 16:26:45'),
-(4,'Bocadillo Jamón','Pan...',2,4.50,'10',40,1,0,'2026-03-04 16:26:45'),
-(5,'Bocadillo Vegetal','Lechuga...',2,4.00,'10',35,1,1,'2026-03-04 16:26:45'),
-(6,'Bocadillo Pollo','Pollo...',2,4.80,'10',30,1,0,'2026-03-04 16:26:45'),
-(7,'Ensalada César','Lechuga...',3,6.50,'10',25,1,0,'2026-03-04 16:26:45'),
-(8,'Ensalada Mixta','Lechuga...',3,5.50,'10',30,1,0,'2026-03-04 16:26:45'),
-(9,'Hamburguesa','Hamburguesa...',4,8.50,'10',20,1,1,'2026-03-04 16:26:45'),
-(10,'Lasaña','Lasaña...',4,9.00,'10',15,1,0,'2026-03-04 16:26:45'),
-(11,'Pechuga','Pollo...',4,7.50,'10',18,1,0,'2026-03-04 16:26:45'),
-(12,'Tarta Queso','Postre...',5,4.00,'10',20,1,1,'2026-03-04 16:26:45'),
-(13,'Brownie','Chocolate...',5,3.80,'10',25,1,0,'2026-03-04 16:26:45'),
-(14,'Patatas Fritas','Snack...',6,3.00,'10',50,1,0,'2026-03-04 16:26:45'),
-(15,'Nachos','Snack...',6,4.50,'10',35,1,0,'2026-03-04 16:26:45');
+INSERT INTO productos (id, nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado, rutaImg, fechaCreacion) VALUES
+(1,'Coca-Cola 33cl','Refresco...',1,2.00,'10',100,1,0,'cocacola.jpg','2026-03-04 16:26:45'),
+(2,'Agua Mineral 50cl','Agua...',1,1.50,'10',150,1,0,'agua_mineral.jpg','2026-03-04 16:26:45'),
+(3,'Café Espresso','Café...',1,1.80,'10',80,1,0,'cafe_espresso.jpg','2026-03-04 16:26:45'),
+(4,'Bocadillo Jamón','Pan...',2,4.50,'10',40,1,0,'bocadillo_jamon.jpg','2026-03-04 16:26:45'),
+(5,'Bocadillo Vegetal','Lechuga...',2,4.00,'10',35,1,1,'bocadillo_vegetal.jpg','2026-03-04 16:26:45'),
+(6,'Bocadillo Pollo','Pollo...',2,4.80,'10',30,1,0,'bocadillo_pollo.jpg','2026-03-04 16:26:45'),
+(7,'Ensalada César','Lechuga...',3,6.50,'10',25,1,0,'ensalada_cesar.jpg','2026-03-04 16:26:45'),
+(8,'Ensalada Mixta','Lechuga...',3,5.50,'10',30,1,0,'ensalada_mixta.jpg','2026-03-04 16:26:45'),
+(9,'Hamburguesa','Hamburguesa...',4,8.50,'10',20,1,1,'hamburguesa_completa.jpg','2026-03-04 16:26:45'),
+(10,'Lasaña','Lasaña...',4,9.00,'10',15,1,0,'lasana_casera.jpg','2026-03-04 16:26:45'),
+(11,'Pechuga','Pollo...',4,7.50,'10',18,1,0,'pechuga_plancha.jpg','2026-03-04 16:26:45'),
+(12,'Tarta Queso','Postre...',5,4.00,'10',20,1,1,'tarta_queso.jpg','2026-03-04 16:26:45'),
+(13,'Brownie','Chocolate...',5,3.80,'10',25,1,0,'brownie_chocolate.jpg','2026-03-04 16:26:45'),
+(14,'Patatas Fritas','Snack...',6,3.00,'10',50,1,0,'patatas_fritas.jpg','2026-03-04 16:26:45'),
+(15,'Nachos','Snack...',6,4.50,'10',35,1,0,'nachos_queso.jpg','2026-03-04 16:26:45');
 
 -- 4. PEDIDOS
 INSERT INTO pedidos (id, usuario_id, estado, fechaPedido, tipo, total, subtotalSinDescuento, descuentoAplicado, cocinero_id) VALUES
-(1,25,'cocinando','2026-03-05 13:00:00','recogida',6.30,6.30,0,27),
-(2,26,'preparando','2026-03-05 13:05:00','domicilio',10.00,10.00,0,28),
-(3,25,'entregado','2026-03-05 13:10:00','domicilio',12.50,12.50,0,27),
-(4,26,'entregado','2026-03-05 13:20:00','recogida',8.50,8.50,0,28),
-(5,25,'nuevo','2026-03-05 13:25:00','domicilio',9.00,9.00,0,NULL),
-(6,26,'cancelado','2026-03-05 13:30:00','recogida',5.50,5.50,0,NULL);
+(1,25,'cocinando','2026-03-05 13:00:00','recogida',6.30,0,0,27),
+(2,26,'preparando','2026-03-05 13:05:00','domicilio',10.00,0,0,28),
+(3,25,'entregado','2026-03-05 13:10:00','domicilio',12.50,0,0,27),
+(4,26,'entregado','2026-03-05 13:20:00','recogida',8.50,0,0,28),
+(5,25,'nuevo','2026-03-05 13:25:00','domicilio',9.00,0,0,NULL),
+(6,26,'cancelado','2026-03-05 13:30:00','recogida',5.50,0,0,NULL);
 
 -- 5. PRODUCTOS PEDIDO (YA SIN ERRORES)
 INSERT INTO pedido_productos (id, pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado, preparado) VALUES
