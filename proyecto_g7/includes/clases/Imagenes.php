@@ -5,6 +5,17 @@ use es\ucm\fdi\aw\Aplicacion;
 class Imagenes {
 
     private $rutaRaizApp;
+
+    private function esDefault($imagen): bool {
+        $defaultImgs = ['producto_default.jpg', 'usuario_default.jpg', 'categoria_default.jpg'];
+        foreach ($defaultImgs as $nombre){
+            if ($imagen === $nombre) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function __construct() {
         $app = Aplicacion::getInstance();
         $this->rutaRaizApp = dirname($app->getDirInstalacion());
@@ -28,14 +39,16 @@ class Imagenes {
         return null;
     }
 
-    public  function eliminarImagen(string $nombreArchivo = ''): bool {
+    public function eliminarImagen(string $nombreArchivo = ''): bool {
         if (empty($nombreArchivo)) {
             return false;
         }
         $nombreArchivo = basename($nombreArchivo);
-        if ($nombreArchivo === 'producto_default.jpg') {
+
+        if ($this->esDefault($nombreArchivo)) {
             return false;
         }
+
         $rutaCompleta = $this->rutaRaizApp . '/img/' . $nombreArchivo;
         if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
             return unlink($rutaCompleta);
@@ -49,7 +62,7 @@ class Imagenes {
         }
         $nuevoNombre = $this->subirImagen($file, $directorio);
         if ($nuevoNombre !== null) {
-            if (!empty($imagenActual)) {
+            if (!empty($imagenActual) && !$this->esDefault($imagenActual)) {
                 $this->eliminarImagen($imagenActual);
             }
             return $nuevoNombre;
