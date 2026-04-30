@@ -121,6 +121,10 @@ class FormularioEditarCategoria extends Formulario
                 }
             }
             elseif(isset($datos['eliminarCategoria'])){
+                $imagen = new Imagenes();
+                $categoria = Categoria::buscaPorId($id);
+                $imagen->eliminarImagen($categoria->getImgCategoriaProd());
+                
                 $ok = Categoria::borra($id);
 
                 if ($ok) {
