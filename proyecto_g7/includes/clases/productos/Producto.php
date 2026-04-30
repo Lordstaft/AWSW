@@ -146,7 +146,7 @@ class Producto {
             (int)$ofertado,
             $conn->real_escape_string($imagen)
         );
-        return true;
+        return $conn->query($query);
     }
     public static function buscaPorId($id)
     {
