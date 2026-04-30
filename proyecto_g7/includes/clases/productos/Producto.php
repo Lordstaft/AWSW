@@ -66,18 +66,16 @@ class Producto {
     public static function listar($categoria) {
         $conn = Aplicacion::getInstance()->getConexionBd();
         if($categoria === 'Todos' || $categoria === '') {
-            $sql = sprintf("SELECT p.*, pi.rutaImagen
+            $sql = sprintf("SELECT p.*
                 FROM productos p
                 JOIN categorias c ON c.id = p.categoria_id
-                JOIN producto_imagenes pi ON p.id = pi.producto_id
                 GROUP BY p.id
                 ORDER BY c.nombre
                 ");
         }
         else{
-            $sql = sprintf("SELECT p.*, pi.rutaImagen
+            $sql = sprintf("SELECT p.*
                 FROM productos p
-                JOIN producto_imagenes pi ON p.id = pi.producto_id
                 LEFT JOIN categorias c ON p.categoria_id = c.id
                 WHERE categoria_id = %d
                 GROUP BY p.id
@@ -98,8 +96,8 @@ class Producto {
                     $fila['stock'],
                     $fila['disponible'],
                     $fila['ofertado'],
-                    null,
-                    $fila['rutaImagen']
+                    $fila['rutaImg'],
+                    null
                 );
             }
             $rs->free();
@@ -137,7 +135,7 @@ class Producto {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
             "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado, rutaImg)
-             VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d, %d)",
+             VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d, %d, '%s')",
             $conn->real_escape_string($nombreProd),
             $conn->real_escape_string($descripcion),
             (int)$categoria_id,
@@ -148,16 +146,7 @@ class Producto {
             (int)$ofertado,
             $conn->real_escape_string($imagen)
         );
-        if ($conn->query($query)) {
-            $idProducto = $conn->insert_id;
-            $conn->query(sprintf(
-                "INSERT INTO producto_imagenes (producto_id, rutaImagen)
-                VALUES (%d, '%s')",
-                $idProducto,
-                $conn->real_escape_string($imagen)
-            ));
-            return true;
-        }
+        return true;
     }
     public static function buscaPorId($id)
     {
@@ -220,16 +209,7 @@ class Producto {
     public static function actualiza($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $conn->query(sprintf(
-            "DELETE FROM producto_imagenes WHERE producto_id = %d",
-            (int)$id
-        ));
-        $conn->query(sprintf(
-            "INSERT INTO producto_imagenes (producto_id, rutaImagen)
-            VALUES (%d, '%s')",
-            (int)$id,
-            $conn->real_escape_string($imagen)
-        ));
+        
         $query = sprintf(
             "UPDATE productos
             SET nombreProd = '%s',
@@ -239,7 +219,8 @@ class Producto {
                 iva = '%s',
                 disponible = %d,
                 ofertado = %d,
-                stock = %d
+                stock = %d,
+                rutaImg = '%s'
             WHERE id = %d",
             $conn->real_escape_string($nombreProd),
             $conn->real_escape_string($descripcion),
@@ -249,6 +230,7 @@ class Producto {
             (int)$disponible,
             (int)$ofertado,
             (int)$stock,
+            $conn->real_escape_string($imagen),
             (int)$id
         );
         return $conn->query($query);
