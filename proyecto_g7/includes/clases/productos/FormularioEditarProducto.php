@@ -264,6 +264,12 @@ class FormularioEditarProducto extends Formulario
 
         if(isset($datos['eliminarProducto'])){
             $id = filter_var($datos['id'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $imagen = new Imagenes();
+            $producto = Producto::buscaPorId($id);
+            $imagenActual = $producto->getRutaImagen() ?? '';
+            $imagen->eliminarImagen($imagenActual);
+
             $resul = Producto::borra($id);
 
             if(!$resul){
