@@ -204,7 +204,7 @@ class FormularioPerfil extends Formulario
 
                 if (!empty($datos['eliminarImagen'])) {
                     $imagen->eliminarImagen($imagenActual);
-                    $nombreImagen = 'usuario_default.png';
+                    $nombreImagen = 'usuario_default.jpg';
                 }
                 else {
                     $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $imagenActual);
