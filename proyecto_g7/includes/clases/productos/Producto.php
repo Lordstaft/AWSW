@@ -14,9 +14,10 @@ class Producto {
     private $stock;
     private $disponible;
     private $ofertado;
+    private $rutaImg;
     private $fechaCreacion;
-    private $rutaImagen;
-    public function __construct($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $fechaCreacion, $rutaImagen = null) {
+    
+    public function __construct($id, $nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $rutaImagen = null, $fechaCreacion) {
         $this->id = $id;
         $this->nombreProd = $nombreProd;
         $this->descripcion = $descripcion;
@@ -26,8 +27,8 @@ class Producto {
         $this->stock = $stock ?? 0;
         $this->disponible = $disponible ?? 1;
         $this->ofertado = $ofertado ?? 0;
+        $this->rutaImg = $rutaImagen ?? 'producto_default.jpg';
         $this->fechaCreacion = $fechaCreacion ?? '';
-        $this->rutaImagen = $rutaImagen ?? 'producto_default.jpg';
     }
     public function getId() {
         return $this->id;
@@ -39,7 +40,7 @@ class Producto {
         return $this->descripcion;
     }
     public function getRutaImagen(){
-        return $this->rutaImagen;
+        return $this->rutaImg;
     }
     public function getCategoriaId() {
         return $this->categoria_id;
@@ -108,7 +109,7 @@ class Producto {
     public static function buscaPorNombre($nombreProd) {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
-            "SELECT * FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id WHERE p.nombreProd = '%s'",
+            "SELECT * FROM productos p WHERE p.nombreProd = '%s'",
             $conn->real_escape_string($nombreProd)
         );
         $rs = $conn->query($query);
@@ -124,8 +125,8 @@ class Producto {
                 null,
                 $fila['disponible'],
                 $fila['ofertado'],
-                null,
-                $fila['rutaImagen']
+                $fila['rutaImg'],
+                null
             );
             $rs->free();
             return $producto;
@@ -135,7 +136,7 @@ class Producto {
     public static function creaProducto($nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen = 'producto_default.jpg') {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
-            "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado)
+            "INSERT INTO productos (nombreProd, descripcion, categoria_id, precio, iva, stock, disponible, ofertado, rutaImg)
              VALUES ('%s', '%s', %d, %.2f, '%s', %d, %d, %d)",
             $conn->real_escape_string($nombreProd),
             $conn->real_escape_string($descripcion),
@@ -144,7 +145,8 @@ class Producto {
             $conn->real_escape_string($iva),
             (int)$stock,
             (int)$disponible,
-            (int)$ofertado
+            (int)$ofertado,
+            $conn->real_escape_string($imagen)
         );
         if ($conn->query($query)) {
             $idProducto = $conn->insert_id;
@@ -161,7 +163,7 @@ class Producto {
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
-            "SELECT p.*, pi.rutaImagen FROM productos p JOIN producto_imagenes pi ON p.id = pi.producto_id
+            "SELECT p.* FROM productos p
             WHERE p.id = %d GROUP BY p.id",
             (int)$id
         );
@@ -178,8 +180,9 @@ class Producto {
                 $fila['stock'],
                 $fila['disponible'],
                 $fila['ofertado'],
-                $fila['fechaCreacion'],
-                $fila['rutaImagen']
+                $fila['rutaImg'],
+                $fila['fechaCreacion']
+                
             );
             $rs->free();
             return $producto;
@@ -188,9 +191,9 @@ class Producto {
     }
     public static function listarProductosCliente(){
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $sql = sprintf("SELECT c.nombre, p.*, pi.rutaImagen FROM categorias c 
-        JOIN productos p ON c.id = p.categoria_id JOIN producto_imagenes pi ON p.id = pi.producto_id 
-        WHERE p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
+        $sql = sprintf("SELECT c.nombre, p.* FROM categorias c 
+            JOIN productos p ON c.id = p.categoria_id 
+            WHERE p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
         $rs = $conn->query($sql);
         $productos = [];
         if ($rs) {
@@ -205,8 +208,8 @@ class Producto {
                     null,
                     $fila['disponible'],
                     $fila['ofertado'],
-                    null,
-                    $fila['rutaImagen']
+                    $fila['rutaImg'],
+                    null
                 );
             }
             $rs->free();
