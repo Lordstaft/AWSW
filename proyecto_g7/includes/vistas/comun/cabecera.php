@@ -13,7 +13,7 @@ function mostrarSaludo($app, $ocultarNav = false)
         $htmlLogout = $formLogout->gestiona();
         
         // avatar del usuario
-        $avatar = $_SESSION['avatar'] ?? 'usuario_default.png';
+        $avatar = $_SESSION['avatar'] ?? 'usuario_default.jpg';
 
         $rutaAvatar = $app->resuelve('/img/' . $avatar);
         $rutaPerfil = $app->resuelve('/usuarios/perfil.php');
