@@ -9,13 +9,13 @@ if (isset($_SESSION["esGerente"])) {
     $formularioHTML = $formulario->gestiona();
 
     $contenidoPrincipal = <<<EOS
-        <h1>Gestión de pedidos</h1>
+        <h2>Gestión de pedidos</h2>
         $formularioHTML
     EOS;
 }
 else {
     $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Debes iniciar sesión como gerente para ver el contenido.</p>
     EOS;
 }
