@@ -9,13 +9,13 @@ if (!isset($_SESSION["login"])) {
   $formLogin = $formLogin->gestiona();
 
   $contenidoPrincipal=<<<EOF
-      <h1>Acceso al sistema</h1>
+      <h2>Acceso al sistema</h2>
       $formLogin
   EOF;
 }
 else {
   $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Ya hay una sesión iniciada.</p>
     EOS;
 }
