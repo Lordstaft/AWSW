@@ -132,6 +132,15 @@ main {
         width: 100%; /* El artículo ocupa todo el ancho del main */
     }
 
+    main h1 {
+        color: #2c3e50; /* Azul oscuro para títulos secundarios */
+        border-bottom: 2px solid #e74c3c; /* Línea roja debajo del título */
+        padding-bottom: 10px; /* Espacio entre texto y línea */
+        margin-top: 0; /* Sin margen superior */
+        margin-bottom: 20px; /* Espacio debajo del título */
+        font-size: 1.9em; /* Tamaño grande */
+    }
+
     main h2 {
         color: #2c3e50; /* Azul oscuro para títulos secundarios */
         border-bottom: 2px solid #e74c3c; /* Línea roja debajo del título */
