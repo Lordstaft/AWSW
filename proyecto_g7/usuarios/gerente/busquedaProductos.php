@@ -1,22 +1,28 @@
 <?php
-//Inicio del procesamiento
 require __DIR__ . '/../../includes/config.php';
-
 use es\ucm\fdi\aw\productos\FormularioBusquedaProductos;
 
-$tituloPagina = 'Busqueda de productos';
+$tituloPagina = 'Búsqueda de Productos';
 
-$formulario = new FormularioBusquedaProductos();
-$formularioHTML = $formulario->gestiona();
+if (isset($_SESSION["esGerente"])) {
+    $formulario = new FormularioBusquedaProductos();
+    $formularioHTML = $formulario->gestiona();
 
-$resultados = $_SESSION['resultadosBusqueda'];
+    $resultados = $_SESSION['resultadosBusqueda'];
 
-$contenidoPrincipal = <<<EOS
-    <h2>Busqueda de productos</h2>
-    $resultados
-EOS;
+    $contenidoPrincipal = <<<EOS
+        <h1>Búsqueda de productos</h1>
+        $resultados
+    EOS;
 
-unset($_SESSION['resultadosBusqueda']);
+    unset($_SESSION['resultadosBusqueda']);
+}
+else {
+    $contenidoPrincipal = <<<EOS
+        <h1>Acceso denegado</h1>
+        <p>Debes iniciar sesión como gerente para ver el contenido.</p>
+    EOS;
+}
 
 $params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Bistro FDI'];
 $app->generaVista('/plantillas/plantilla.php', $params);
