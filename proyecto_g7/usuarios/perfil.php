@@ -9,13 +9,13 @@ if (isset($_SESSION["login"])) {
     $formularioHTML = $formulario->gestiona();
 
     $contenidoPrincipal = <<<EOS
-        <h1>Perfil</h1>
+        <h2>Perfil</h2>
         $formularioHTML
     EOS;
 }
 else {
     $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Debes iniciar sesión para ver el contenido.</p>
     EOS;
 }
