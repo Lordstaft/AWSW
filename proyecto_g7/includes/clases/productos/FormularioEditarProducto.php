@@ -268,7 +268,6 @@ class FormularioEditarProducto extends Formulario
             $imagen = new Imagenes();
             $producto = Producto::buscaPorId($id);
             $imagenActual = $producto->getRutaImagen() ?? '';
-            $imagen->eliminarImagen($imagenActual);
 
             $resul = Producto::borra($id);
 
@@ -276,6 +275,7 @@ class FormularioEditarProducto extends Formulario
                 $this->errores[] = "No se ha podido eliminar el producto, por favor inténtelo de nuevo.";
             }
             else{
+                $imagen->eliminarImagen($imagenActual);
                 $mensajes = ['Se ha eliminado el producto correctamente.'];
                 $app->putAtributoPeticion('mensajes', $mensajes);
                 unset($_SESSION['resultadosBusqueda']);
