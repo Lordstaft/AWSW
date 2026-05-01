@@ -9,13 +9,13 @@ if (isset($_SESSION["esCocinero"])) {
     $formularioHTML = $formulario->gestiona();
 
     $contenidoPrincipal = <<<EOS
-        <h1>Resultados de la búsqueda</h1>
+        <h2>Resultados de la búsqueda</h2>
         $formularioHTML
     EOS;
 }
 else {
     $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Debes iniciar sesión como cocinero para ver el contenido.</p>
     EOS;
 }
