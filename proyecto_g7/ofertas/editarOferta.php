@@ -1,25 +1,27 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-
 use es\ucm\fdi\aw\ofertas\FormularioEditarOferta;
-
-$idOferta = $_GET['id'] ?? 0;
-$idOferta = (int)$idOferta;
 
 $tituloPagina = 'Editar Oferta';
 
-$form = new FormularioEditarOferta($idOferta);
-$htmlForm = $form->gestiona();
+if (isset($_SESSION["esGerente"])) {
+    $idOferta = $_GET['id'] ?? 0;
+    $idOferta = (int)$idOferta;
 
-$contenidoPrincipal = <<<EOS
-<h2>Editar oferta</h2>
-$htmlForm
-EOS;
+    $form = new FormularioEditarOferta($idOferta);
+    $htmlForm = $form->gestiona();
 
-$params = [
-    'tituloPagina' => $tituloPagina,
-    'contenidoPrincipal' => $contenidoPrincipal,
-    'cabecera' => 'BistroFDI'
-];
+    $contenidoPrincipal = <<<EOS
+        <h1>Editar oferta</h1>
+        $htmlForm
+    EOS;
+}
+else {
+    $contenidoPrincipal = <<<EOS
+        <h1>Acceso denegado</h1>
+        <p>Debes iniciar sesión como gerente para ver el contenido.</p>
+    EOS;
+}
 
+$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'BistroFDI'];
 $app->generaVista('/plantillas/plantilla.php', $params);
