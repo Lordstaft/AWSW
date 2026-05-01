@@ -56,7 +56,7 @@ class FormularioRealizarPedido extends Formulario
 
         if ($filas !== null) {
             $html = <<<EOS
-                <h1>Pedido {$tipoPedido}</h1>
+                <h2>Pedido {$tipoPedido}</h2>
 
                 $htmlErroresGlobales
                 <fieldset>
@@ -80,7 +80,7 @@ class FormularioRealizarPedido extends Formulario
             EOS;
         } else {
             $html = <<<EOS
-                <h1>Pedido {$tipoPedido}</h1>
+                <h2>Pedido {$tipoPedido}</h2>
                 <p>En estos momentos no podemos procesar el pedido, intentelo mas tarde.</p>
             EOS;
         }
