@@ -3,7 +3,6 @@
 /**
  * Parámetros de conexión a la BD
  */
-// define('BD_HOST', 'localhost');
 define('BD_HOST', 'localhost');
 define('BD_NAME', 'awp2');
 define('BD_USER', 'awp2');
