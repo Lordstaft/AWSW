@@ -41,12 +41,12 @@ INSERT INTO productos (id, nombreProd, descripcion, categoria_id, precio, iva, s
 
 -- 4. PEDIDOS
 INSERT INTO pedidos (id, usuario_id, estado, fechaPedido, tipo, total, subtotalSinDescuento, descuentoAplicado, cocinero_id) VALUES
-(1,25,'cocinando','2026-03-05 13:00:00','recogida',6.30,0,0,27),
-(2,26,'preparando','2026-03-05 13:05:00','domicilio',10.00,0,0,28),
-(3,25,'entregado','2026-03-05 13:10:00','domicilio',12.50,0,0,27),
-(4,26,'entregado','2026-03-05 13:20:00','recogida',8.50,0,0,28),
-(5,25,'nuevo','2026-03-05 13:25:00','domicilio',9.00,0,0,NULL),
-(6,26,'cancelado','2026-03-05 13:30:00','recogida',5.50,0,0,NULL);
+(1,25,'cocinando','2026-03-05 13:00:00','recogida',6.30,6.30,0,27),
+(2,26,'preparando','2026-03-05 13:05:00','domicilio',10.00,10.00,0,28),
+(3,25,'entregado','2026-03-05 13:10:00','domicilio',12.50,12.50,0,27),
+(4,26,'entregado','2026-03-05 13:20:00','recogida',8.50,8.50,0,28),
+(5,25,'nuevo','2026-03-05 13:25:00','domicilio',9.00,9.00,0,NULL),
+(6,26,'cancelado','2026-03-05 13:30:00','recogida',5.50,5.50,0,NULL);
 
 -- 5. PRODUCTOS PEDIDO (YA SIN ERRORES)
 INSERT INTO pedido_productos (id, pedido_id, producto_id, cantidad, precioUnitario, ivaAplicado, preparado) VALUES
