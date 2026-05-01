@@ -11,7 +11,7 @@ if (isset($_SESSION["esGerente"])) {
     $resultados = $_SESSION['resultadosBusqueda'];
 
     $contenidoPrincipal = <<<EOS
-        <h1>Búsqueda de productos</h1>
+        <h2>Búsqueda de productos</h2>
         $resultados
     EOS;
 
@@ -19,7 +19,7 @@ if (isset($_SESSION["esGerente"])) {
 }
 else {
     $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Debes iniciar sesión como gerente para ver el contenido.</p>
     EOS;
 }
