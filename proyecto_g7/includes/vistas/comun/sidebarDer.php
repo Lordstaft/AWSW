@@ -23,7 +23,7 @@ $app = Aplicacion::getInstance();
             </li>
 
             <li>
-                <a href="<?= $app->resuelve('/usuarios/admin/categorias.php') ?>">
+                <a href="<?= $app->resuelve('/usuarios/admin/busquedaCategoria.php') ?>">
                     Gestionar categorías
                 </a>
             </li>
