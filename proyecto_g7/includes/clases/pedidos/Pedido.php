@@ -451,6 +451,7 @@ class Pedido {
                     $fila['stock'],
                     $fila['disponible'],
                     $fila['ofertado'],
+                    $fila['rutaImg'],
                     $fila['fechaCreacion']
                 );
             }
