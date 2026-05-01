@@ -9,13 +9,13 @@ if (isset($_SESSION["esGerente"])) {
     $htmlForm = $form->gestiona();
 
     $contenidoPrincipal = <<<EOS
-        <h1>Crear oferta</h1>
+        <h2>Crear oferta</h2>
         $htmlForm
     EOS;
 }
 else {
     $contenidoPrincipal = <<<EOS
-        <h1>Acceso denegado</h1>
+        <h2>Acceso denegado</h2>
         <p>Debes iniciar sesión como gerente para ver el contenido.</p>
     EOS;
 }
