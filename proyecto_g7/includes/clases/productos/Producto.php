@@ -238,6 +238,16 @@ class Producto {
     public static function borra($id)
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $queryCheck = sprintf("SELECT count(*) as total FROM pedido_productos WHERE producto_id = %d", $id);
+        $rs = $conn->query($queryCheck);
+        $fila = $rs->fetch_assoc();
+        
+        // Si 'total' es mayor a 0, significa que el producto está en al menos un pedido
+        if ($fila['total'] > 0) {
+            return false; // No se puede borrar porque está vinculado a pedidos
+        }
+        
         $query = sprintf(
             "DELETE FROM productos WHERE id = %d",
             (int)$id
