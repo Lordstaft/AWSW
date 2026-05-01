@@ -11,7 +11,7 @@ class FormularioCrearCategoria extends Formulario
     public function __construct() {
         parent::__construct('formCrearCategoria', [
             'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/registroCategoria.php'),
-            'urlRedireccion' => Aplicacion::getInstance()->resuelve('usuarios/admin/categorias.php'),
+            'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin/categorias.php'),
             'enctype' => 'multipart/form-data'
         ]);
     }
