@@ -56,13 +56,13 @@ class FormularioCarrito extends Formulario
         // Por eso se usa una variable simple en sesión en lugar de un array.
         $activada = $_SESSION['oferta_activada'] ?? null;
 
-        $bloqueOfertas = "<h3>Ofertas disponibles</h3><p>No hay ofertas disponibles actualmente.</p>";
+        $bloqueOfertas = "<h2>Ofertas disponibles</h2><p>No hay ofertas disponibles actualmente.</p>";
         $descuentoTotal = 0;
         $detalleOfertas = '';
 
         if ($ofertasDisponibles) {
 
-            $bloqueOfertas  = "<h3>Ofertas disponibles</h3>";
+            $bloqueOfertas  = "<h2>Ofertas disponibles</h2>";
 
             // Se informa al usuario de la restricción:
             // solo se puede aplicar una oferta por pedido.
@@ -212,7 +212,7 @@ class FormularioCarrito extends Formulario
 
             <fieldset>
 
-                <h2>Tu carrito</h2>
+                <h1>Tu carrito</h1>
 
                 <table>
 
