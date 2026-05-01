@@ -113,7 +113,6 @@ class FormularioBusquedaUsuarios extends Formulario
 
         if ($filas !== null) {
             $_SESSION['resultadosBusqueda'] = <<<EOS
-            <h3>Busqueda de usuarios</h3>
             <table class="tabla-general">
                 <thead>
                     <tr>
@@ -134,7 +133,5 @@ class FormularioBusquedaUsuarios extends Formulario
         else{
             $this->errores[] = 'No se han encontrado usuarios con ese nombre o rol.';
         }
-
     }
-
 }
