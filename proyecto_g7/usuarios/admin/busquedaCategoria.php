@@ -1,21 +1,24 @@
 <?php
 require __DIR__ . '/../../includes/config.php';
-
 use es\ucm\fdi\aw\productos\FormularioBusquedaCategoria;
 
-$tituloPagina = 'Modificar categorías';
+$tituloPagina = 'Búsqueda de Categorías';
 
-$formulario = new FormularioBusquedaCategoria();
-$formularioHTML = $formulario->gestiona();
+if (isset($_SESSION["esAdmin"])) {
+    $formulario = new FormularioBusquedaCategoria();
+    $formularioHTML = $formulario->gestiona();
 
-$resultado = $_SESSION['resultadosBusqueda'];
-
-$contenidoPrincipal = <<<EOS
-    <h2>Busqueda de categorías</h2>
-    $resultado
-EOS;
-
-unset($_SESSION['resultadosBusqueda']);
+    $contenidoPrincipal = <<<EOS
+        <h2>Búsqueda de categorías</h2>
+        $formularioHTML
+    EOS;
+}
+else {
+    $contenidoPrincipal = <<<EOS
+        <h2>Acceso denegado</h2>
+        <p>Debes iniciar sesión como administrados para ver el contenido.</p>
+    EOS;
+}
 
 $params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Panel Administrador'];
 $app->generaVista('/plantillas/plantilla.php', $params);
