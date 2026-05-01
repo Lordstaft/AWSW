@@ -37,6 +37,14 @@ $app = Aplicacion::getInstance();
             </li>
         <?php endif; ?>
 
+        <!-- CAMARERO -->
+        <?php if (isset($_SESSION['esCamarero']) && $_SESSION['esCamarero'] === true) : ?>
+            <li class="nav-item">
+                <a href="<?= $app->resuelve('/usuarios/camarero/gestionarEntregas.php') ?>">Gestionar entregas</a>
+                <span class="tooltip">Gestiona las entregas de pedidos a los clientes</span>
+            </li>
+        <?php endif; ?>
+
         <!-- GERENTE -->
         <?php if (isset($_SESSION['esGerente']) && $_SESSION['esGerente'] === true) : ?>
             <li class="nav-item">
@@ -57,16 +65,7 @@ $app = Aplicacion::getInstance();
             </li>
         <?php endif; ?>
 
-        <!-- CAMARERO -->
-        <?php if (isset($_SESSION['esCamarero']) && $_SESSION['esCamarero'] === true) : ?>
-            <li class="nav-item">
-                <a href="<?= $app->resuelve('/usuarios/camarero/gestionarEntregas.php') ?>">Gestionar entregas</a>
-                <span class="tooltip">Gestiona las entregas de pedidos a los clientes</span>
-            </li>
-        <?php endif; ?>
-
         <?php else : ?>
-
         <!-- Usuario no logueado -->
         <li class="nav-item">
             <a href="<?= $app->resuelve('/login.php') ?>">Login</a>
@@ -76,7 +75,6 @@ $app = Aplicacion::getInstance();
             <a href="<?= $app->resuelve('/registro.php') ?>">Registro</a>
             <span class="tooltip">Crea una cuenta nueva</span>
         </li>
-
         <?php endif; ?>
 
     </ul>
