@@ -93,13 +93,6 @@ class FormularioLogin extends Formulario
                 elseif($usuario->getRol() === Roles::COCINERO->value){
                     $_SESSION['esCocinero'] = true;
                 }
-
-                else{
-                    $_SESSION['esAdmin'] = false;
-                    $_SESSION['esGerente'] = false;
-                    $_SESSION['esCamarero'] = false;
-                    $_SESSION['esCocinero'] = false;
-                }
             }
         }
     }
