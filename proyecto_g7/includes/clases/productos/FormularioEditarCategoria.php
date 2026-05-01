@@ -8,23 +8,24 @@ use es\ucm\fdi\aw\productos\Categoria;
 
 class FormularioEditarCategoria extends Formulario
 {
-    public function __construct()
+    private $idCategoria;
+    private $categoria;
+
+    public function __construct($idCategoria)
     {
         parent::__construct('formEditarCategoria');
             parent::__construct('formEditarCategoria', [
-                'action' => Aplicacion::getInstance()->resuelve('/usuarios/admin/modificarCategorias.php'),
-                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin/categorias.php'),
+                'urlRedireccion' => Aplicacion::getInstance()->resuelve('/usuarios/admin/busquedaCategoria.php'),
                 'enctype' => 'multipart/form-data'
          ]);
-        }
+         $this->idCategoria = (int)$idCategoria;
+         $this->categoria = Categoria::buscaPorId($this->idCategoria);
+    }
 
     protected function generaCamposFormulario(&$datos)
     {
-        $busqueda = $datos['id'] ?? $_POST['id'] ?? '';
 
-        $categoria = Categoria::buscaPorId($busqueda);
-
-        $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $categoria->getImgCategoriaProd());
+        $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $this->categoria->getImgCategoriaProd());
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
         $erroresCampos = self::generaErroresCampos(['nombre', 'descripcion', 'imagen'], $this->errores, 'span', array('class' => 'error'));
@@ -40,11 +41,11 @@ class FormularioEditarCategoria extends Formulario
             </div>
 
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" value="{$categoria->getNombre()}" required>
+            <input type="text" id="nombre" name="nombre" value="{$this->categoria->getNombre()}" required>
             {$erroresCampos['nombre']}
 
             <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" required>{$categoria->getDescripcion()}</textarea>
+            <textarea id="descripcion" name="descripcion" required>{$this->categoria->getDescripcion()}</textarea>
             {$erroresCampos['descripcion']}
 
             <div>
@@ -53,7 +54,7 @@ class FormularioEditarCategoria extends Formulario
             </div>
             {$erroresCampos['imagen']}
 
-            <input type="hidden" name="id" value="{$categoria->getId()}">
+            <input type="hidden" name="id" value="{$this->categoria->getId()}">
 
             <button type="submit" name="editarCategoria">Guardar cambios</button>
             <button type="submit" name="eliminarCategoria">Eliminar categoría</button>
@@ -108,8 +109,7 @@ class FormularioEditarCategoria extends Formulario
 
             if(isset($datos['editarCategoria'])){
                 $imagen = new Imagenes();
-                $categoria = Categoria::buscaPorId($id);
-                $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $categoria->getImgCategoriaProd());
+                $nombreImagen = $imagen->reemplazarImagen($_FILES['imagen'], $this->categoria->getImgCategoriaProd());
 
                 $ok = Categoria::actualiza($id, $nombre, $descripcion, $nombreImagen);
 
@@ -122,8 +122,8 @@ class FormularioEditarCategoria extends Formulario
             }
             elseif(isset($datos['eliminarCategoria'])){
                 $imagen = new Imagenes();
-                $categoria = Categoria::buscaPorId($id);
-                $imagen->eliminarImagen($categoria->getImgCategoriaProd());
+                $this->categoria = Categoria::buscaPorId($id);
+                $imagen->eliminarImagen($this->categoria->getImgCategoriaProd());
                 
                 $ok = Categoria::borra($id);
 

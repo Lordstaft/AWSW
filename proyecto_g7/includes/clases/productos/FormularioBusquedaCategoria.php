@@ -16,102 +16,31 @@ class FormularioBusquedaCategoria extends Formulario
     
     protected function generaCamposFormulario(&$datos){
 
-        $categoria = '';
-
         $listaCategorias = Categoria::buscaCategorias();
-
-        foreach ($listaCategorias as $p) {
-            if ($categoria === '') {
-                $categoria .= "<option value='{$p->getNombre()}' selected>{$p->getNombre()}</option>";
-            }
-
-            else {
-                $categoria .= "<option value='{$p->getNombre()}'>{$p->getNombre()}</option>";
-            }
-        }
-
-        $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
-
-        $html = <<<EOF
-            $htmlErroresGlobales
-            <fieldset>
-                <legend>Buscar categoria</legend>
-
-                <div>
-                    <label for="nombre">Buscar</label>
-                    <input id="nombre" type="text" name="nombre" placeholder="Buscar por nombre"/>
-                </div>
-
-                <div>
-                    <label for="categoria">Categoría</label>
-                    <select id="categoria" name="categoria">
-                        $categoria
-                    </select>
-                </div>
-
-                <div>
-                    <button type="submit" name="buscarProducto">Buscar categoria</button>
-                </div>
-            </fieldset>
-        EOF;
-        return $html;
-
-    }
-
-    protected function procesaFormulario(&$datos)
-    {
-        $app = Aplicacion::getInstance();
         $filas = '';
-        $this->errores = [];
 
-        $nombreCategoria = filter_var($datos['nombre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $urlModificar = $app->resuelve('/usuarios/admin/modificarCategorias.php');
-
-        if ($nombreCategoria === '') {        
-            $categoria = filter_var($datos['categoria'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            $resultado = Categoria::buscaPorNombre($categoria);
-
-            if ($resultado !== null) {
+        if (!empty($listaCategorias) && is_array($listaCategorias)) {
+            foreach ($listaCategorias as $c) {
                 $filas .= "<tr>
-                    <td>{$resultado->getNombre()}</td>
-                    <td>{$resultado->getDescripcion()}</td>
-                    <td>{$resultado->getImgCategoriaProd()}</td>
+                    <td>{$c->getNombre()}</td>
+                    <td>{$c->getDescripcion()}</td>
+                    <td>{$c->getImgCategoriaProd()}</td>
                     <td>
-                        <form action='{$urlModificar}' method='POST'>
-                            <input type='hidden' name='id' value='{$resultado->getId()}'>
-                            <button type='submit'>Modificar</button>
-                        </form>
+                        <div>
+                            <button type='submit' name='id' value='{$c->getId()}'>Modificar</button>
+                        </div>
                     </td>
                 </tr>";
-            } 
-            else {
-                $this->errores[] = "No se ha podido cargar la categoría, por favor inténtelo de nuevo.";
             }
         }
-
-        else{
-            $resultado = Categoria::buscaPorNombre($nombreCategoria);
-            if ($resultado !== null) {
-                $filas .= "<tr>
-                    <td>{$resultado->getNombre()}</td>
-                    <td>{$resultado->getDescripcion()}</td>
-                    <td>{$resultado->getImgCategoriaProd()}</td>
-                    <td>
-                        <form action='{$urlModificar}' method='POST'>
-                            <input type='hidden' name='id' value='{$resultado->getId()}'>
-                            <button type='submit'>Modificar</button>
-                        </form>
-                    </td>
-                </tr>";
-            } 
-            else {
-                $this->errores[] = "No se ha podido cargar la categoría, por favor inténtelo de nuevo.";
-            }
+        
+        if($filas === ''){
+            $html = <<<EOF
+                <p>No hay categorías.</p>
+            EOF;
         }
-
-        if ($filas !== null) {
-            $_SESSION['resultadosBusqueda'] = <<<EOS
+        else {
+            $html = <<<EOF
             <table class="tabla-general">
                 <thead>
                     <tr>
@@ -125,13 +54,26 @@ class FormularioBusquedaCategoria extends Formulario
                     $filas
                 </tbody>
             </table>
-            EOS;
+            EOF;
         }
 
-        else{
-            $this->errores[] = 'No se han encontrado usuarios con ese nombre o rol.';
-        }
-
+        return $html;
     }
 
+    protected function procesaFormulario(&$datos)
+    {
+        $app = Aplicacion::getInstance();
+        $idCategoria = trim($datos['id'] ?? '');
+        $idCategoria = filter_var($idCategoria, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if(!$idCategoria || empty($idCategoria)){
+            $mensajes = ['Error al localizar la categoría.'];
+            $app->putAtributoPeticion('mensajes', $mensajes);
+            $app->redirige($app->resuelve('/usuarios/admin/busquedaCategoria.php'));
+        }
+        else {
+            header('Location: ' . $app->resuelve("/usuarios/admin/modificarCategorias.php?id=$idCategoria"));
+            exit();
+        }
+    }
 }
