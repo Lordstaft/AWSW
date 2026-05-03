@@ -26,6 +26,9 @@ $params['app']->doInclude('/vistas/comun/sidebarDer.php', $params);
 $params['app']->doInclude('/vistas/comun/pie.php', $params);
 ?>
 </div>
+<script>
+    window.RUTA_APP = "<?= RUTA_APP ?>";
+</script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="<?= RUTA_JS ?>/usuarios.js"></script>
 <script src="<?= RUTA_JS ?>/productos.js"></script>

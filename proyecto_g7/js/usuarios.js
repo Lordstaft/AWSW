@@ -20,8 +20,9 @@ $("#email").on("input", function() {
     }
 
     $("#formatoEmail").text("✔ Formato correcto");
+    const base = window.RUTA_APP || '';
 
-    const url = "/proyecto_g7/comprobarEmail.php?email=" + encodeURIComponent(email);
+    const url = base + "/comprobarEmail.php?email=" + encodeURIComponent(email);
 
     $.get(url, function(data, status) {
 
@@ -51,13 +52,14 @@ $(".validar-usuario").on("input", function(){
 
     const campo = $(this);
     const usuario = campo.val().trim();
+    const base = window.RUTA_APP || '';
 
     campo[0].setCustomValidity("");
-    $("#usuarioCorrecto").text("");
+    $('#usuarioCorrecto').text("");
 
     if (usuario === "") return;
 
-    const url = "/proyecto_g7/comprobarUsuario.php?user=" + encodeURIComponent(usuario);
+    const url = base + "/comprobarUsuario.php?user=" + encodeURIComponent(usuario);
 
     $.get(url, function(data){
 
@@ -79,13 +81,14 @@ $(".validar-usuario-admin").on("input", function(){
     const campo = $(this);
     const usuario = campo.val().trim();
     const id = $("#id").val();
+    const base = window.RUTA_APP || '';
 
     campo[0].setCustomValidity("");
     $("#usuarioCorrecto").text("");
 
     if (usuario === "") return;
 
-    const url = "/proyecto_g7/comprobarUsuarioAdmin.php?user=" 
+    const url = base + "/comprobarUsuarioAdmin.php?user=" 
         + encodeURIComponent(usuario) 
         + "&id=" + encodeURIComponent(id);
 
