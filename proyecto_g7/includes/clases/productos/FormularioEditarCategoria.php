@@ -41,8 +41,9 @@ class FormularioEditarCategoria extends Formulario
             </div>
 
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" value="{$this->categoria->getNombre()}" required>
+            <input type="text" id="nombre" class="validar-categoria-editar" name="nombre" value="{$this->categoria->getNombre()}">
             {$erroresCampos['nombre']}
+            <span id="categoriaEditarCorrecta"></span>
 
             <label for="descripcion">Descripción:</label>
             <textarea id="descripcion" name="descripcion" required>{$this->categoria->getDescripcion()}</textarea>
@@ -54,7 +55,7 @@ class FormularioEditarCategoria extends Formulario
             </div>
             {$erroresCampos['imagen']}
 
-            <input type="hidden" name="id" value="{$this->categoria->getId()}">
+            <input type="hidden" id="idCategoria" name="id" value="{$this->categoria->getId()}">
 
             <button type="submit" name="editarCategoria">Guardar cambios</button>
             <button type="submit" name="eliminarCategoria">Eliminar categoría</button>

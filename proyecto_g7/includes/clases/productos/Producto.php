@@ -129,7 +129,7 @@ class Producto {
             $rs->free();
             return $producto;
         }
-        return null;
+        return false;
     }
     public static function creaProducto($nombreProd, $descripcion, $categoria_id, $precio, $iva, $stock, $disponible, $ofertado, $imagen = 'producto_default.jpg') {
         $conn = Aplicacion::getInstance()->getConexionBd();
@@ -262,5 +262,36 @@ class Producto {
             (int)$id
         );
         return $conn->query($query);
+    }
+
+    public static function validarProducto($nombreProd){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "SELECT * FROM productos 
+            WHERE REPLACE(LOWER(nombreProd), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
+            $conn->real_escape_string($nombreProd)
+        );
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $fila = $rs->fetch_assoc();
+            return new Producto(
+                $fila['id'],
+                $fila['nombreProd'],
+                $fila['descripcion'],
+                $fila['categoria_id'],
+                $fila['precio'],
+                $fila['iva'],
+                null,
+                $fila['disponible'],
+                $fila['ofertado'],
+                $fila['rutaImg'],
+                null
+            );
+        }
+
+        return false;
     }
 }

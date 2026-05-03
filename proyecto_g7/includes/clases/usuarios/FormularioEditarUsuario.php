@@ -58,9 +58,10 @@ class FormularioEditarUsuario extends Formulario
                 </div>
 
                 <div>
-                    <label for="nombreUsuario">Nombre de usuario:</label>
-                    <input id="nombreUsuario" type="text" name="nombreUsuario" value = "{$usuario->getNombreUsuario()}" />
+                    <label for="nombreUsuario" class="validar-usuario-admin">Nombre de usuario:</label>
+                    <input id="nombreUsuario" class="validar-usuario-admin" type="text" name="nombreUsuario" value = "{$usuario->getNombreUsuario()}" />
                     {$erroresCampos['nombreUsuario']}
+                    <span id="usuarioCorrecto"></span>
                 </div>
 
                 <div>
@@ -88,7 +89,7 @@ class FormularioEditarUsuario extends Formulario
                 </div>
 
                 <div>
-                    <input type="hidden" name="id" value="{$usuario->getId()}">
+                    <input id="id" type="hidden" name="id" value="{$usuario->getId()}">
                 </div>
 
                 <div>

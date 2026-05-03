@@ -43,8 +43,9 @@ class FormularioCrearProducto extends Formulario
             <legend>Crear producto</legend>
             <div>
             <label>Nombre:</label>
-            <input type="text" name="nombreProd" value="{$nombreProducto}" required>
+            <input class="validar-producto" type="text" name="nombreProd" value="{$nombreProducto}" required>
             {$erroresCampos['nombreProd']}
+            <span id="productoCorrecto"></span>
             </div>
 
             <div>

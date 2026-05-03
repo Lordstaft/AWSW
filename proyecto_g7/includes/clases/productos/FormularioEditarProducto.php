@@ -54,7 +54,9 @@ class FormularioEditarProducto extends Formulario
 
                 <div>
                     <label>Nombre:</label>
-                    <input type="text" name="nombreProd" value="{$producto->getNombreProd()}" required>
+                    <input type="text" class="validar-producto-editar" name="nombreProd" value="{$producto->getNombreProd()}" required>
+                    {$erroresCampos['nombreProd']}
+                    <span id="productoEditarCorrecto"></span>
                 </div>
 
                 <div>
@@ -103,7 +105,7 @@ class FormularioEditarProducto extends Formulario
                         {$erroresCampos['ofertado']}
                 </div>
 
-                <input type="hidden" name="id" value="{$producto->getId()}">
+                <input type="hidden" id="idProducto" name="id" value="{$producto->getId()}">
 
                 <div>
                     <label>Imagen actual:</label><br>

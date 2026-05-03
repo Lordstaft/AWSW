@@ -196,4 +196,27 @@ class Categoria
 
         return $conn->query($query);
     }
+
+    public static function validarCategoria($nombreCategoria){
+        $conn = Aplicacion::getInstance()->getConexionBd();
+
+        $query = sprintf(
+            "SELECT * FROM categorias 
+            WHERE REPLACE(LOWER(nombre), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
+            $conn->real_escape_string($nombreCategoria)
+        );
+
+        $rs = $conn->query($query);
+
+        if ($rs && $rs->num_rows > 0) {
+            $fila = $rs->fetch_assoc();
+            return new Categoria(
+                $fila['id'],
+                $fila['nombre'],
+                null,
+                null
+            );
+        }
+        return false;
+    }
 }

@@ -30,8 +30,9 @@ class FormularioCrearCategoria extends Formulario
                 
                 <div>
                     <label for="nombreCategoria">Nombre:</label>
-                    <input id="nombreCategoria" type="text" name="nombreCategoria" value = "$nombreCategoria" />
+                    <input id="nombreCategoria" class="validar-categoria" type="text" name="nombreCategoria" value = "$nombreCategoria" />
                     {$erroresCampos['nombreCategoria']}
+                    
                 </div>
 
                 <div>
