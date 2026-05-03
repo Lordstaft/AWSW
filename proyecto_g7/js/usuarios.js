@@ -44,6 +44,30 @@ function esCorreoValido(email) {
     return regex.test(email);
 }
 
+$(".validar-usuario").on("input", function(){
+
+    const campo = $(this);
+    const usuario = campo.val().trim();
+
+    campo[0].setCustomValidity("");
+    $("#usuarioCorrecto").text("");
+
+    if (usuario === "") return;
+
+    const url = "/proyecto_g7/comprobarUsuario.php?user=" + encodeURIComponent(usuario);
+
+    $.get(url, function(data){
+
+        if (data.trim() === "existe") {
+            $("#usuarioCorrecto").text("❌ No disponible");
+            campo[0].setCustomValidity("El usuario ya está en uso");
+        } else {
+            $("#usuarioCorrecto").text("");
+            campo[0].setCustomValidity("");
+        }
+    });
+});
+
 $(".validar-usuario-admin").on("input", function(){
 
     const campo = $(this);

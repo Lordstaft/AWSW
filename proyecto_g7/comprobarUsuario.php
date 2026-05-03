@@ -4,6 +4,9 @@ use \es\ucm\fdi\aw\usuarios\Usuario;
 
 $user = $_GET['user'] ?? '';
 
+$user = trim($_GET['user'] ?? '');
+$user = filter_var($user, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
 $resultado = Usuario::buscaUsuario($user);
 
 if ($resultado) {
