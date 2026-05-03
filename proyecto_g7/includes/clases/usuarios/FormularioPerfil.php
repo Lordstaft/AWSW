@@ -20,11 +20,22 @@ class FormularioPerfil extends Formulario
     
     protected function generaCamposFormulario(&$datos){
 
+        $avataresDefault = ['avatar1.jpg', 'avatar2.jpg', 'avatar3.jpg'];
+        $opcionesAvatar = '';
+
         $busqueda = $_SESSION['nombreUsuario'];
         $usuario = Usuario::buscaUsuario($busqueda);
 
         $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $usuario->getAvatar());
 
+        foreach ($avataresDefault as $img) {
+            $ruta = Aplicacion::getInstance()->resuelve("/img/" . $img);
+            $opcionesAvatar .= "
+                <label class='opcion-avatar'>
+                    <input type='radio' name='avatarDefault' value='{$img}'>
+                    <img src='{$ruta}'>
+                </label>";
+        }
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
         $erroresCampos = self::generaErroresCampos(['email', 'imagen'], $this->errores, 'span', array('class' => 'error'));
@@ -37,6 +48,11 @@ class FormularioPerfil extends Formulario
                 <div>
                     <label>Avatar</label><br>
                     <img src={$rutaImagen} class="avatar-usuario" alt="Imagen de perfil">
+                </div>
+
+                <div>
+                    <label>Eliminar imagen</label>
+                        <input type="checkbox" name="eliminarImagen" value="1">
                 </div>
                 
                 <div>
@@ -61,12 +77,10 @@ class FormularioPerfil extends Formulario
                 </div>
 
                 <div>
-                    <label>Eliminar imagen</label>
-                        <input type="checkbox" name="eliminarImagen" value="1">
-                </div>
-
-                <div>
                     <label>Cambiar imagen:</label>
+                    <div class="selector-avatares">
+                        $opcionesAvatar
+                    </div>
                     <input type="file" name="imagen" accept=".jpg,.jpeg,.png">
                     {$erroresCampos['imagen']}
                 </div>
@@ -123,7 +137,11 @@ class FormularioPerfil extends Formulario
                 $usuario = Usuario::buscaUsuarioId($id);
                 $imagenActual = $usuario->getAvatar();
 
-                if (!empty($datos['eliminarImagen'])) {
+                if (!empty($datos['avatarDefault'])) {
+                    $imagen->eliminarImagen($imagenActual);
+                    $nombreImagen = $datos['avatarDefault'];
+                }
+                elseif (!empty($datos['eliminarImagen'])) {
                     $imagen->eliminarImagen($imagenActual);
                     $nombreImagen = 'usuario_default.jpg';
                 }
