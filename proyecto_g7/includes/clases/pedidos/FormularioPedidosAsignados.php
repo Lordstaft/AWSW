@@ -27,14 +27,33 @@ class FormularioPedidosAsignados extends Formulario
         }
 
         $filas = '';
+        
 
         if (!empty($pedidos) && is_array($pedidos)) {
             foreach ($pedidos as $p) {
+                $productos = Pedido::buscaProductosCocina($p->getPedidoId());
+
+                $productosHtml = '<ul">';
+
+                foreach ($productos as $item) {
+                    $prod = $item['producto'];
+                    $cant = $item['cantidad'];
+                    $prep = $item['preparado'];
+
+                    $estado = $prep ? '✅ Preparado' : '⏳ Pendiente';
+
+                    $productosHtml .= "<li>" 
+                        . htmlspecialchars($prod->getNombreProd()) 
+                        . " x{$cant} - {$estado}</li>";
+                }
+
+                $productosHtml .= '</ul>';
                 $filas .= "<tr>
                     <td>{$p->getPedidoId()}</td>
                     <td>{$p->getTipo()}</td>
                     <td>{$p->getFechaPedido()}</td>
                     <td>{$p->getEstadoPedido()}</td>
+                    <td>{$productosHtml}</td>
                     <td>
                         <div>
                             <button type='submit' name='idPedido' value='{$p->getPedidoId()}'>Modificar</button>
@@ -59,6 +78,7 @@ class FormularioPedidosAsignados extends Formulario
                             <th>Tipo de pedido</th>
                             <th>Fecha de pedido</th>
                             <th>Estado</th>
+                            <th>Productos</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
