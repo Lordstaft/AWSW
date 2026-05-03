@@ -74,6 +74,7 @@ class FormularioPerfil extends Formulario
                     <label for="email">Email:</label>
                     <input id="email" type="email" name="email" value = "{$usuario->getEmail()}" />
                     {$erroresCampos['email']}
+                    <span id="emailCorrecto"></span>
                 </div>
 
                 <div>
