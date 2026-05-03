@@ -14,7 +14,7 @@ $("#email").on("input", function() {
     if (!esCorreoValido(email)) {
         $("#formatoEmail").text("❌ Formato incorrecto");
         campo[0].setCustomValidity(
-            "El correo debe tener formato @dominio.com o @dominio.es"
+            "El correo no tiene un formato válido"
         );
         return;
     }
@@ -36,11 +36,14 @@ $("#email").on("input", function() {
                 campo[0].setCustomValidity("");
             }
         }
+    }).fail(function() {
+        $("#emailCorrecto").text("❌ Error al validar el email");
+        campo[0].setCustomValidity("No se pudo comprobar el email");
     });
 });
 
 function esCorreoValido(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.(com|es)$/i;
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
     return regex.test(email);
 }
 
@@ -65,6 +68,9 @@ $(".validar-usuario").on("input", function(){
             $("#usuarioCorrecto").text("");
             campo[0].setCustomValidity("");
         }
+    }).fail(function() {
+        $("#usuarioCorrecto").text("❌ Error al validar el usuario");
+        campo[0].setCustomValidity("No se pudo comprobar el usuario");
     });
 });
 
@@ -92,5 +98,8 @@ $(".validar-usuario-admin").on("input", function(){
             $("#usuarioCorrecto").text("");
             campo[0].setCustomValidity("");
         }
+    }).fail(function() {
+        $("#usuarioCorrecto").text("❌ Error al validar el usuario");
+        campo[0].setCustomValidity("No se pudo comprobar el usuario");
     });
 });

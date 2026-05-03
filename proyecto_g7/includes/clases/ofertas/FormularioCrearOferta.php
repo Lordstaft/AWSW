@@ -20,6 +20,8 @@ class FormularioCrearOferta extends Formulario
         $fechaFin = htmlspecialchars($datos['fechaFin'] ?? '');
         $descuento = htmlspecialchars($datos['descuento'] ?? '');
         $precioFinal = htmlspecialchars($datos['precioFinal'] ?? '');
+        $urlOferta = Aplicacion::getInstance()->resuelve('/comprobarOferta.php');
+        $urlOfertaJs = json_encode($urlOferta);
 
         $productos = Producto::listar('Todos');
         $filasProductos = '';
@@ -108,6 +110,10 @@ EOS;
                 <button type="submit">Crear oferta</button>
             </p>
         </fieldset>
+
+        <script>
+        window.urlOferta = {$urlOfertaJs};
+        </script>
  
         <script>
             (function () {

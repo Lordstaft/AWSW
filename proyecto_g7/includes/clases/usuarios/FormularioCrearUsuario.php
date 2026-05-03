@@ -31,7 +31,7 @@ class FormularioCrearUsuario extends Formulario
         $nombre = $datos['nombre'] ?? '';
         $password = $datos['password'] ?? '';
         $email = $datos['email'] ?? '';
-        $apellidos = $datos['nombreUsuario'] ?? '';
+        $apellidos = $datos['apellidos'] ?? '';
         $mostrarRoles = '';
 
         foreach (Roles::cases() as $rol) {
@@ -155,6 +155,10 @@ class FormularioCrearUsuario extends Formulario
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->errores['email'] = 'El email no es válido.';
+        }
+
+        if (Usuario::checkEmail($email)) {
+            $this->errores['email'] = 'El email ya está en uso';
         }
 
         $password = trim($datos['password'] ?? '');

@@ -50,9 +50,8 @@ class FormularioGestionarOfertas extends Formulario
                     <td>" . $oferta->precioFinalOferta() . " €</td>
                     <td>
                         <div>
-                            <button type='submit' name='editarOferta'>Editar</button>
-                            <button type='submit' name='borrarOferta' onclick=\"return confirm('¿Seguro que quieres borrar esta oferta?');\">Borrar</button>
-                            <input type='hidden' name='idOferta' value='{$oferta->getIdOferta()}'>
+                            <button type='submit' name='editarOferta' value='{$oferta->getIdOferta()}'>Editar</button>
+                            <button type='submit' name='borrarOferta' value='{$oferta->getIdOferta()}' onclick=\"return confirm('¿Seguro que quieres borrar esta oferta?');\">Borrar</button>
                         </div>
                     </td>
                 </tr>";
@@ -96,18 +95,24 @@ class FormularioGestionarOfertas extends Formulario
         $app = Aplicacion::getInstance();
 
         if(isset($datos['editarOferta']) || isset($datos['borrarOferta'])){
-            $idOferta = trim($datos['idOferta'] ?? '');
-            $idOferta = filter_var($idOferta, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            if(isset($datos['editarOferta'])){
-                header('Location: ' . $app->resuelve("/ofertas/editarOferta.php?id=$idOferta"));
-                exit();
+            $idOferta = 0;
+            if (isset($datos['editarOferta'])) {
+                $idOferta = (int)$datos['editarOferta'];
+            } elseif (isset($datos['borrarOferta'])) {
+                $idOferta = (int)$datos['borrarOferta'];
             }
-            
-            elseif(isset($datos['borrarOferta'])){
-                Oferta::eliminarOferta($idOferta);
-                header('Location: ' . $app->resuelve('/usuarios/gerente/ofertas.php'));
-                exit();
+
+            if ($idOferta > 0) {
+                if(isset($datos['editarOferta'])){
+                    header('Location: ' . $app->resuelve("/ofertas/editarOferta.php?id=$idOferta"));
+                    exit();
+                }
+                
+                elseif(isset($datos['borrarOferta'])){
+                    Oferta::eliminarOferta($idOferta);
+                    header('Location: ' . $app->resuelve('/usuarios/gerente/ofertas.php'));
+                    exit();
+                }
             }
         }
 

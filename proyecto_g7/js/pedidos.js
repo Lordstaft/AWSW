@@ -1,4 +1,4 @@
-$("#numeroTarjeta").change(function(){
+$("#numeroTarjeta").on("input change", function(){
 
     const campo = $("#numeroTarjeta");
     const valor = campo.val().trim();
@@ -27,7 +27,7 @@ function tarjetaValida(numero) {
     return regex.test(numero);
 }
 
-$("#cvv").change(function(){
+$("#cvv").on("input change", function(){
 
     const campo = $("#cvv");
     const valor = campo.val().trim();

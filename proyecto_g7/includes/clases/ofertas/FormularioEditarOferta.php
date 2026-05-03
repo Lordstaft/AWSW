@@ -42,7 +42,11 @@ class FormularioEditarOferta extends Formulario
                 $cantidadesActuales[(int)$idProducto] = (int)$cantidad;
             }
         }
- 
+
+        $urlOferta = Aplicacion::getInstance()->resuelve('/comprobarOferta.php');
+        $urlOfertaJs = json_encode($urlOferta);
+        $ofertaIdJs = json_encode($this->idOferta);
+
         $productos = Producto::listar('Todos');
         $filasProductos = '';
  
@@ -106,6 +110,8 @@ EOS;
                     $filasProductos
                 </tbody>
             </table>
+    
+            <span id="ofertaDuplicada"></span>
  
             <h3>Resumen del pack</h3>
  
@@ -128,7 +134,12 @@ EOS;
                 <button type="submit">Guardar cambios</button>
             </div>
         </fieldset>
- 
+
+        <script>
+            window.urlOferta = {$urlOfertaJs};
+            window.ofertaId = {$ofertaIdJs};
+        </script>
+
         <script>
             (function () {
                 var cantidades = document.querySelectorAll('.cantidad-prod');

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/includes/config.php';
+require_once __DIR__ . '/includes/config.php';
 
 use es\ucm\fdi\aw\ofertas\Oferta;
 
@@ -10,15 +10,21 @@ if (empty($productosInput)) {
     exit;
 }
 
-// Normalizar
+
+$productosInput = array_map('intval', $productosInput);
 ksort($productosInput);
 
+$ofertaIdExcluir = isset($_POST['ofertaId']) ? intval($_POST['ofertaId']) : 0;
 $ofertas = Oferta::listarOfertas();
 
 $existe = false;
 
 if ($ofertas) {
     foreach ($ofertas as $oferta) {
+
+        if ($ofertaIdExcluir > 0 && $oferta->getIdOferta() === $ofertaIdExcluir) {
+            continue;
+        }
 
         $productosOferta = $oferta->getProductos();
 
@@ -30,7 +36,7 @@ if ($ofertas) {
 
         ksort($comparar);
 
-        if ($comparar == $productosInput) {
+        if ($comparar === $productosInput) {
             $existe = true;
             break;
         }

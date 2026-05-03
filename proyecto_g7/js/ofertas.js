@@ -1,54 +1,122 @@
-let ofertaDuplicada = false;
-let validando = false;
+$(document).ready(function () {
 
-$(".cantidad-prod").on("change", function () {
+    let ofertaDuplicada = false;
+    let validando = false;
+    let peticionOferta = null;
+    let peticionId = 0;
+    let ultimaPeticionId = 0;
 
-    const campo = $(this);
-
-    let productos = {};
-
-    $(".cantidad-prod").each(function () {
-        const cantidad = parseInt($(this).val()) || 0;
-        const idMatch = $(this).attr("name").match(/\d+/);
-
-        if (idMatch && cantidad > 0) {
-            productos[idMatch[0]] = cantidad;
-        }
-    });
-
-    // Si no hay productos → limpiar
-    if (Object.keys(productos).length === 0) {
-        $("#ofertaDuplicada").text("");
-        campo[0].setCustomValidity("");
-        ofertaDuplicada = false;
+    if ($(".cantidad-prod").length === 0) {
         return;
     }
 
-    validando = true;
+    function recogeProductos() {
+        const productos = {};
 
-    $.post("/proyecto_g7/comprobarOferta.php", { productos: productos }, function (data) {
+        $(".cantidad-prod").each(function () {
+            const campo = $(this);
+            const cantidad = parseInt(campo.val(), 10) || 0;
+            const nombre = campo.attr("name") || "";
+            const match = nombre.match(/^cantidades\[(\d+)\]$/);
 
-        if (data.trim() === "existe") {
+            if (match && cantidad > 0) {
+                productos[match[1]] = cantidad;
+            }
+        });
 
-            $("#ofertaDuplicada").text("❌ Ya existe una oferta con estos productos");
+        return productos;
+    }
 
-            $(".cantidad-prod").each(function () {
-                this.setCustomValidity("Ya existe una oferta con estos productos");
-            });
+    function limpiaErrores() {
+        $("#ofertaDuplicada").text("");
 
-            ofertaDuplicada = true;
+        $(".cantidad-prod").each(function () {
+            this.setCustomValidity("");
+        });
+    }
 
-        } else {
+    function marcaOfertaDuplicada() {
+        $("#ofertaDuplicada").text("❌ Ya existe una oferta con estos productos");
 
-            $("#ofertaDuplicada").text("");
+        $(".cantidad-prod").each(function () {
+            this.setCustomValidity("Ya existe una oferta con estos productos");
+        });
+    }
 
-            $(".cantidad-prod").each(function () {
-                this.setCustomValidity("");
-            });
-
-            ofertaDuplicada = false;
+    function validaOferta() {
+        const url = window.urlOferta;
+        if (!url) {
+            console.error("window.urlOferta no está definido");
+            return;
         }
 
-        validando = false;
+        const productos = recogeProductos();
+
+        if (Object.keys(productos).length === 0) {
+            ofertaDuplicada = false;
+            limpiaErrores();
+            return;
+        }
+
+        validando = true;
+        peticionId += 1;
+        const idActual = peticionId;
+        ultimaPeticionId = idActual;
+
+        if (peticionOferta && peticionOferta.readyState !== 4) {
+            peticionOferta.abort();
+        }
+
+        const data = { productos: productos };
+        if (typeof window.ofertaId !== 'undefined') {
+            data.ofertaId = window.ofertaId;
+        }
+
+        peticionOferta = $.post(url, data, function (data) {
+            if (idActual !== ultimaPeticionId) {
+                return;
+            }
+
+            if (data.trim() === "existe") {
+                ofertaDuplicada = true;
+                marcaOfertaDuplicada();
+            } else {
+                ofertaDuplicada = false;
+                limpiaErrores();
+            }
+        }).fail(function () {
+            if (idActual !== ultimaPeticionId) {
+                return;
+            }
+
+            ofertaDuplicada = false;
+            limpiaErrores();
+        }).always(function () {
+            if (idActual !== ultimaPeticionId) {
+                return;
+            }
+
+            validando = false;
+        });
+    }
+
+    $(".cantidad-prod").on("input", function () {
+        validaOferta();
     });
+    validaOferta();
+
+    $("form").on("submit", function (e) {
+        if (validando) {
+            e.preventDefault();
+            alert("Esperando validación de la oferta...");
+            return;
+        }
+
+        if (ofertaDuplicada) {
+            e.preventDefault();
+            alert("Ya existe una oferta con esos productos");
+            return;
+        }
+    });
+
 });
