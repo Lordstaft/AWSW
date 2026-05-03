@@ -85,12 +85,15 @@ class FormularioCrearUsuario extends Formulario
                     <label for="nombreUsuario">Nombre de usuario:</label>
                     <input id="nombreUsuario" type="text" name="nombreUsuario" value = "$nombreUsuario" />
                     {$erroresCampos['nombreUsuario']}
+                    <span id="usuarioCorrecto"></span>
                 </div>
 
                 <div>
                     <label for="email">Email:</label>
                     <input id="email" type="email" name="email" value = "$email" />
                     {$erroresCampos['email']}
+                    <span id="formatoEmail"></span>
+                    <span id="emailCorrecto"></span>
                 </div>
 
                 <div>
@@ -99,7 +102,7 @@ class FormularioCrearUsuario extends Formulario
                     {$erroresCampos['password']}
 
                     <label for="repetirPassword">Repetir password:</label>
-                    <input id="repertirPassword" type="password" name="repetirPassword"/>
+                    <input id="repetirPassword" type="password" name="repetirPassword"/>
                 </div>
                 
                 $mostrarRoles

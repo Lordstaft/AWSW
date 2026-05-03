@@ -106,7 +106,7 @@ class Usuario {
             return $usuario;
         }
 
-        return null;
+        return false;
     }
 
     public static function buscaUsuarioId($id){
@@ -259,5 +259,12 @@ class Usuario {
         );
 
         return $conn->query($query);
+    }
+
+    public static function checkEmail($email) {
+        $conn = Aplicacion::getInstance()->getConexionBd();
+        $query = sprintf("SELECT * FROM usuarios WHERE email = '%s'", $conn->real_escape_string($email));
+        $rs = $conn->query($query);
+        return $rs && $rs->num_rows > 0;
     }
 }

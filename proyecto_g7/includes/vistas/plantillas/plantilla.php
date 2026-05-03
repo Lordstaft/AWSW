@@ -26,5 +26,10 @@ $params['app']->doInclude('/vistas/comun/sidebarDer.php', $params);
 $params['app']->doInclude('/vistas/comun/pie.php', $params);
 ?>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="<?= RUTA_JS ?>/usuarios.js"></script>
+<script src="<?= RUTA_JS ?>/productos.js"></script>
+<script src="<?= RUTA_JS ?>/pedidos.js"></script>
+<script src="<?= RUTA_JS ?>/ofertas.js"></script>
 </body>
 </html>
