@@ -157,6 +157,7 @@ class FormularioPerfil extends Formulario
                 }
                 else{
                     $mensajes = ['Se ha modificado el usuario correctamente.'];
+                    $_SESSION['avatar'] = $nombreImagen;
                     $app->putAtributoPeticion('mensajes', $mensajes);
                 }
             }
