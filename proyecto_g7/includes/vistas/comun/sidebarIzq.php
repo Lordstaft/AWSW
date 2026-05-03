@@ -23,7 +23,7 @@ $app = Aplicacion::getInstance();
 
         <li class="nav-item">
             <a href="<?= $app->resuelve('/pedidos/misPedidos.php') ?>">Mis pedidos</a>
-            <span class="tooltip">Informacion de los pedidos realizados </span>
+            <span class="tooltip">Información de los pedidos realizados </span>
         </li>
 
         <li class="nav-item">
