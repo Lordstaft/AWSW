@@ -1,4 +1,4 @@
-$("#email").change(function() {
+$("#email").on("input", function() {
 
     const campo = $("#email");
     const email = campo.val().trim();
