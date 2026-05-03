@@ -93,7 +93,7 @@ div.saludo {
     gap: 10px; /* Espacio entre elementos */
 }
 
-/* ── BOTÓN DE LOGOUT (Como en la captura) ── */
+/* ── BOTÓN DE LOGOUT ── */
 .usuario-cabecera button.enlace {
     background-color: rgba(255, 255, 255, 0.1) !important; /* Fondo blanco muy transparente */
     border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Borde sutil blanco */
