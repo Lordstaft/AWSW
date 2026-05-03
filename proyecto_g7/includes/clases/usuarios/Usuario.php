@@ -258,10 +258,6 @@ class Usuario {
             (int)$id
         );
 
-        $_SESSION['nombre'] = $nombre;
-        $_SESSION['nombreUsuario'] = $nombreUsuario;
-        $_SESSION['avatar'] = $imagen;
-
         return $conn->query($query);
     }
 
