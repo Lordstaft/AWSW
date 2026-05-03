@@ -350,8 +350,8 @@ a.deshabilitado {
 }
 
 .avatar-usuario {
-    width: 100px; /* Avatar más grande en la página de perfil */
-    height: 100px; /* Cuadrado perfecto */
+    width: 200px; /* Avatar más grande en la página de perfil */
+    height: 200px; /* Cuadrado perfecto */
     border-radius: 50%; /* Circular */
     object-fit: cover; /* Recorta sin deformar */
     border: 2px solid #fff; /* Borde blanco alrededor */
