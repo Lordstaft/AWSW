@@ -28,7 +28,7 @@ $app = Aplicacion::getInstance();
 
         <li class="nav-item">
             <a href="<?= $app->resuelve('/usuarios/perfil.php') ?>">Perfil</a>
-            <span class="tooltip">Gestiona tu cuenta y datos personales </span>
+            <span class="tooltip">Gestiona tu cuenta y datos personales, accede a la lista de pedidos </span>
         </li>
 
         <!-- COCINERO -->
