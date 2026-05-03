@@ -15,12 +15,12 @@ class FormularioMisPedidos extends Formulario {
 
     protected function generaCamposFormulario(&$datos) {
         if (!isset($_SESSION['nombreUsuario'])) {
-            return '<p>Debes iniciar sesion para ver tus pedidos.</p>';
+            return '<p>Debes iniciar sesión para ver tus pedidos.</p>';
         }
 
         $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
         if (!$usuario) {
-            return '<p>No se pudo cargar tu informacion de usuario.</p>';
+            return '<p>No se pudo cargar tu información de usuario.</p>';
         }
 
         $pedidosActivos    = Pedido::pedidosUsuario($usuario->getId(), true);
