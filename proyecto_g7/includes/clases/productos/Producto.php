@@ -69,6 +69,7 @@ class Producto {
             $sql = sprintf("SELECT p.*
                 FROM productos p
                 JOIN categorias c ON c.id = p.categoria_id
+                WHERE p.activo = 1 AND c.activo = 1
                 GROUP BY p.id
                 ORDER BY c.nombre
                 ");
@@ -77,7 +78,7 @@ class Producto {
             $sql = sprintf("SELECT p.*
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE categoria_id = %d
+                WHERE p.activo = 1 AND c.activo = 1 AND categoria_id = %d
                 GROUP BY p.id
                 ORDER BY p.nombreProd",
                 (int)$categoria);
@@ -107,7 +108,7 @@ class Producto {
     public static function buscaPorNombre($nombreProd) {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
-            "SELECT * FROM productos p WHERE p.nombreProd = '%s'",
+            "SELECT * FROM productos p WHERE p.nombreProd = '%s' AND p.activo = 1",
             $conn->real_escape_string($nombreProd)
         );
         $rs = $conn->query($query);
@@ -153,7 +154,7 @@ class Producto {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $query = sprintf(
             "SELECT p.* FROM productos p
-            WHERE p.id = %d GROUP BY p.id",
+            WHERE p.id = %d AND p.activo = 1 GROUP BY p.id",
             (int)$id
         );
         $rs = $conn->query($query);
@@ -182,7 +183,7 @@ class Producto {
         $conn = Aplicacion::getInstance()->getConexionBd();
         $sql = sprintf("SELECT c.nombre, p.* FROM categorias c 
             JOIN productos p ON c.id = p.categoria_id 
-            WHERE p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
+            WHERE p.activo = 1 AND c.activo = 1 AND p.disponible = 1 AND p.stock > 0 GROUP BY p.id ORDER BY c.nombre");
         $rs = $conn->query($sql);
         $productos = [];
         if ($rs) {
@@ -249,7 +250,7 @@ class Producto {
         }
         
         $query = sprintf(
-            "DELETE FROM productos WHERE id = %d",
+            "UPDATE productos SET activo = 0 WHERE id = %d",
             (int)$id
         );
         return $conn->query($query);
@@ -269,7 +270,8 @@ class Producto {
 
         $query = sprintf(
             "SELECT * FROM productos 
-            WHERE REPLACE(LOWER(nombreProd), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
+            WHERE activo = 1
+            AND REPLACE(LOWER(nombreProd), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
             $conn->real_escape_string($nombreProd)
         );
 

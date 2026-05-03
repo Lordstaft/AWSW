@@ -16,6 +16,7 @@ CREATE TABLE `usuarios` (
   `rol`            ENUM('cliente','camarero','cocinero','gerente','admin') NOT NULL DEFAULT 'cliente',
   `avatar`         VARCHAR(255)  DEFAULT NULL,
   `fechaRegistro`  DATETIME      DEFAULT current_timestamp(),
+  `activo`         TINYINT(1)    NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
  
@@ -29,6 +30,7 @@ CREATE TABLE `categorias` (
   `nombre`            VARCHAR(100) NOT NULL UNIQUE,
   `descripcion`       TEXT         NOT NULL,
   `imgCategoriaProd`  VARCHAR(255) DEFAULT NULL,
+  `activo`            TINYINT(1)    NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
  
@@ -42,6 +44,7 @@ CREATE TABLE `productos` (
   `stock`         INT(11)        DEFAULT 0,
   `disponible`    TINYINT(1)     DEFAULT 1,
   `ofertado`      TINYINT(1)     DEFAULT 1,            -- borrado lógico: 0 = retirado de carta
+  `activo`        TINYINT(1)     NOT NULL DEFAULT 1,
   `fechaCreacion` DATETIME       DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`categoria_id`) REFERENCES `categorias`(`id`)
@@ -70,6 +73,7 @@ CREATE TABLE `pedidos` (
   `subtotalSinDescuento`  DECIMAL(10,2)  NOT NULL DEFAULT 0,
   `descuentoAplicado`     DECIMAL(10,2)  NOT NULL DEFAULT 0,
   `cocinero_id`           INT(11)        DEFAULT NULL,       -- asignado en F3
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`usuario_id`)  REFERENCES `usuarios`(`id`),
   FOREIGN KEY (`cocinero_id`) REFERENCES `usuarios`(`id`)
@@ -101,6 +105,7 @@ CREATE TABLE `ofertas` (
   `fechaFin`    DATE          NOT NULL,
   `descuento`   DECIMAL(5,2)  NOT NULL,
   `activa`      TINYINT(1)    NOT NULL DEFAULT 1,
+  `activo`      TINYINT(1)    NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
  

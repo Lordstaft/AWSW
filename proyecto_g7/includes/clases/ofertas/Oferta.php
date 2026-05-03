@@ -114,7 +114,7 @@ class Oferta {
         $conn = Aplicacion::getInstance()->getConexionBd();
  
         $query = sprintf(
-            "DELETE FROM ofertas WHERE id = %d",
+            "UPDATE ofertas SET activo = 0 WHERE id = %d",
             (int)$idOferta
         );
  
@@ -212,7 +212,7 @@ class Oferta {
         $conn = Aplicacion::getInstance()->getConexionBd();
  
         $query = sprintf(
-            "SELECT * FROM ofertas WHERE id = %d",
+            "SELECT * FROM ofertas WHERE id = %d AND activo = 1",
             (int)$idOferta
         );
  
@@ -242,7 +242,7 @@ class Oferta {
  
         $conn = Aplicacion::getInstance()->getConexionBd();
  
-        $query = "SELECT * FROM ofertas ORDER BY fechaInicio DESC, id DESC";
+        $query = "SELECT * FROM ofertas WHERE activo = 1 ORDER BY fechaInicio DESC, id DESC";
  
         $rs = $conn->query($query);
  
@@ -274,6 +274,7 @@ class Oferta {
  
         $query = "SELECT * FROM ofertas
                   WHERE activa = 1
+                  AND activo = 1
                   AND CURDATE() BETWEEN fechaInicio AND fechaFin
                   ORDER BY fechaInicio DESC, id DESC";
  

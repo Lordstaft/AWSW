@@ -82,9 +82,8 @@ class Pedido {
 
     public static function eliminarPedido($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
-
-        $conn->query(sprintf("DELETE FROM pedido_productos WHERE pedido_id = %d", (int)$id));
-        $conn->query(sprintf("DELETE FROM pedidos WHERE id = %d", (int)$id));
+        $query = sprintf("UPDATE pedidos SET activo = 0 WHERE id = %d", (int)$id);
+        return $conn->query($query);
     }
 
     public static function añadirProductoPedido($pedidoId, $productoId, $cantidad, $precio, $iva) {
@@ -111,7 +110,7 @@ class Pedido {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "SELECT * FROM pedidos WHERE estado IN ('%s', '%s')",
+            "SELECT * FROM pedidos WHERE estado IN ('%s', '%s') AND activo = 1",
             $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
             $conn->real_escape_string(EstadoPedido::NUEVO->value)
         );
@@ -158,7 +157,8 @@ class Pedido {
         $query = sprintf(
             "SELECT * FROM pedidos
              WHERE estado NOT IN ('cancelado', 'entregado', 'listo', 'recibido')
-             AND cocinero_id = %d",
+             AND cocinero_id = %d
+             AND activo = 1",
             (int)$cocineroId
         );
 
@@ -199,7 +199,7 @@ class Pedido {
     public static function buscaPedido($id) {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT * FROM pedidos WHERE id = %d", (int)$id);
+        $query = sprintf("SELECT * FROM pedidos WHERE id = %d AND activo = 1", (int)$id);
 
         $rs = $conn->query($query);
 
@@ -229,12 +229,12 @@ class Pedido {
 
         if ($esAdmin) {
             $query = sprintf(
-                "SELECT * FROM pedidos WHERE estado != '%s'",
+                "SELECT * FROM pedidos WHERE estado != '%s' AND activo = 1",
                 $conn->real_escape_string(EstadoPedido::ENTREGADO->value)
             );
         } else {
             $query = sprintf(
-                "SELECT * FROM pedidos WHERE estado IN ('%s','%s')",
+                "SELECT * FROM pedidos WHERE estado IN ('%s','%s') AND activo = 1",
                 $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
                 $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value)
             );
@@ -268,7 +268,7 @@ class Pedido {
     public static function pedidosListosEntrega() {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = "SELECT * FROM pedidos WHERE estado = 'listo'";
+        $query = "SELECT * FROM pedidos WHERE estado = 'listo' AND activo = 1";
 
         $rs = $conn->query($query);
 
@@ -346,12 +346,12 @@ class Pedido {
 
         if ($tipo) {
             $query = sprintf(
-                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado NOT IN ('entregado', 'cancelado')",
+                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado NOT IN ('entregado', 'cancelado') AND activo = 1",
                 (int)$usuario_id
             );
         } else {
             $query = sprintf(
-                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado IN ('entregado', 'cancelado')",
+                "SELECT * FROM pedidos WHERE usuario_id = %d AND estado IN ('entregado', 'cancelado') AND activo = 1",
                 (int)$usuario_id
             );
         }

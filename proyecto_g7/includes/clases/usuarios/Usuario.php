@@ -86,7 +86,7 @@ class Usuario {
     public static function buscaUsuario($nombreUsuario) {
 
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $query = sprintf("SELECT * FROM usuarios WHERE nombreUsuario = '%s'", $conn->real_escape_string($nombreUsuario));
+        $query = sprintf("SELECT * FROM usuarios WHERE nombreUsuario = '%s' AND activo = 1", $conn->real_escape_string($nombreUsuario));
         $rs = $conn->query($query);
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
@@ -112,7 +112,7 @@ class Usuario {
     public static function buscaUsuarioId($id){
         
         $conn = Aplicacion::getInstance()->getConexionBd();
-        $query = sprintf("SELECT * FROM usuarios WHERE id = '%d'", (int)$id);
+        $query = sprintf("SELECT * FROM usuarios WHERE id = '%d' AND activo = 1", (int)$id);
         $rs = $conn->query($query);
         if ($rs && $rs->num_rows > 0) {
             $fila = $rs->fetch_assoc();
@@ -138,7 +138,7 @@ class Usuario {
     public static function buscaUsuariosRol($rol){
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s'", $conn->real_escape_string($rol));
+        $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s' AND activo = 1", $conn->real_escape_string($rol));
         
         $rs = $conn->query($query);
 
@@ -166,10 +166,10 @@ class Usuario {
     public static function buscaRolUsuariosAdmin($rol) {
         $conn = Aplicacion::getInstance()->getConexionBd();
         if($rol === 'Todos' || $rol === '') {
-            $query = sprintf("SELECT * FROM usuarios WHERE rol != 'admin'");
+            $query = sprintf("SELECT * FROM usuarios WHERE rol != 'admin' AND activo = 1");
         }
         else{
-            $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s'", $conn->real_escape_string($rol));
+            $query = sprintf("SELECT * FROM usuarios WHERE rol = '%s' AND activo = 1", $conn->real_escape_string($rol));
         }
         $rs = $conn->query($query);
 
@@ -236,9 +236,7 @@ class Usuario {
 
     public static function eliminarUsuario($id){
         $conn = Aplicacion::getInstance()->getConexionBd();
-
-        $query = sprintf("DELETE FROM usuarios WHERE id = '%d'", (int)$id);
-
+        $query = sprintf("UPDATE usuarios SET activo = 0 WHERE id = '%d'", (int)$id);
         return $conn->query($query);
     }
     

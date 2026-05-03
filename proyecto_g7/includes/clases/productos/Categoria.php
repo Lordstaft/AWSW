@@ -45,7 +45,7 @@ class Categoria
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $sql = "SELECT id, nombre, descripcion, imgCategoriaProd FROM categorias ORDER BY nombre";
+        $sql = "SELECT id, nombre, descripcion, imgCategoriaProd FROM categorias WHERE activo = 1 ORDER BY nombre";
 
         $rs = $conn->query($sql);
 
@@ -71,7 +71,7 @@ class Categoria
     public static function buscaCategorias(){
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $sql = "SELECT * FROM categorias ORDER BY nombre";
+        $sql = "SELECT * FROM categorias WHERE activo = 1 ORDER BY nombre";
 
         $rs = $conn->query($sql);
 
@@ -98,7 +98,7 @@ class Categoria
     {
         $conn = Aplicacion::getInstance()->getConexionBd();
 
-        $sql = sprintf("SELECT * FROM categorias WHERE nombre = '%s'",
+        $sql = sprintf("SELECT * FROM categorias WHERE nombre = '%s' AND activo = 1",
             $conn->real_escape_string($nombre)
         );
 
@@ -141,7 +141,7 @@ class Categoria
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "SELECT * FROM categorias WHERE id = %d",
+            "SELECT * FROM categorias WHERE id = %d AND activo = 1",
             (int)$id
         );
 
@@ -171,7 +171,7 @@ class Categoria
         $conn = Aplicacion::getInstance()->getConexionBd();
 
         $query = sprintf(
-            "DELETE FROM categorias WHERE id = %d",
+            "UPDATE categorias SET activo = 0 WHERE id = %d",
             (int)$id
         );
 
@@ -202,7 +202,8 @@ class Categoria
 
         $query = sprintf(
             "SELECT * FROM categorias 
-            WHERE REPLACE(LOWER(nombre), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
+            WHERE activo = 1
+            AND REPLACE(LOWER(nombre), ' ', '') = REPLACE(LOWER('%s'), ' ', '')",
             $conn->real_escape_string($nombreCategoria)
         );
 
