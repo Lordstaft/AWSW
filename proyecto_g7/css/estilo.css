@@ -350,6 +350,54 @@ a.deshabilitado {
     border: 2px solid #fff; /* Borde blanco alrededor */
 }
 
+.selector-avatares {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.selector-avatares label {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    display:inline-block;
+    margin:5px;
+}
+
+.selector-avatares input:checked + img {
+    border: 2px solid #3498db; /* Resalta el seleccionado */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.opcion-avatar {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Pone el radio encima o debajo si quieres */
+    align-items: center;
+}
+
+.opcion-avatar input {
+    margin-bottom: 5px;
+}
+
+.opcion-avatar img {
+    width: 100px;       /* Tamaño pequeño deseado */
+    height: 100px;      /* Cuadrado perfecto */
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.opcion-avatar input:checked + img {
+    width: 100px;       /* Tamaño pequeño deseado */
+    height: 100px;      /* Cuadrado perfecto */
+    border-color: #3498db; /* Azul al seleccionar */
+}
+
 /* ── CATÁLOGO DE PRODUCTOS ── */
 .catalogo-grid {
     display: grid; /* Cuadrícula para las tarjetas */
