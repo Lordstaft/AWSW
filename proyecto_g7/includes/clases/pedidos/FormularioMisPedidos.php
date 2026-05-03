@@ -89,7 +89,7 @@ class FormularioMisPedidos extends Formulario {
         $html = <<<EOF
             <section class="mis-pedidos">
                 <h3>📦 Mis pedidos en curso</h3>
-                <p>Aquí puedes seguir el estado de tus pedidos y ver que platos estan siendo preparados.</p>
+                <p>Aquí puedes seguir el estado de tus pedidos y ver qué platos están siendo preparados.</p>
                 {$seccionActivos}
                 
                 <h3>📜 Historial de pedidos</h3>
