@@ -7,7 +7,17 @@ class Imagenes {
     private $rutaRaizApp;
 
     private function esDefault($imagen): bool {
-        $defaultImgs = ['producto_default.jpg', 'usuario_default.jpg', 'categoria_default.jpg'];
+        $defaultImgs = [
+            'producto_default.jpg', 
+            'usuario_default.jpg', 
+            'categoria_default.jpg', 
+            'avatar1.jpg', 
+            'avatar2.jpg', 
+            'avatar3.jpg'
+        ];
+
+        return in_array($imagen, $defaultImgs);
+        
         foreach ($defaultImgs as $nombre){
             if ($imagen === $nombre) {
                 return true;
