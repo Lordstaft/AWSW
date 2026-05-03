@@ -336,11 +336,10 @@ a.deshabilitado {
 }
 
 .avatar-cabecera {
-    width: 200px; /* Avatar más grande en la página de perfil */
-    height: 200px; /* Cuadrado perfecto */
+    width: 50px; /* Avatar más grande en la cabecera */
+    height: 50px; /* Cuadrado perfecto */
     border-radius: 50%; /* Circular */
     object-fit: cover; /* Recorta sin deformar */
-    border: 2px solid #fff; /* Borde blanco alrededor */
 }
 
 .avatar-usuario {
