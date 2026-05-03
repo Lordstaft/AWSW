@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS `pedido_ofertas`;
 DROP TABLE IF EXISTS `oferta_productos`;
 DROP TABLE IF EXISTS `pedido_productos`;
 DROP TABLE IF EXISTS `pedidos`;
-DROP TABLE IF EXISTS `producto_imagenes`;
 DROP TABLE IF EXISTS `productos`;
 DROP TABLE IF EXISTS `categorias`;
 DROP TABLE IF EXISTS `ofertas`;
@@ -61,19 +60,11 @@ CREATE TABLE `productos` (
   `disponible` tinyint(1) DEFAULT 1,
   `ofertado` tinyint(1) DEFAULT 1,
   `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `rutaImg` varchar(255) DEFAULT NULL,
   `fechaCreacion` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `categoria_id` (`categoria_id`),
   CONSTRAINT `fk_productos_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE `producto_imagenes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `producto_id` int(11) NOT NULL,
-  `rutaImagen` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `producto_id` (`producto_id`),
-  CONSTRAINT `fk_imagenes_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -85,7 +76,7 @@ CREATE TABLE `producto_imagenes` (
 CREATE TABLE `pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) DEFAULT NULL,
-  `estado` enum('nuevo','recibido','en_preparacion','cocinando','listo_cocina','terminado','entregado','cancelado') DEFAULT 'nuevo',
+  `estado` enum('nuevo','pendiente','preparando','cocinando','listo','entregado','cancelado') DEFAULT 'nuevo',
   `tipo` enum('domicilio','recogida') NOT NULL,
   `fechaPedido` datetime DEFAULT current_timestamp(),
   `total` decimal(10,2) NOT NULL DEFAULT 0,
