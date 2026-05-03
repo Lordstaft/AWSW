@@ -22,83 +22,9 @@ class FormularioPerfil extends Formulario
 
         $busqueda = $_SESSION['nombreUsuario'];
         $usuario = Usuario::buscaUsuario($busqueda);
-        $pedidosPendientes = '';
-        $pedidosRealizados = '';
-
-        $filaPendientes = '';
-        $filaRealizados = '';
 
         $rutaImagen = Aplicacion::getInstance()->resuelve("/img/" . $usuario->getAvatar());
 
-/*         var_dump($usuario);
-        exit(); */
-
-        $pedidosPendientes = Pedido::pedidosUsuario($usuario->getId(), true);
-        $pedidosRealizados = Pedido::pedidosUsuario($usuario->getId(), false);
-
-        $tablaPendientes = '';
-        $tablaRealizados = '';
-
-        if (!empty($pedidosPendientes) && is_array($pedidosPendientes)) {
-            foreach ($pedidosPendientes as $p) {
-                $filaPendientes .= "<tr>
-                    <td>{$p->getFechaPedido()}</td>
-                    <td>{$p->getPedidoId()}</td>
-                    <td>{$p->getTipo()}</td>
-                    <td>{$p->getEstadoPedido()}</td>
-                    <td>{$p->getTotal()}</td>
-                </tr>";
-            }
-            $tablaPendientes = "<table border='1'>
-                <thead>
-                    <tr>
-                        <th>Fecha del pedido</th>
-                        <th>Numero de pedido</th>
-                        <th>Tipo de pedido</th>
-                        <th>Estado</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $filaPendientes
-                </tbody>
-            </table>";
-        }
-
-        else{
-            $tablaPendientes = "<p>No existen pedidos pendientes actualmente</p>";
-        }
-
-        if (!empty($pedidosRealizados) && is_array($pedidosRealizados)) {
-            foreach ($pedidosRealizados as $p) {
-                $filaRealizados .= "<tr>
-                    <td>{$p->getFechaPedido()}</td>
-                    <td>{$p->getPedidoId()}</td>
-                    <td>{$p->getTipo()}</td>
-                    <td>{$p->getEstadoPedido()}</td>
-                    <td>{$p->getTotal()}</td>
-                </tr>";
-            }
-
-            $tablaRealizados = "<table class='tabla-general'>
-                <thead>
-                    <tr>
-                        <th>Fecha del pedido</th>
-                        <th>Numero de pedido</th>
-                        <th>Tipo de pedido</th>
-                        <th>Estado</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $filaRealizados
-                </tbody>
-            </table>";
-        }
-        
-        else{
-           $tablaRealizados = "<p>No se han realizado pedidos</p>"; 
-        }
 
         $htmlErroresGlobales = self::generaListaErroresGlobales($this->errores);
         $erroresCampos = self::generaErroresCampos(['email', 'imagen'], $this->errores, 'span', array('class' => 'error'));
@@ -154,11 +80,6 @@ class FormularioPerfil extends Formulario
                 </div>
             </fieldset>
 
-            <h2>Pedidos pendientes</h2>
-            $tablaPendientes
-
-            <h2>Pedidos realizados</h2>
-            $tablaRealizados
         EOF;
         return $html;
     }

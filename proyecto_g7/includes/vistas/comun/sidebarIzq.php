@@ -20,6 +20,12 @@ $app = Aplicacion::getInstance();
             <a href="<?= $app->resuelve('/pedidos/carrito.php') ?>">Ver carrito</a>
             <span class="tooltip">Revisa tus productos seleccionados</span>
         </li>
+
+        <li class="nav-item">
+            <a href="<?= $app->resuelve('/pedidos/misPedidos.php') ?>">Mis pedidos</a>
+            <span class="tooltip">Informacion de los pedidos realizados </span>
+        </li>
+
         <li class="nav-item">
             <a href="<?= $app->resuelve('/usuarios/perfil.php') ?>">Perfil</a>
             <span class="tooltip">Gestiona tu cuenta y datos personales, accede a la lista de pedidos </span>
