@@ -17,13 +17,6 @@ class Imagenes {
         ];
 
         return in_array($imagen, $defaultImgs);
-        
-        foreach ($defaultImgs as $nombre){
-            if ($imagen === $nombre) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function __construct() {
