@@ -5,9 +5,9 @@
  */
 //define('BD_HOST', 'vm006.db.swarm.test');
 define('BD_HOST', 'localhost');
-define('BD_NAME', 'awp2');
-define('BD_USER', 'awp2');
-define('BD_PASS', 'awp2');
+define('BD_NAME', 'awpg7');
+define('BD_USER', 'awpg7');
+define('BD_PASS', 'awpg7');
 
 /**
  * Parámetros de configuración utilizados para generar las URLs y las rutas a ficheros en la aplicación
