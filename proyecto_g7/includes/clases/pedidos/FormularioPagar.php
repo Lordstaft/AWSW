@@ -110,6 +110,7 @@ class FormularioPagar extends Formulario
                     <label for="numeroTarjeta">Número de tarjeta:</label>
                     <input id="numeroTarjeta" type="text" name="numeroTarjeta" maxlength="16" placeholder="1234567890123456" value="$numeroTarjeta"/>
                     {$erroresCampos['numeroTarjeta']}
+                    <span id="formatoTarjeta"></span>
                 </div>
 
                 <div>
@@ -122,6 +123,7 @@ class FormularioPagar extends Formulario
                     <label for="cvv">CVV:</label>
                     <input id="cvv" type="password" name="cvv" maxlength="4" value="$cvv"/>
                     {$erroresCampos['cvv']}
+                    <span id="formatoCvv"></span>
                 </div>
 
                 <div>

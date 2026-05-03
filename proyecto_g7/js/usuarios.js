@@ -44,37 +44,26 @@ function esCorreoValido(email) {
     return regex.test(email);
 }
 
-$("#nombreUsuario").change(function(){
+$(".validar-usuario").on("input", function(){
 
-    const usuario = $("#nombreUsuario").val().trim();
+    const campo = $(this);
+    const usuario = campo.val().trim();
 
-    if (usuario === "") {
-        $("#usuarioCorrecto").text("");
-        $("#nombreUsuario")[0].setCustomValidity("");
-        return;
-    }
+    campo[0].setCustomValidity("");
+    $("#usuarioCorrecto").text("");
 
-    var url = "/proyecto_g7/comprobarUsuario.php?user=" + encodeURIComponent(usuario);
+    if (usuario === "") return;
 
-    $.get(url, usuarioExiste);
-});
+    const url = "/proyecto_g7/comprobarUsuario.php?user=" + encodeURIComponent(usuario);
 
-function usuarioExiste(data, status){
-
-    const campo = $("#nombreUsuario");
-
-    if (status === "success") {
+    $.get(url, function(data){
 
         if (data.trim() === "existe") {
-            $("#usuarioCorrecto").text("No disponible");
-
+            $("#usuarioCorrecto").text("❌ No disponible");
             campo[0].setCustomValidity("El usuario ya está en uso");
-
-        } 
-        else {
-            $("#usuarioCorrecto").text("Disponible");
-
+        } else {
+            $("#usuarioCorrecto").text("✅ Disponible");
             campo[0].setCustomValidity("");
         }
-    }
-}
+    });
+});

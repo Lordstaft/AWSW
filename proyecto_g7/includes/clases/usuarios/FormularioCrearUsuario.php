@@ -82,8 +82,8 @@ class FormularioCrearUsuario extends Formulario
                 </div>
 
                 <div>
-                    <label for="nombreUsuario">Nombre de usuario:</label>
-                    <input id="nombreUsuario" type="text" name="nombreUsuario" value = "$nombreUsuario" />
+                    <label for="nombreUsuario" class="validar-usuario">Nombre de usuario:</label>
+                    <input id="nombreUsuario" class="validar-usuario" type="text" name="nombreUsuario" value = "$nombreUsuario" />
                     {$erroresCampos['nombreUsuario']}
                     <span id="usuarioCorrecto"></span>
                 </div>
