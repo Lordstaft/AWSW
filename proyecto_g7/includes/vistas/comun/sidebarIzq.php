@@ -82,6 +82,5 @@ $app = Aplicacion::getInstance();
             <span class="tooltip">Crea una cuenta nueva</span>
         </li>
         <?php endif; ?>
-
     </ul>
 </nav>

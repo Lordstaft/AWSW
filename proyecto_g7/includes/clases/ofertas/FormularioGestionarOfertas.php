@@ -65,25 +65,27 @@ class FormularioGestionarOfertas extends Formulario
             <button type='submit' name='crearOferta'>Crear oferta</button>
         </div>
 
-        <table class="tabla-ofertas">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Productos</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Descuento</th>
-                    <th>Disponible</th>
-                    <th>Precio pack</th>
-                    <th>Precio final</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                $filas
-            </tbody>
-        </table>
+        <div class="tabla-wrapper">
+            <table class="tabla-ofertas">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Productos</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Descuento</th>
+                        <th>Disponible</th>
+                        <th>Precio pack</th>
+                        <th>Precio final</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    $filas
+                </tbody>
+            </table>
+        </div>
         EOS;
 
         return $html;

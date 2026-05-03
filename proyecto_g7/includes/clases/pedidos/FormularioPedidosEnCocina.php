@@ -52,20 +52,22 @@ class FormularioPedidosEnCocina extends Formulario {
 
         return <<<HTML
             $htmlErroresGlobales
-            <table class="tabla-general">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Platos</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $filas
-                </tbody>
-            </table>
+            <div class="tabla-wrapper">
+                <table class="tabla-general">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Platos</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $filas
+                    </tbody>
+                </table>
+            </div>
         HTML;
     }
 

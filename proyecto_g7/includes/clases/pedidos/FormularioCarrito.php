@@ -213,24 +213,24 @@ class FormularioCarrito extends Formulario
             <fieldset>
 
                 <h2>Tu carrito</h2>
+                <div class="tabla-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio base</th>
+                                <th>IVA</th>
+                                <th>Cantidad</th>
+                                <th>Total con IVA</th>
+                            </tr>
+                        </thead>
 
-                <table>
+                        <tbody>
+                            $filas
+                        </tbody>
 
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Precio base</th>
-                            <th>IVA</th>
-                            <th>Cantidad</th>
-                            <th>Total con IVA</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        $filas
-                    </tbody>
-
-                </table>
+                    </table>
+                </div>
 
                 <p>
                     <strong>Subtotal sin descuentos:</strong>

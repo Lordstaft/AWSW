@@ -20,7 +20,7 @@ class FormularioCrearOferta extends Formulario
         $fechaFin = htmlspecialchars($datos['fechaFin'] ?? '');
         $descuento = htmlspecialchars($datos['descuento'] ?? '');
         $precioFinal = htmlspecialchars($datos['precioFinal'] ?? '');
- 
+
         $productos = Producto::listar('Todos');
         $filasProductos = '';
  
@@ -84,6 +84,8 @@ EOS;
                     $filasProductos
                 </tbody>
             </table>
+
+            <span id="ofertaDuplicada"></span>
  
             <h3>Resumen del pack</h3>
  

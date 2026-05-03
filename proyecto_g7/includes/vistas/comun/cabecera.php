@@ -8,25 +8,27 @@ function mostrarSaludo($app, $ocultarNav = false)
     $html = '';
     if (isset($_SESSION['login'], $_SESSION['nombreUsuario']) && ($_SESSION['login'] === true)) {
         $nombreUsuario = $_SESSION['nombreUsuario'];
+
         $formLogout = new FormularioLogout();
         $htmlLogout = $formLogout->gestiona();
         
+        // avatar del usuario
         $avatar = $_SESSION['avatar'] ?? 'usuario_default.jpg';
+
         $rutaAvatar = $app->resuelve('/img/' . $avatar);
         $rutaPerfil = $app->resuelve('/usuarios/perfil.php');
 
         $html = <<<HTML
         <div class="usuario-cabecera">
-            <span class="nombre-usuario">Hola, {$nombreUsuario}</span>
-            <a href="{$rutaPerfil}" title="Ir a mi perfil">
+            <a href="{$rutaPerfil}">
                 <img src="{$rutaAvatar}" class="avatar-cabecera" alt="avatar">
+                
             </a>
-            <div class="logout-container">
-                {$htmlLogout}
-            </div>
+            <span>Bienvenido, {$nombreUsuario}</span>
+            {$htmlLogout}
         </div>
         HTML;
-    }
+    } 
     else {
     // Solo mostrar login/registro en el header si NO estamos ocultando la nav
         if ($ocultarNav) {

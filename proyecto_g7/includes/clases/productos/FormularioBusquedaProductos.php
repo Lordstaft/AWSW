@@ -120,20 +120,22 @@ class FormularioBusquedaProductos extends Formulario
 
         if ($filas !== null) {
             $_SESSION['resultadosBusqueda'] = <<<EOS
-            <table class="tabla-general">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $filas
-                </tbody>
-            </table>
+            <div class="tabla-wrapper">
+                <table class="tabla-general">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $filas
+                    </tbody>
+                </table>
+            </div>
             EOS;
         }
 

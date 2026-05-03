@@ -24,7 +24,7 @@ class FormularioBusquedaCategoria extends Formulario
                 $filas .= "<tr>
                     <td>{$c->getNombre()}</td>
                     <td>{$c->getDescripcion()}</td>
-                    <td>{$c->getImgCategoriaProd()}</td>
+                    <td><img class='img-producto-tabla' src=". Aplicacion::getInstance()->resuelve("/img/" . $c->getImgCategoriaProd()) . "></td>
                     <td>
                         <div>
                             <button type='submit' name='id' value='{$c->getId()}'>Modificar</button>
@@ -41,19 +41,21 @@ class FormularioBusquedaCategoria extends Formulario
         }
         else {
             $html = <<<EOF
-            <table class="tabla-general">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $filas
-                </tbody>
-            </table>
+            <div class="tabla-wrapper">
+                <table class="tabla-general">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Imagen</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $filas
+                    </tbody>
+                </table>
+            </div>
             EOF;
         }
 

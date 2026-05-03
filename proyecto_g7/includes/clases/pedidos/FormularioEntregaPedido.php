@@ -45,19 +45,21 @@ class FormularioEntregaPedido extends Formulario
 
         else{
             $html = <<<EOF
-                <table class="tabla-general">
-                    <thead>
-                        <tr>
-                            <th>Tipo de pedido</th>
-                            <th>Fecha de pedido</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        $filas
-                    </tbody>
-                </table>
+                <div class="tabla-wrapper">
+                    <table class="tabla-general">
+                        <thead>
+                            <tr>
+                                <th>Tipo de pedido</th>
+                                <th>Fecha de pedido</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            $filas
+                        </tbody>
+                    </table>
+                </div>
             EOF;
         }
 

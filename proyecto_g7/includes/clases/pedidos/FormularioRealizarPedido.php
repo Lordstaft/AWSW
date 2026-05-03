@@ -60,20 +60,22 @@ class FormularioRealizarPedido extends Formulario
 
                 $htmlErroresGlobales
                 <fieldset>
-                    <table class="tabla-general">
-                        <thead>
-                            <tr>
-                                <th>Imagen</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            $filas
-                        </tbody>
-                    </table>
+                    <div class="tabla-wrapper">
+                        <table class="tabla-general tabla-productos">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                $filas
+                            </tbody>
+                        </table>
+                    </div>
 
                     <button type="submit" name="realizarPedido">Realizar pedido</button>
                 </fieldset>

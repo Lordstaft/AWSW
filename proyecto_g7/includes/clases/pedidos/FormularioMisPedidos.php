@@ -15,7 +15,7 @@ class FormularioMisPedidos extends Formulario {
 
     protected function generaCamposFormulario(&$datos) {
         if (!isset($_SESSION['nombreUsuario'])) {
-            return '<p>Debes iniciar sesión para ver tus pedidos.</p>';
+            return '<p>Debes iniciar sesión para ver tus pedidos.sss</p>';
         }
 
         $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);
@@ -79,11 +79,11 @@ class FormularioMisPedidos extends Formulario {
         $filasHistorico = $construyeFilas($pedidosHistorico);
 
         $seccionActivos   = $filasActivos
-            ? "<div><table class='tabla-general'>{$cabecera}<tbody>{$filasActivos}</tbody></table></div>"
+            ? "<div class='tabla-wrapper'><table class='tabla-general'>{$cabecera}<tbody>{$filasActivos}</tbody></table></div>"
             : '<p>No tienes pedidos en curso en este momento.</p>';
 
         $seccionHistorico = $filasHistorico
-            ? "<div class><table class='tabla-general'>{$cabecera}<tbody>{$filasHistorico}</tbody></table></div>"
+            ? "<div class='tabla-wrapper'><table class='tabla-general'>{$cabecera}<tbody>{$filasHistorico}</tbody></table></div>"
             : '<p>No tienes pedidos en tu historial.</p>';
 
         $html = <<<EOF
