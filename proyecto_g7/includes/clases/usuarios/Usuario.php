@@ -97,7 +97,7 @@ class Usuario {
                     $fila['email'],
                     $fila['nombre'],
                     $fila['apellidos'],
-                    $fila['contraseña'],
+                    $fila['password'],
                     $fila['rol'],
                     $fila['avatar'],
                     $fila['fechaRegistro']
@@ -214,7 +214,7 @@ class Usuario {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         $query = sprintf(
-            "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, contraseña, rol, avatar)
+            "INSERT INTO usuarios (nombreUsuario, email, nombre, apellidos, password, rol, avatar)
             VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
             $conn->real_escape_string($nombreUsuario),
             $conn->real_escape_string($email),

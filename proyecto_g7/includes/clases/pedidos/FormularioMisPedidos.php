@@ -15,7 +15,7 @@ class FormularioMisPedidos extends Formulario {
 
     protected function generaCamposFormulario(&$datos) {
         if (!isset($_SESSION['nombreUsuario'])) {
-            return '<p>Debes iniciar sesión para ver tus pedidos.sss</p>';
+            return '<p>Debes iniciar sesión para ver tus pedidos.</p>';
         }
 
         $usuario = Usuario::buscaUsuario($_SESSION['nombreUsuario']);

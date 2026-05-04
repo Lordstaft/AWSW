@@ -392,6 +392,8 @@ class Pedido {
             (int)$id
         );
 
+        error_log("Query para productos cocina: " . $query);
+
         $rs = $conn->query($query);
 
         $resultado = [];
