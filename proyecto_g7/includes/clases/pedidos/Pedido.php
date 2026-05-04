@@ -234,9 +234,11 @@ class Pedido {
             );
         } else {
             $query = sprintf(
-                "SELECT * FROM pedidos WHERE estado IN ('%s','%s') AND activo = 1",
+                "SELECT * FROM pedidos WHERE estado IN ('%s','%s', '%s', '%s') AND activo = 1",
                 $conn->real_escape_string(EstadoPedido::PENDIENTE->value),
-                $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value)
+                $conn->real_escape_string(EstadoPedido::EN_PREPARACION->value),
+                $conn->real_escape_string(EstadoPedido::LISTO->value),
+                $conn->real_escape_string(EstadoPedido::NUEVO->value)
             );
         }
 
